@@ -4,3 +4,82 @@ body {
     margin: 0;
     padding: 0;
 }
+
+/* Home Page Jumbotron */
+.home-jumbotron {
+    background-color: #28a745; /* Green background */
+    color: white;             /* White text */
+    text-align: center;       /* Center text */
+    padding: 2rem;            /* Padding around the content */
+}
+
+/* Custom Footer */
+.footer {
+    background-color: #f8f9fa; /* Light background */
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+.navbar {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.jumbotron {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+}
+
+.jumbotron h1 {
+    font-weight: bold;
+}
+
+.jumbotron p {
+    font-size: 1.2rem;
+}
+
+.btn-outline-success,
+.btn-outline-primary,
+.btn-outline-warning {
+    font-size: 1.1rem;
+    padding: 10px 20px;
+    border-width: 2px;
+}
+
+form {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form .form-label {
+    font-weight: bold;
+}
+
+form .btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2rem;
+}
+
+.main-content {
+    padding: 2rem;
+    height: 100vh;
+}
+
+#signup-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+button#get-code-btn {
+    display: inline-block;
+    width: auto;
+}
+
+#verification-code-group {
+    margin-top: 20px;
+}

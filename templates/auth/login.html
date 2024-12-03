@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" action="{% url 'login' %}">
+    {% csrf_token %}
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required placeholder="Enter your username">
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required placeholder="Enter your password">
+
+    <label for="role">Role:</label>
+    <select id="role" name="role" required>
+        <option value="umuhinzi">Umuhinzi</option>
+        <option value="umuguzi">Umuguzi</option>
+        <option value="cooperative">Cooperative</option>
+    </select>
+
+    <button type="submit">Login</button>
+</form>
+{% endblock %}

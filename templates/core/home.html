@@ -5,45 +5,27 @@
 {% block title %}Ahabanza - AgriConnect{% endblock %}
 
 {% block content %}
+
 <div class="jumbotron text-center bg-success text-white p-5">
     <h1 class="display-4">Murakaza neza kuri AgriConnect!</h1>
     <p class="lead">Dufasha abahinzi kugera ku isoko rikwiye no kubona inyungu nyinshi.</p>
-    <a class="btn btn-light btn-lg mt-3" href="/about/" role="button">Menya Byinshi</a>
+    <div class="mt-4">
+        <a class="btn btn-light btn-lg me-3" href="/signup/">Kora Konti</a>
+        <a class="btn btn-primary btn-lg" href="/login/">Injira</a>
+    </div>
 </div>
 
-<div class="container mt-4">
-    <h2 class="text-center">Ibicuruzwa By'ingenzi</h2>
-    <div class="row">
-        <!-- Example Product Cards -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Hitamo Icyiciro</h2>
+    <div class="row text-center">
         <div class="col-md-4">
-            <div class="card">
-                <img src="{% static 'img/amateke.png' %}" class="card-img-top" alt="Umusaruro 1">
-                <div class="card-body">
-                    <h5 class="card-title">Amateke</h5>
-                    <p class="card-text">Amateke y'Ubwiza buhebuje. Igiciro: 500 RWF/Kg.</p>
-                    <a href="#" class="btn btn-primary">Reba Ibindi</a>
-                </div>
-            </div>
+            <a href="/login/umuhinzi/" class="btn btn-outline-success btn-lg w-100">Umuhinzi</a>
         </div>
         <div class="col-md-4">
-            <div class="card">
-                <img src="{% static 'img/ibishyimbo.png' %}" class="card-img-top" alt="Umusaruro 2">
-                <div class="card-body">
-                    <h5 class="card-title">Ibishyimbo</h5>
-                    <p class="card-text">Ibishyimbo byiza byo kugurisha ku isoko.</p>
-                    <a href="#" class="btn btn-primary">Reba Ibindi</a>
-                </div>
-            </div>
+            <a href="/login/umuguzi/" class="btn btn-outline-primary btn-lg w-100">Umuguzi</a>
         </div>
         <div class="col-md-4">
-            <div class="card">
-                <img src="{% static 'img/imyembe.png' %}" class="card-img-top" alt="Umusaruro 3">
-                <div class="card-body">
-                    <h5 class="card-title">Imyembe</h5>
-                    <p class="card-text">Imyembe iribwa neza kandi ihendutse.</p>
-                    <a href="#" class="btn btn-primary">Reba Ibindi</a>
-                </div>
-            </div>
+            <a href="/login/cooperative/" class="btn btn-outline-warning btn-lg w-100">Cooperative</a>
         </div>
     </div>
 </div>
