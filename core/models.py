@@ -1,93 +1,109 @@
-from django.contrib.auth.models import AbstractUser, Group, Permission
-from django.contrib.auth import get_user_model
+# models.py
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.timezone import now, timedelta
+import uuid
+
 
 class CustomUser(AbstractUser):
     """
-    Custom user model
-
-    This model extends the default Django user model to include additional fields
+    Custom user model for general authentication details
     """
-
-    ROLES = (
-        ('umuhinzi', 'Umuhinzi'),
-        ('umuguzi', 'Umuguzi'),
-        ('cooperative', 'Cooperative'),
+    email = models.EmailField(max_length=255, null=False, blank=False)
+    role = models.CharField(
+        max_length=15,
+        choices=[
+            ('umuhinzi', 'Umuhinzi'),
+            ('umuguzi', 'Umuguzi'),
+            ('cooperative', 'Cooperative'),
+        ],
     )
-    role = models.CharField(max_length=15, choices=ROLES)
-
-    verification_code = models.CharField(max_length=6, blank=True, null=True)
-    is_verified = models.BooleanField(default=False)
-
-    # Fix reverse accessor clashes
-    groups = models.ManyToManyField(
-        Group,
-        related_name="customuser_set",  # Change related_name here
-        blank=True,
-    )
-    user_permissions = models.ManyToManyField(
-        Permission,
-        related_name="customuser_set",  # Change related_name here
-        blank=True,
-    )
+    is_verified = models.BooleanField(default=False)  # Track if the user is verified
+    email_verified = models.BooleanField(default=False)  # Check if email is verified
 
     def __str__(self):
         return self.username
 
-
-from django.contrib.auth.backends import ModelBackend
-class EmailAuthBackend(ModelBackend):
+class VerificationCode(models.Model):
     """
-    Email authentication backend
-
-    This backend allows users to authenticate using their email address
+    Model to store email verification codes
     """
-    def authenticate(self, request, username=None, password=None, **kwargs):
-        try:
-            user = CustomUser.objects.get(email=username)
-        except CustomUser.DoesNotExist:
-            return None
-        else:
-            if user.check_password(password):
-                return user
-        return None
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='verification_code')
+    code = models.CharField(max_length=6, default=str(uuid.uuid4().int)[:6])  # 6-digit random code
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    def get_user(self, user_id):
-        try:
-            return CustomUser.objects.get(pk=user_id)
-        except CustomUser.DoesNotExist:
-            return None
+    def default_expiry():
+        return now() + timedelta(minutes=10)
+
+    expires_at = models.DateTimeField(default=default_expiry)  # Code expires in 10 mins
+
+    def is_expired(self):
+        return now() > self.expires_at
+
+    def __str__(self):
+        return f"Verification Code for {self.user.email}"
 
 
 class Profile(models.Model):
     """
-    Profile model
-
-    This model is used to store additional information about the user
+    Profile model to store additional user details
     """
-
-    user = models.OneToOneField(
-        CustomUser,
-        on_delete=models.CASCADE,
-        related_name='profile'
-    )
-    verification_code = models.CharField(max_length=6, blank=True, null=True)
-    # created_at = models.DateTimeField(auto_now_add=True)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile', unique=True)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    phone = models.CharField(max_length=15, blank=True, null=True, unique=True)
+    role = models.CharField(max_length=15, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Profile of {self.user.username}"
+        return f"{self.user.username} - {self.role}"
 
 
 class Farmer(models.Model):
     """
-    Farmer model
-
-    This model is used to store information about farmers
+    Farmer-specific details, linked to Profile
     """
-
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
     location = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Farmer {self.profile.user.username}"
+        return f"Farmer: {self.profile.name}"
+
+
+class Buyer(models.Model):
+    """
+    Buyer-specific details
+    """
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Buyer: {self.profile.name}"
+
+
+class Cooperative(models.Model):
+    """
+    Cooperative-specific details
+    """
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Cooperative: {self.profile.name}"
+
+
+class Product(models.Model):
+    """
+    Product model to store produce details
+    """
+    owner = models.ForeignKey(
+        CustomUser,  # Links the product to the user (Farmer or Cooperative)
+        on_delete=models.CASCADE,
+        related_name='products'
+    )
+    name = models.CharField(max_length=255)  # Product name
+    description = models.TextField(blank=True, null=True)  # Product description
+    media = models.FileField(upload_to='products/media/', blank=True, null=True)  # Image or video
+    location = models.CharField(max_length=255)  # Location where the product is available
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} by {self.owner.name}"

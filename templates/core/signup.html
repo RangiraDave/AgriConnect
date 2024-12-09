@@ -1,4 +1,4 @@
-<!-- signup.html -->
+<!-- templates/core/signup.html -->
 {% extends 'core/base.html' %}
 {% load static %}
 {% load i18n %}
@@ -6,21 +6,23 @@
 {% block title %}Sign Up - AgriConnect{% endblock %}
 
 {% block content %}
-
 <div class="container mt-5">
     <h2 class="text-center">Kora Konti</h2>
     <form method="POST" action="/signup/" class="mt-4">
         {% csrf_token %}
-        <!-- Name -->
+        <!-- Username -->
         <div class="mb-3">
             <label for="name" class="form-label">Amazina</label>
-            <input type="text" class="form-control" id="name" name="name" placeholder="Injiza amazina yawe" required>
+            <input type="text" class="form-control {% if errors.username %}is-invalid{% endif %}" id="username" name="username" value="{{ form_data.username|default:'' }}" placeholder="Injiza amazina yawe" required>
+            {% if errors.username %}
+            <div class="invalid-feedback">{{ errors.username }}</div>
+            {% endif %}
         </div>
         
         <!-- Phone -->
         <div class="mb-3">
             <label for="phone" class="form-label">Telefone</label>
-            <input type="tel" class="form-control" id="phone" name="phone" placeholder="Injiza telefone yawe" required>
+            <input type="tel" class="form-control" id="phone" name="phone" value="{{ form_data.phone|default:'' }}" placeholder="Injiza telefone yawe" required>
         </div>
         
         <!-- Role -->
@@ -28,22 +30,28 @@
             <label for="role" class="form-label">Hitamo Icyiciro</label>
             <select class="form-select" id="role" name="role" required>
                 <option value="">Hitamo...</option>
-                <option value="umuhinzi">Umuhinzi</option>
-                <option value="umuguzi">Umuguzi</option>
-                <option value="cooperative">Cooperative</option>
+                <option value="umuhinzi" {% if form_data.role == 'umuhinzi' %}selected{% endif %}>Umuhinzi</option>
+                <option value="umuguzi" {% if form_data.role == 'umuguzi' %}selected{% endif %}>Umuguzi</option>
+                <option value="cooperative" {% if form_data.role == 'cooperative' %}selected{% endif %}>Cooperative</option>
             </select>
         </div>
         
         <!-- Email -->
         <div class="mb-3">
             <label for="email" class="form-label">Imeyili</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="Injiza imeyili yawe" required>
+            <input type="email" class="form-control {% if errors.email %}is-invalid{% endif %}" id="email" name="email" value="{{ form_data.email|default:'' }}" placeholder="Injiza imeyili yawe" required>
+            {% if errors.email %}
+            <div class="invalid-feedback">{{ errors.email }}</div>
+            {% endif %}
         </div>
         
         <!-- Password -->
         <div class="mb-3">
             <label for="password" class="form-label">Ijambo Ry'ibanga</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Injiza ijambo ry'ibanga" required>
+            <input type="password" class="form-control {% if errors.password %}is-invalid{% endif %}" id="password" name="password" placeholder="Injiza ijambo ry'ibanga" required>
+            {% if errors.password %}
+            <div class="invalid-feedback">{{ errors.password }}</div>
+            {% endif %}
         </div>
 
         <!-- Confirm Password -->
@@ -52,63 +60,14 @@
             <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Injiza ijambo ry'ibanga bwa kabiri" required>
         </div>
         
-        <!-- Get Code Button -->
-        <div class="mb-3">
-            <button type="button" class="btn btn-outline-primary" id="get-code-btn">Saba Code</button>
-        </div>
-        
-        <!-- Verification Code Input -->
-        <div class="mb-3 d-none" id="verification-code-group">
-            <label for="verification-code" class="form-label">Injiza Verification Code</label>
-            <input type="text" class="form-control" id="verification-code" name="verification_code" placeholder="Injiza code wakiriye kuri email" required>
-        </div>
-        
         <!-- Signup Button -->
         <div class="text-center">
-            <button type="submit" class="btn btn-success" id="signup-button" disabled>Kora Konti</button>
+            <button type="submit" class="btn btn-success">Kora Konti</button>
         </div>
     </form>
     <p class="text-center mt-3">
         Ufite konti? <a href="/login/">Injira</a>
     </p>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const getCodeBtn = document.getElementById('get-code-btn');
-        const emailInput = document.getElementById('email');
-        const verificationCodeGroup = document.getElementById('verification-code-group');
-        const signupButton = document.getElementById('signup-button');
-
-        getCodeBtn.addEventListener('click', () => {
-            const email = emailInput.value;
-
-            if (!email || !email.includes('@')) {
-                alert('Nyamuneka injiza imeyili kandi muburyo bukwiye!');
-                return;
-            }
-
-            fetch('/send-verification-code/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({ email })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    alert(data.message);
-                    verificationCodeGroup.classList.remove('d-none');
-                    signupButton.disabled = false;  // Enable signup button
-                } else if (data.error) {
-                    alert(data.error);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    });
-</script>
 
 {% endblock %}

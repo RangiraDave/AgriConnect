@@ -1,3 +1,4 @@
+# core/urls.py
 from django.urls import path
 from . import views
 
@@ -11,10 +12,16 @@ urlpatterns = [
     path('login/umuguzi/', views.login_umuguzi, name='umuguzi_login'),
     path('login/cooperative/', views.login_cooperative, name='cooperative_login'),
     path('login/', views.login_view, name='login'),
+    # 
     path(
-        'send-verification-code/',
-        views.send_verification_code,
-        name='send_verification_code'
+        'verify-email/',
+        views.verify_email,
+        name='verify_email'
+    ),
+    path(
+        'resend-code/',
+        views.resend_verification_code,
+        name='resend_code'
     ),
 ]
 

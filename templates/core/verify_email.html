@@ -1,0 +1,19 @@
+<!-- verify_email.html -->
+{% extends 'core/base.html' %}
+
+{% block content %}
+<form method="POST" action="/verify-email/">
+    {% csrf_token %}
+    <input type="email" name="email" placeholder="Enter your email" required>
+    <input type="text" name="verification_code" placeholder="Enter verification code" required>
+    <button type="submit">Verify Email</button>
+</form>
+
+<!-- Resend Code Button -->
+<form method="POST" action="/resend-code/">
+    {% csrf_token %}
+    <input type="hidden" name="email" value="{{ email }}">
+    <button type="submit">Resend Code</button>
+</form>
+
+{% endblock %}

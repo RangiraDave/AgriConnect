@@ -1,15 +1,22 @@
+# views.py
 from django.shortcuts import render, redirect
 from django.utils.translation import gettext as _
 import random
+import hashlib
+import hmac
+from django.conf import settings
+from django.utils.crypto import get_random_string   
+import base64
 import json
 from django.core.mail import send_mail
 from django.http import JsonResponse
-# from django.contrib.auth.models import User
 from core.models import CustomUser
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
-from .models import Profile
+from .models import Profile, Farmer, VerificationCode
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 
 """
@@ -42,12 +49,6 @@ def farmer_list(request):
     farmers = Farmer.objects.all()
     return render(request, 'core/farmer_list.html', {'farmers': farmers})
 
-def signup(request):
-    """
-    Render the signup page
-    """
-
-    return render(request, 'core/signup.html')
 
 def login_view(request):
     """
@@ -129,120 +130,129 @@ def cooperative_dashboard(request):
 
 def signup(request):
     """
-    Handle the signup form submission.
+    Handle the signup form submission and send verification email.
     """
     if request.method == 'POST':
-        name = request.POST.get('name')
         phone = request.POST.get('phone')
         role = request.POST.get('role')
         email = request.POST.get('email')
+        username = request.POST.get('username')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
-        verification_code = request.POST.get('verification_code')
 
-        # Validate input fields
-        if not all([name, phone, role, email, password, confirm_password, verification_code]):
-            return JsonResponse({'error': 'All fields are required.'}, status=400)
+        errors = {}
+
+        # Check required fields
+        if not all([phone, role, email, username, password, confirm_password]):
+            errors['general'] = 'All fields are required.'
 
         # Check if passwords match
         if password != confirm_password:
-            return JsonResponse({'error': 'Passwords do not match.'}, status=400)
+            errors['password'] = 'Passwords do not match.'
 
-        # Validate verification code
-        session_code = request.session.get('verification_code')
-        if session_code != verification_code:
-            return JsonResponse({'error': 'Invalid verification code.'}, status=400)
+        # Check for duplicate username or email
+        if User.objects.filter(username=username).exists():
+            errors['username'] = 'The username is already taken.'
+        if User.objects.filter(email=email).exists():
+            errors['email'] = 'The email is already in use.'
 
-        # Create and save the user
-        user = User.objects.create_user(username=email, email=email, password=password)
-        user.is_active = True
+        # If there are errors, return to the form with errors
+        if errors:
+            return render(request, 'core/signup.html', {'errors': errors, 'form_data': request.POST})
+
+        # Create the user
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+        )
+        user.is_active = False  # Mark the user as inactive until verification
         user.save()
 
-        # Save the profile
-        profile = Profile.objects.create(user=user, name=name, phone=phone, role=role)
-        profile.save()
+        # Check if a Profile already exists for the user
+        if not Profile.objects.filter(user=user).exists():
+            # Create a Profile for the user only if one doesn't already exist
+            profile = Profile.objects.create(
+                user=user,
+                phone=phone,
+                role=role,
+            )
 
-        # Redirect to a success page or dashboard
-        return redirect('login')
+        # Create a verification code
+        verification_code = VerificationCode.objects.create(user=user)
 
-    return render(request, 'core/signup.html')
-
-# @csrf_exempt
-# def send_verification_code(request):
-#     """
-#     Send a verification code to the user's email.
-#     """
-#     if request.method == 'POST':
-#         try:
-#             data = json.loads(request.body.decode('utf-8'))
-#             email = data.get('email')
-
-#             if not email:
-#                 return JsonResponse({'error': 'Email is required.'}, status=400)
-
-#             # Simulate sending a verification code (or implement actual email sending)
-#             verification_code = "123456"  # Replace with actual code generation
-#             print(f"Verification code sent to {email}: {verification_code}")
-
-#             # Store the code in the session for simplicity (or use database)
-#             request.session['verification_code'] = verification_code
-
-#             return JsonResponse({'message': 'Verification code sent successfully!'}, status=200)
-#         except json.JSONDecodeError:
-#             return JsonResponse({'error': 'Invalid JSON format.'}, status=400)
-#     else:
-#         return JsonResponse({'error': 'Invalid request method.'}, status=405)
-
-@csrf_exempt
-def send_verification_code(request):
-    """
-    Send a verification code to the user email
-
-    If the request method is POST, get the email from the request body and send a verification code to the user email.
-    If the email is not provided, return an error message.
-    """
-
-    if request.method == 'POST':
-        try:
-            # Parse JSON data directly from request body
-            data = json.loads(request.body.decode('utf-8'))
-            email = data.get('email')  # Get the email from the JSON body
-            print("Email:", email)
-            session_code = data.get('verification_code')  # Get the verification code from the JSON body
-            print("Session code:", session_code)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-
-        if not email:
-            return JsonResponse({'error': 'Email is required'}, status=400)
-
-        verification_code = f"{random.randint(100000, 999999)}"
-
-        user, created = CustomUser.objects.get_or_create(email=email, username=email)
-
-        if created:
-            Profile.objects.create(user=user, verification_code=verification_code, role='umuhinzi')
-            # If the user is newly created, set an unusable password
-            user.set_unusable_password()
-            user.save()
-
-        # Ensure the profile exists for the user
-        profile, profile_created = Profile.objects.get_or_create(user=user)
-        
-        # Update or set the verification code
-        profile.verification_code = verification_code
-        profile.save()
-
-        if session_code != verification_code:
-            return JsonResponse({'error': 'Invalid verification code.'}, status=400)
-
+        # Send verification email
         send_mail(
-            _('AgriConnect Verification Code'),
-            f'Your verification code is: {verification_code}',
+            'AgriConnect Email Verification',
+            f'Your verification code is: {verification_code.code}',
             'rangiradave6@gmail.com',
             [email],
             fail_silently=False,
         )
-        return JsonResponse({'message': 'Verification code sent!'}, status=200)
+        messages.success(request, 'Account created successfully! Please check your email for the verification code.')
 
-    return JsonResponse({'error': 'Invalid request method!'}, status=400)
+        return redirect('verify_email')
+
+    return render(request, 'core/signup.html')
+
+def verify_email(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        verification_code = request.POST.get('verification_code')
+
+        try:
+            user = CustomUser.objects.get(
+                email=email,
+                verification_code=verification_code
+                )
+            code_instance = get_object_or_404(VerificationCode, user=user)
+
+            if code_instance.code == verification_code and not code_instance.is_expired():
+                user.email_verified = True
+                user.is_active = True
+                user.is_verified = True  # Allow profile creation
+                user.save()
+                messages.success(request, "Email verified successfully! You can now log in.")
+                return redirect('login')
+            else:
+                messages.error(request, "Invalid verification code.")
+                return render(request, 'core/verify_email.html')
+        except CustomUser.DoesNotExist:
+            messages.error(request, "Invalid email or verification code.")
+            return render(request, 'core/verify_email.html')
+
+    return render(request, 'core/verify_email.html')
+
+def resend_verification_code(request):
+    """
+    Resend the verification code to the user email.
+    """
+    if request.method != 'POST':
+        return redirect('signup')
+
+    email = request.POST.get('email')
+
+    try:
+        user = CustomUser.objects.get(email=email)
+        if user.email_verified:
+            messages.info(request, "Your email is already verified.")
+            return redirect('login')
+
+        # Generate a new verification code
+        VerificationCode.objects.filter(user=user).delete()
+        new_code = VerificationCode.objects.create(user=user)
+
+        # Send the new verification code
+        send_mail(
+            'AgriConnect Email Verification - Resend',
+            f'Your new verification code is: {new_code.code}',
+            'rangiradave6@gmail.com',
+            [email],
+            fail_silently=False,
+        )
+        messages.success(request, "A new verification code has been sent to your email.")
+        return redirect('verify_email')
+
+    except CustomUser.DoesNotExist:
+        messages.error(request, "Email not found.")
+        return redirect('signup')
