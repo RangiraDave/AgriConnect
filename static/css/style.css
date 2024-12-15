@@ -1,8 +1,16 @@
 body {
+    background: url("../img/background.jpg") no-repeat center center fixed;
+    background-size: cover;
     font-family: Arial, sans-serif;
     background-color: #130101;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+html, body {
+    height: 100%;
 }
 
 /* Home Page Jumbotron */
@@ -16,9 +24,13 @@ body {
 /* Custom Footer */
 .footer {
     background-color: #f8f9fa; /* Light background */
+    position: fixed;
+    bottom: 0;
+    width: 100%;
     text-align: center;
     padding: 1rem;
-    margin-top: 2rem;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
 
 .navbar {
@@ -66,7 +78,7 @@ form .btn {
 }
 
 .main-content {
-    padding: 2rem;
+    padding: 1rem;
     height: 100vh;
 }
 
@@ -82,4 +94,96 @@ button#get-code-btn {
 
 #verification-code-group {
     margin-top: 20px;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.login-form {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-form label {
+    font-weight: bold;
+}
+
+.login-form input, .login-form select {
+    margin-bottom: 15px;
+}
+
+.login-form button {
+    width: 100%;
+    background-color: #007bff;
+    border: none;
+    padding: 10px;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.login-form button:hover {
+    background-color: #0056b3;
+}
+
+main {
+    flex: 1;
+}
+
+.container {
+    min-height: calc(100vh - 200px); /* Adjust based on header and footer height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.flex-fill {
+    flex: 100%;
+}
+
+/* Styles for Product Listings */
+.product-list-row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card-product {
+    transition: all .3s ease-in-out;
+}
+
+.card-product:hover {
+    transform: scale(1.05);
+}
+
+.card-img-top {
+  height: auto;
+}
+
+@media (max-width: 768px) {
+    .card-columns {
+        column-count: auto !important;
+    }
+
+    .card-deck .card {
+        margin-bottom: 1rem;
+    }
+
+    .row > div[class*='col']{
+        margin-bottom: 3rem;
+    }
 }

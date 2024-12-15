@@ -14,10 +14,11 @@ from core.models import CustomUser
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
-from .models import Profile, Farmer, VerificationCode
+from .models import Profile, Farmer, VerificationCode, Product
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-
+import logging
+from django.urls import reverse_lazy
 
 """
 The homepage view function is used to render the home.html template.
@@ -31,6 +32,7 @@ The send_verification_code view function is used to send a verification code to 
 """
 
 
+logger = logging.getLogger(__name__)
 User = get_user_model()
 welcome_message = _("Welcome to AgriConnect!")
 
@@ -49,7 +51,6 @@ def farmer_list(request):
     farmers = Farmer.objects.all()
     return render(request, 'core/farmer_list.html', {'farmers': farmers})
 
-
 def login_view(request):
     """
     Render the login page
@@ -61,63 +62,21 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        role = request.POST['role']
-
+        role = request.POST.get('role')  # Use get to avoid KeyError
+        
         user = authenticate(username=username, password=password)
+        
         if user is not None:
-            if user.profile.role == role:
+            if hasattr(user, 'profile') and user.profile.role == role:
                 login(request, user)
-                if role == 'umuhinzi':
-                    return redirect('umuhinzi_dashboard')
-                elif role == 'umuguzi':
-                    return redirect('umuguzi_dashboard')
-                elif role == 'cooperative':
-                    return redirect('cooperative_dashboard')
+                messages.success(request, f"Welcome back {user.username}!")
+                return redirect(reverse_lazy('product_listings'))
             else:
-                return render(request, 'auth/login.html', {'error': 'Invalid role for this user!'})
+                messages.error(request, "Invalid role for this user.")
         else:
-            return render(request, 'auth/login.html', {'error': 'Invalid username or password!'})
-
-    return render(request, 'auth/login.html')
-
-def login_umuhinzi(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        user = authenticate(request, username=email, password=password)
-
-        if user is not None and user.profile.role == 'umuhinzi':
-            login(request, user)
-            return redirect('umuhinzi_dashboard')  # Redirect to umuhinzi dashboard
-        else:
-            messages.error(request, "Invalid credentials or role.")
-    return render(request, 'auth/login_umuhinzi.html')
-
-def login_umuguzi(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        user = authenticate(request, username=email, password=password)
-
-        if user is not None and user.profile.role == 'umuguzi':
-            login(request, user)
-            return redirect('umuguzi_dashboard')  # Redirect to umuguzi dashboard
-        else:
-            messages.error(request, "Invalid credentials or role.")
-    return render(request, 'auth/login_umuguzi.html')
-
-def login_cooperative(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        user = authenticate(request, username=email, password=password)
-
-        if user is not None and user.profile.role == 'cooperative':
-            login(request, user)
-            return redirect('cooperative_dashboard')  # Redirect to cooperative dashboard
-        else:
-            messages.error(request, "Invalid credentials or role.")
-    return render(request, 'auth/login_cooperative.html')
+            messages.error(request, "Invalid username or password!")
+    
+    return render(request, 'auth/login.html', {'error': ''})
 
 def farmer_dashboard(request):
     return render(request, 'farmer_dashboard.html')
@@ -177,6 +136,7 @@ def signup(request):
                 phone=phone,
                 role=role,
             )
+            # request.session['verification_email'] = user.email
 
         # Create a verification code
         verification_code = VerificationCode.objects.create(user=user)
@@ -185,10 +145,11 @@ def signup(request):
         send_mail(
             'AgriConnect Email Verification',
             f'Your verification code is: {verification_code.code}',
-            'rangiradave6@gmail.com',
+            settings.EMAIL_HOST_USER,
             [email],
             fail_silently=False,
         )
+        request.session['verification_email'] = user.email
         messages.success(request, 'Account created successfully! Please check your email for the verification code.')
 
         return redirect('verify_email')
@@ -196,17 +157,21 @@ def signup(request):
     return render(request, 'core/signup.html')
 
 def verify_email(request):
+    logger.debug("Entering verify_email view function")
     if request.method == 'POST':
-        email = request.POST.get('email')
+        email = request.session.get('verification_email')
+
+        if not email:
+            messages.error(request, "No email found for this session.")
+            return render(request, 'core/verify_email.html')
+
         verification_code = request.POST.get('verification_code')
 
         try:
-            user = CustomUser.objects.get(
-                email=email,
-                verification_code=verification_code
-                )
+            user = CustomUser.objects.get(email=email,)
             code_instance = get_object_or_404(VerificationCode, user=user)
 
+            logger.debug(f"Verification attempt with code: {verification_code}")
             if code_instance.code == verification_code and not code_instance.is_expired():
                 user.email_verified = True
                 user.is_active = True
@@ -216,21 +181,22 @@ def verify_email(request):
                 return redirect('login')
             else:
                 messages.error(request, "Invalid verification code.")
-                return render(request, 'core/verify_email.html')
+                # return render(request, 'core/verify_email.html')
         except CustomUser.DoesNotExist:
-            messages.error(request, "Invalid email or verification code.")
-            return render(request, 'core/verify_email.html')
+            messages.error(request, "Invalid verification process.")
+        
+        return render(request, 'core/verify_email.html')
 
     return render(request, 'core/verify_email.html')
 
 def resend_verification_code(request):
     """
-    Resend the verification code to the user email.
+    Resend the verification code to the user email
     """
     if request.method != 'POST':
         return redirect('signup')
 
-    email = request.POST.get('email')
+    email = request.POST.get('email', request.session.get('verification_email'))
 
     try:
         user = CustomUser.objects.get(email=email)
@@ -238,15 +204,13 @@ def resend_verification_code(request):
             messages.info(request, "Your email is already verified.")
             return redirect('login')
 
-        # Generate a new verification code
         VerificationCode.objects.filter(user=user).delete()
         new_code = VerificationCode.objects.create(user=user)
 
-        # Send the new verification code
         send_mail(
             'AgriConnect Email Verification - Resend',
             f'Your new verification code is: {new_code.code}',
-            'rangiradave6@gmail.com',
+            settings.EMAIL_HOST_USER,
             [email],
             fail_silently=False,
         )
@@ -255,4 +219,33 @@ def resend_verification_code(request):
 
     except CustomUser.DoesNotExist:
         messages.error(request, "Email not found.")
-        return redirect('signup')
+    
+    return render(request, 'core/verify_email.html')
+
+@login_required
+def product_listings(request):
+    """
+    Display a list of all products from farmers and cooperatives.
+    
+    This view fetches all products associated with either farmers or cooperatives 
+    (since both are represented by CustomUser) and renders them on a template.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: Rendered page with product listings.
+    """
+    # Fetch all products linked to any user (farmers or cooperatives)
+    products = Product.objects.select_related('owner').all()
+
+    # Pass context to the template
+    context = {
+        'products': products,
+        'welcome_message': _("Welcome to AgriConnect's Product Listings!"),
+        'user_count': User.objects.count(),  # Just an example of additional data you might want to show
+        'total_products': len(products),
+        # You can add more contextual data here if needed
+    }
+
+    return render(request, 'core/product_listings.html', context)
