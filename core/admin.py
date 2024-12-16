@@ -1,9 +1,16 @@
+# admin.py
 from django.contrib import admin
 from .models import CustomUser
 from django.contrib import admin
 from .models import CustomUser, Profile, Farmer, Buyer, Cooperative, Product
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth import get_user_model
 
+
+User = get_user_model()
+
+user = User.objects.get(username='dave')
+print(f"User: {user.username}, Role: {user.profile.role}")
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):

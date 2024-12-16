@@ -60,22 +60,27 @@ def login_view(request):
     If the user is not authenticated, return an error message.
     """
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         role = request.POST.get('role')  # Use get to avoid KeyError
         
-        user = authenticate(username=username, password=password)
+        logger.debug(f"Attempting to login: Username - {username}, Password - {password}, Role - {role}")
         
-        if user is not None:
+        user = authenticate(username=username, password=password)
+
+        logger.debug(f"User authentication result: {user}")
+
+        if user:
+            logger.debug(f"User {username} authenticated successfully.")
             if hasattr(user, 'profile') and user.profile.role == role:
                 login(request, user)
                 messages.success(request, f"Welcome back {user.username}!")
+                logger.debug(f"Login successful for user: {username}")
                 return redirect(reverse_lazy('product_listings'))
             else:
                 messages.error(request, "Invalid role for this user.")
         else:
             messages.error(request, "Invalid username or password!")
-    
     return render(request, 'auth/login.html', {'error': ''})
 
 def farmer_dashboard(request):
@@ -127,6 +132,12 @@ def signup(request):
         )
         user.is_active = False  # Mark the user as inactive until verification
         user.save()
+
+        profile = Profile.objects.create(
+            user=user,
+            phone=phone,
+            role=role,
+        )
 
         # Check if a Profile already exists for the user
         if not Profile.objects.filter(user=user).exists():

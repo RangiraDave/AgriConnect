@@ -9,16 +9,17 @@ from core.models import CustomUser
 @receiver(post_save, sender=CustomUser)
 def create_profile(sender, instance, created, **kwargs):
     """
-    Create a profile for the user when a new user is created
+    Create a profile for the user when a new user is created.
+    Only execute this function after the initial model save.
     """
-    if created and instance.is_verified:
+    if created:
         Profile.objects.create(user=instance)
 
 @receiver(post_save, sender=CustomUser)
-def save_profile(sender, instance, created, **kwargs):
+def save_profile(sender, instance, created,**kwargs):
     """
-    Save the profile when the user is saved
+    Save the profile when the user is saved.
+    Only execute this function after the initial model save.
     """
-    if created:
-        Profile.objects.get_or_create(user=instance)
-    instance.profile.save()
+    if hasattr(instance,'profile'):
+        instance.profile.save()
