@@ -1,0 +1,58 @@
+<!-- templates/core/add_product.html -->
+{% extends 'core/base.html' %}
+{%% load static %}
+{%% load crispy_forms_tags %}
+
+{% block title %}Add Your Produce - AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">Add Your Produce</h1>
+    <form id="product-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Add Product</button>
+    </form>
+
+    <script>
+    document.getElementById('id_image').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgPreview = document.createElement('img');
+                imgPreview.src = e.target.result;
+                imgPreview.style.maxWidth = '200px';
+                imgPreview.style.maxHeight = '200px';
+                const previewContainer = document.getElementById('image-preview');
+                previewContainer.innerHTML = '';
+                previewContainer.appendChild(imgPreview);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('id_video').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const videoPreview = document.createElement('video');
+                videoPreview.src = e.target.result;
+                videoPreview.controls = true;
+                videoPreview.style.maxWidth = '200px';
+                videoPreview.style.maxHeight = '200px';
+                const previewContainer = document.getElementById('video-preview');
+                previewContainer.innerHTML = '';
+                previewContainer.appendChild(videoPreview);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    </script>
+
+    <div id="image-preview"></div>
+    <div id="video-preview"></div>
+
+</div>
+{% endblock %}

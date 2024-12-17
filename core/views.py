@@ -19,17 +19,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 import logging
 from django.urls import reverse_lazy
-
-"""
-The homepage view function is used to render the home.html template.
-The farmer_list view function is used to render the farmer_list.html template.
-The signup view function is used to render the signup.html template.
-The login view function is used to render the login.html template.
-The umuhinzi_login view function is used to render the umuhinzi_login.html template.
-The umuguzi_login view function is used to render the umuguzi_login.html template.
-The cooperative_login view function is used to render the cooperative_login.html template.
-The send_verification_code view function is used to send a verification code to the user email.
-"""
+from .forms import AddProductForm
 
 
 logger = logging.getLogger(__name__)
@@ -260,3 +250,38 @@ def product_listings(request):
     }
 
     return render(request, 'core/product_listings.html', context)
+
+@login_required(login_url='/login/')
+def add_product(request):
+    """
+    Handle the form submission for adding a product.
+    
+    This view function handles the form submission for adding a product.
+    It validates the form data and saves the product to the database.
+    
+    Args:
+        request (HttpRequest): The HTTP request object.
+        
+    Returns:
+        HttpResponse: Rendered page with product listings.
+    """
+
+    if request.method == 'POST':
+        form=AddProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.owner = request.User
+
+            try:
+                product.save()
+                messages.success(request, "Product added successfully!")
+                return redirect('product_listings')
+
+            except Exception as e:
+                messages.error(request, f"An error occurred: {e}")
+
+        else:
+            form=AddProductForm()
+            context = {'form': form}
+
+        return render(request, 'core/add_product.html', context)

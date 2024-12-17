@@ -21,4 +21,5 @@ urlpatterns = [
         name='resend_code'
     ),
     path('products/', views.product_listings, name='product_listings'),
+    path('add-product/', views.add_product, name='add_product'),
 ]

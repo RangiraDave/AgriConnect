@@ -21,5 +21,8 @@ def save_profile(sender, instance, created,**kwargs):
     Save the profile when the user is saved.
     Only execute this function after the initial model save.
     """
-    if hasattr(instance,'profile'):
-        instance.profile.save()
+    try:
+        profile = Profile.objects.get_or_create(user=instance)[0]
+        profile.save()
+    except Profile.DoesNotExist:
+        pass 

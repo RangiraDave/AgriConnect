@@ -7,15 +7,17 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth import get_user_model
 
 
-User = get_user_model()
+# User = get_user_model()
 
-user = User.objects.get(username='dave')
-print(f"User: {user.username}, Role: {user.profile.role}")
+# user = User.objects.get(username='dave')
+# print(f"User: {user.username}, Role: {user.profile.role}")
+
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'role', 'is_active')
     list_filter = ('role', 'is_active')
+
 
 class CustomUserAdmin(UserAdmin):
     """
@@ -82,7 +84,7 @@ class ProductAdmin(admin.ModelAdmin):
     """
     Customizing the Product admin interface
     """
-    list_display = ('name', 'owner', 'location', 'created_at')
-    list_filter = ('location', 'created_at', 'updated_at')
-    search_fields = ('name', 'owner__username', 'location')
+    list_display = ('name', 'owner', 'created_at', 'price_per_unit', 'quantity_available')
+    list_filter = ('created_at', 'updated_at')
+    search_fields = ('name', 'owner__username')
     ordering = ('-created_at',)
