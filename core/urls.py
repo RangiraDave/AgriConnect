@@ -5,8 +5,8 @@ from . import views
 urlpatterns = [
     path('farmers/', views.farmer_list, name='farmer_list'),
     path('signup/', views.signup, name='signup'),
-    path('farmer-dashboard/', views.farmer_dashboard, name='farmer-dashboard'),
-    path('buyer-dashboard/', views.buyer_dashboard, name='buyer-dashboard'),
+    # path('farmer-dashboard/', views.farmer_dashboard, name='farmer-dashboard'),
+    # path('buyer-dashboard/', views.buyer_dashboard, name='buyer-dashboard'),
     path('cooperative-dashboard/', views.cooperative_dashboard, name='cooperative-dashboard'),
     path('login/', views.login_view, name='login'),
     # 
@@ -22,4 +22,5 @@ urlpatterns = [
     ),
     path('products/', views.product_listings, name='product_listings'),
     path('add-product/', views.add_product, name='add_product'),
+    path('profile/', views.user_profile, name='user_profile'),
 ]

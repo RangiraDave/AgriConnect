@@ -56,6 +56,7 @@ class Profile(models.Model):
     """
     Profile model to store additional user details
     """
+    bio = models.TextField(blank=True, null=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile', unique=True)
     name = models.CharField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True, unique=True)

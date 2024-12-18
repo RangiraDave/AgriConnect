@@ -19,6 +19,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 import logging
 from django.urls import reverse_lazy
+from django.db import IntegrityError, transaction
 from .forms import AddProductForm
 
 
@@ -50,7 +51,7 @@ def login_view(request):
     If the user is not authenticated, return an error message.
     """
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = request.POST.get('email')
         password = request.POST.get('password')
         role = request.POST.get('role')  # Use get to avoid KeyError
         
@@ -61,23 +62,22 @@ def login_view(request):
         logger.debug(f"User authentication result: {user}")
 
         if user:
-            logger.debug(f"User {username} authenticated successfully.")
-            if hasattr(user, 'profile') and user.profile.role == role:
-                login(request, user)
-                messages.success(request, f"Welcome back {user.username}!")
-                logger.debug(f"Login successful for user: {username}")
-                return redirect(reverse_lazy('product_listings'))
+            print(f"User {username} authenticated successfully.")
+            if hasattr(user, 'profile'):
+                user_role = user.profile.role.strip().lower()
+                if user_role == role.lower():
+                    login(request, user)
+                    # messages.success(request, f"Welcome back {user.username}!")
+                    # print(f"Login successful for user: {username}")
+                    return redirect('user_profile')
+                else:
+                    messages.error(request, "Invalid role for this user.")
             else:
-                messages.error(request, "Invalid role for this user.")
+                messages.error(request, "User profile not found.")
         else:
             messages.error(request, "Invalid username or password!")
-    return render(request, 'auth/login.html', {'error': ''})
+    return render(request, 'auth/login.html')
 
-def farmer_dashboard(request):
-    return render(request, 'farmer_dashboard.html')
-
-def buyer_dashboard(request):
-    return render(request, 'buyer_dashboard.html')
 
 def cooperative_dashboard(request):
     return render(request, 'cooperative_dashboard.html')
@@ -151,7 +151,7 @@ def signup(request):
             fail_silently=False,
         )
         request.session['verification_email'] = user.email
-        messages.success(request, 'Account created successfully! Please check your email for the verification code.')
+        # messages.success(request, 'Account created successfully! Please check your email for the verification code.')
 
         return redirect('verify_email')
 
@@ -178,7 +178,7 @@ def verify_email(request):
                 user.is_active = True
                 user.is_verified = True  # Allow profile creation
                 user.save()
-                messages.success(request, "Email verified successfully! You can now log in.")
+                # messages.success(request, "Email verified successfully! You can now log in.")
                 return redirect('login')
             else:
                 messages.error(request, "Invalid verification code.")
@@ -202,7 +202,7 @@ def resend_verification_code(request):
     try:
         user = CustomUser.objects.get(email=email)
         if user.email_verified:
-            messages.info(request, "Your email is already verified.")
+            # messages.info(request, "Your email is already verified.")
             return redirect('login')
 
         VerificationCode.objects.filter(user=user).delete()
@@ -253,35 +253,76 @@ def product_listings(request):
 
 @login_required(login_url='/login/')
 def add_product(request):
+	"""
+	Handle the form submission for adding a product.
+
+	This view function handles the form submission for adding a product.
+	It validates the form data and saves the product to the database.
+
+	Args:
+		request (HttpRequest): The HTTP request object.
+
+	Returns:
+		HttpResponse: Rendered page with product listings or redirection to product listing upon success.
+	"""
+
+	if request.method == 'POST':
+	    form=AddProductForm(request.POST,request.FILES)
+
+	    if not hasattr(form,'errors'):
+	        print("Form does not have errors attribute")
+
+	    if form.is_valid():
+	        try:
+	            with transaction.atomic():
+	                instance = Product(**form.cleaned_data)
+	                instance.owner = User.objects.get(id=request.user.id)  # Use get_object_or_404?
+	                instance.save()
+	                # messages.success(request,"Product added successfully!")
+	                return redirect('product_listings')
+
+	        except IntegrityError as e:
+	            logger.error(f"Integrity error during save: {str(e)}")
+	            # messages.error(request,"A database integrity error occurred.")
+	            raise
+
+	        except Exception as e:
+	            logger.error(f"General error during save: {str(e)}")
+	            messages.error(request,f"An error occurred while saving: {e}")
+	    else:
+	        logger.debug(f"Form Validation Errors: {form.errors}")
+
+	else:
+	    logger.info("Invalid Form Submission")
+
+	context = {'form': AddProductForm()} 
+	return render(request,'core/add_product.html',context)
+
+
+@login_required(login_url='/login/')
+def user_profile(request):
     """
-    Handle the form submission for adding a product.
+    Display the user profile.
     
-    This view function handles the form submission for adding a product.
-    It validates the form data and saves the product to the database.
+    This view function fetches the user's profile details and renders them on a template.
     
     Args:
         request (HttpRequest): The HTTP request object.
         
     Returns:
-        HttpResponse: Rendered page with product listings.
+        HttpResponse: Rendered page with user profile details.
     """
+    # Fetch the user's profile
+    profile = Profile.objects.get(user=request.user)
+    # Fetch the user's products
+    products = Product.objects.filter(owner=request.user).select_related('owner')
 
-    if request.method == 'POST':
-        form=AddProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            product = form.save(commit=False)
-            product.owner = request.User
+    # Pass context to the template
+    context = {
+        'profile': profile,
+        'welcome_message': _("Welcome to your profile!"),
+        'products': products,
+        'product_count': len(products),
+    }
 
-            try:
-                product.save()
-                messages.success(request, "Product added successfully!")
-                return redirect('product_listings')
-
-            except Exception as e:
-                messages.error(request, f"An error occurred: {e}")
-
-        else:
-            form=AddProductForm()
-            context = {'form': form}
-
-        return render(request, 'core/add_product.html', context)
+    return render(request, 'core/user_profile.html', context)
