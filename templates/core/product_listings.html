@@ -15,17 +15,17 @@
         </ul>
     {% endif %}
 
-    <p>{% trans "There are" %} {{ user_count }} {% trans "users registered on AgriConnect." %}</p>
+    <p>{% trans "Ngibi ibicuruzwa bikeneye abaguzi byashyizweho n'abahinzi bo mu Rwanda bagera kuri" %} {{ user_count }} {% trans "." %}</p>
     
    <!-- If you want to include some stats or information -->
    <div class="row mb-4">
        <div class="col-md-6">
-           <p>{% trans "Total Products:" %} {{ total_products }}</p>
+           <p>{% trans "Byose hamwe ni:" %} {{ total_products }}</p>
        </div>
    </div>
 
    <!-- Start of product listing -->
-   <h2>{% trans "Available Products" %}</h2>
+   <h2>{% trans "Ibicuruzwa bihari" %}</h2>
    <div class="row product-list-row">  <!-- Add this class for styling -->
        {% for product in products %}
            <div class="col-md-4 mb-4">

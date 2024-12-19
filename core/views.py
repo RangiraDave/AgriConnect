@@ -11,7 +11,7 @@ import json
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from core.models import CustomUser
-from django.contrib.auth import authenticate, login, get_user_model
+from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from .models import Profile, Farmer, VerificationCode, Product
@@ -27,12 +27,14 @@ logger = logging.getLogger(__name__)
 User = get_user_model()
 welcome_message = _("Welcome to AgriConnect!")
 
+
 def homepage(request):
     """
     Render the homepage
     """
 
     return render(request, 'core/home.html')
+
 
 def farmer_list(request):
     """
@@ -41,6 +43,16 @@ def farmer_list(request):
 
     farmers = Farmer.objects.all()
     return render(request, 'core/farmer_list.html', {'farmers': farmers})
+
+
+@login_required(login_url='/login/')
+def logout_view(request):
+    """
+    Log out the user and redirect them to the login page
+    """
+    logout(request)
+    return redirect('login')
+
 
 def login_view(request):
     """
@@ -75,12 +87,14 @@ def login_view(request):
             else:
                 messages.error(request, "User profile not found.")
         else:
-            messages.error(request, "Invalid username or password!")
+            # messages.error(request, "Invalid username or password!")
+            pass
     return render(request, 'auth/login.html')
 
 
 def cooperative_dashboard(request):
     return render(request, 'cooperative_dashboard.html')
+
 
 def signup(request):
     """
@@ -157,6 +171,7 @@ def signup(request):
 
     return render(request, 'core/signup.html')
 
+
 def verify_email(request):
     logger.debug("Entering verify_email view function")
     if request.method == 'POST':
@@ -190,6 +205,7 @@ def verify_email(request):
 
     return render(request, 'core/verify_email.html')
 
+
 def resend_verification_code(request):
     """
     Resend the verification code to the user email
@@ -219,9 +235,11 @@ def resend_verification_code(request):
         return redirect('verify_email')
 
     except CustomUser.DoesNotExist:
-        messages.error(request, "Email not found.")
+        # messages.error(request, "Email not found.")
+        pass
     
     return render(request, 'core/verify_email.html')
+
 
 @login_required
 def product_listings(request):
@@ -243,13 +261,14 @@ def product_listings(request):
     # Pass context to the template
     context = {
         'products': products,
-        'welcome_message': _("Welcome to AgriConnect's Product Listings!"),
+        'welcome_message': _("Murakaza neza kurubuga rwa AgriConnect!"),
         'user_count': User.objects.count(),  # Just an example of additional data you might want to show
         'total_products': len(products),
         # You can add more contextual data here if needed
     }
 
     return render(request, 'core/product_listings.html', context)
+
 
 @login_required(login_url='/login/')
 def add_product(request):
@@ -288,7 +307,7 @@ def add_product(request):
 
 	        except Exception as e:
 	            logger.error(f"General error during save: {str(e)}")
-	            messages.error(request,f"An error occurred while saving: {e}")
+	            messages.error(request,f"An error occurred while saving a product: {e}")
 	    else:
 	        logger.debug(f"Form Validation Errors: {form.errors}")
 
