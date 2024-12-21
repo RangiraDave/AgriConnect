@@ -369,14 +369,43 @@ def edit_product(request, pk):
                     isinstance.owner = request.user
                     isinstance.save()
                     messages.success(request, "Product updated successfully!")
-                    return redirect(reverse_lazy('product_listings'))
+                    return redirect(reverse_lazy('user_profile'))
 
     except Product.DoesNotExist:
         messages.error(request, "Product not found.")
-        return redirect('product_listings')
+        return redirect('user_profile')
 
     else:
         form = EditProductForm(instance=product)
 
     context = {'form': form}
     return render(request, 'core/edit_product.html', context)
+
+
+def delete_product(request, pk):
+    """
+    This view handles deleting a product by its primary key.
+    """
+    product = get_object_or_404(Product, pk=pk)
+
+    if request.user != product.owner:
+        messages.error(request, "You are not authorized to delete this product.")
+        return redirect('user_profile')
+
+    if request.method == 'POST':
+        try:
+            with transaction.atomic():
+                product.delete()
+                messages.success(request, "Product deleted successfully!")
+                return redirect(reverse_lazy('user_profile'))
+
+        except Exception as e:
+            messages.error(request, f"An error occurred while deleting the product: {e}")
+            raise
+
+        except Exception as e:
+            messages.error(request, f"An error occurred while deleting the product: {e}")
+            raise
+
+    context = {'product': product}
+    return render(request, 'core/delete_product.html', context)

@@ -45,7 +45,10 @@
                                     <p>{{ product.description|truncatewords:20 }}...</p>
                                 {% endif %}
                                 {% if user == request.user %}
+                                    <!-- Edit bbutton -->
                                     <a href="{% url 'edit_product' pk=product.id %}" class="btn btn-sm btn-outline-primary">Hindura</a>
+                                    <!-- Delete button -->
+                                    <a href="{% url 'delete_product' pk=product.id %}" class="btn btn-sm btn-outline-danger">Siba</a>
                                 {% endif %}
                             </div>
                         </div><!-- end card -->

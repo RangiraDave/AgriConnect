@@ -1,0 +1,19 @@
+<!-- templates/core/delete_product.html -->
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Delete Product - AgriConnect{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h2 class="text-center">Are you sure you want to delete "{{product.name}}"?</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <p>This action cannot be undone.</p>
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <a href="{% url 'user_profile' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+{% endblock %}
