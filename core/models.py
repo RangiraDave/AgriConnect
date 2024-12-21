@@ -9,7 +9,7 @@ class CustomUser(AbstractUser):
     """
     Custom user model for general authentication details
     """
-    email = models.EmailField(max_length=255, null=False, blank=False)
+    email = models.EmailField(max_length=30, null=False, blank=False)
     role = models.CharField(
         max_length=15,
         choices=[
@@ -58,7 +58,7 @@ class Profile(models.Model):
     """
     bio = models.TextField(blank=True, null=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile', unique=True)
-    name = models.CharField(max_length=255, blank=True, null=True)
+    name = models.CharField(max_length=25, blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True, unique=True)
     role = models.CharField(max_length=15, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -107,13 +107,16 @@ class Product(models.Model):
     Product model to store produce details
     """
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)  # Product name
+    name = models.CharField(max_length=25)  # Product name
+    contact = models.CharField(max_length=25)  # Contact details
     description = models.TextField(blank=True, null=True)  # Product description
     media = models.FileField(upload_to='products/media/', blank=True, null=True)  # Image or video
     # location = models.CharField(max_length=255)  # Location where the product is available
 
     price_per_unit = models.DecimalField(max_digits=10, decimal_places=2)
     quantity_available = models.PositiveIntegerField()
+    unit = models.CharField(max_length=10, choices=[('kg', 'Kilogram'), ('g', 'Gram'), ('l', 'Litre'), ('unit', 'Unit')])
+
     #location fields for future geo-search:
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)

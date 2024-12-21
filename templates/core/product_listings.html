@@ -37,14 +37,17 @@
                        <!-- Placeholder image -->
                        <img src="{% static 'img/no_image.png' %}" alt="{{ product.name }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: cover;">
                    {% endif %}
-                   <div class="card-body d-flex flex-column justify-content-between">
+                   <div class="product-card">
                        <h5>{{ product.name }}</h5>
                        {% if product.description %}
                            <p>{{ product.description|truncatewords:15 }}</p> <!-- Truncate description to 15 words -->
-                       {% else %}
-                           <!-- Show owner details instead -->
-                           <small><strong>{% trans "Owner:" %}</strong> {{ product.owner.profile.role|capfirst }} - {{ product.owner.username }}</small>
                        {% endif %}
+
+                        <!-- Show owner details instead -->
+                        <small><strong>{% trans "Owner:" %}</strong> {{ product.owner.profile.role|capfirst }} - {{ product.owner.username }}</small><br>
+
+                        <!-- Show owner's contacts (Phone numbber) -->
+                        <small><strong>{% trans "Contacts:" %}</strong> {{ product.owner.profile.phone }}</small>
 
                        <!-- Show location only if provided -->
                        {% if product.location %}
@@ -57,8 +60,8 @@
                </div>
            </div>
 
-       {% cycle '' '' '<div class="w-100"></div>' %}
-         {% endfor %}
+        {% cycle '' '' '<div class="w-100"></div>' %}
+        {% endfor %}
    </div>
 
 </div>

@@ -20,7 +20,7 @@ from django.contrib.auth.decorators import login_required
 import logging
 from django.urls import reverse_lazy
 from django.db import IntegrityError, transaction
-from .forms import AddProductForm
+from .forms import AddProductForm, EditProductForm
 
 
 logger = logging.getLogger(__name__)
@@ -63,18 +63,22 @@ def login_view(request):
     If the user is not authenticated, return an error message.
     """
     if request.method == 'POST':
-        username = request.POST.get('email')
+        email = request.POST.get('email')
         password = request.POST.get('password')
         role = request.POST.get('role')  # Use get to avoid KeyError
         
-        logger.debug(f"Attempting to login: Username - {username}, Password - {password}, Role - {role}")
+        logger.debug(f"Attempting to login: Username - {email}, Password - {password}, Role - {role}")
         
-        user = authenticate(username=username, password=password)
+        user = authenticate(username=email, password=password)
 
         logger.debug(f"User authentication result: {user}")
 
+        if user and not user.email_verified:
+                messages.error(request, "Email not verified. Please check your email for the verification link.")
+                return redirect('verify_email')
+
         if user:
-            print(f"User {username} authenticated successfully.")
+            print(f"Authenticating a User with email: {email}.")
             if hasattr(user, 'profile'):
                 user_role = user.profile.role.strip().lower()
                 if user_role == role.lower():
@@ -272,50 +276,51 @@ def product_listings(request):
 
 @login_required(login_url='/login/')
 def add_product(request):
-	"""
-	Handle the form submission for adding a product.
+    """
+    Handle the form submission for adding a product.
 
-	This view function handles the form submission for adding a product.
-	It validates the form data and saves the product to the database.
+    This view function handles the form submission for adding a product.
+    It validates the form data and saves the product to the database.
 
-	Args:
-		request (HttpRequest): The HTTP request object.
+    Args:
+        request (HttpRequest): The HTTP request object.
 
-	Returns:
-		HttpResponse: Rendered page with product listings or redirection to product listing upon success.
-	"""
+    Returns:
+        HttpResponse: Rendered page with product listings or redirection to product listing upon success.
+    """
 
-	if request.method == 'POST':
-	    form=AddProductForm(request.POST,request.FILES)
+    if request.user.profile.role.lower() not in ["umuhinzi", "cooperative"]:
+        messages.error(request, "You are not authorized to add a product.")
+        return redirect('product_listings')
 
-	    if not hasattr(form,'errors'):
-	        print("Form does not have errors attribute")
+    if request.method == 'POST':
+        form = AddProductForm(request.POST, request.FILES)
 
-	    if form.is_valid():
-	        try:
-	            with transaction.atomic():
-	                instance = Product(**form.cleaned_data)
-	                instance.owner = User.objects.get(id=request.user.id)  # Use get_object_or_404?
-	                instance.save()
-	                # messages.success(request,"Product added successfully!")
-	                return redirect('product_listings')
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    instance = Product(**form.cleaned_data)
+                    instance.owner = User.objects.get(id=request.user.id)  # Use get_object_or_404?
+                    instance.save()
+                    messages.success(request,"Product added successfully!")
+                    return redirect('product_listings')
 
-	        except IntegrityError as e:
-	            logger.error(f"Integrity error during save: {str(e)}")
-	            # messages.error(request,"A database integrity error occurred.")
-	            raise
+            except IntegrityError as e:
+                logger.error(f"Integrity error during save: {str(e)}")
+                # messages.error(request,"A database integrity error occurred.")
+                raise
 
-	        except Exception as e:
-	            logger.error(f"General error during save: {str(e)}")
-	            messages.error(request,f"An error occurred while saving a product: {e}")
-	    else:
-	        logger.debug(f"Form Validation Errors: {form.errors}")
+            except Exception as e:
+                logger.error(f"General error during save: {str(e)}")
+                messages.error(request, f"An error occurred while saving a product: {e}")
+        else:
+            logger.debug(f"Form Validation Errors: {form.errors}")
 
-	else:
-	    logger.info("Invalid Form Submission")
+    else:
+        logger.info("Invalid Form Submission")
 
-	context = {'form': AddProductForm()} 
-	return render(request,'core/add_product.html',context)
+    context = {'form': AddProductForm()}
+    return render(request, 'core/add_product.html', context)
 
 
 @login_required(login_url='/login/')
@@ -339,9 +344,39 @@ def user_profile(request):
     # Pass context to the template
     context = {
         'profile': profile,
+        'name': request.user.username,
         'welcome_message': _("Welcome to your profile!"),
         'products': products,
         'product_count': len(products),
     }
 
     return render(request, 'core/user_profile.html', context)
+
+
+def edit_product(request, pk):
+    """
+    This view handles editing a product by its primary key.
+    """
+    try:
+        product = get_object_or_404(Product, pk=pk)
+
+        if request.method == 'POST':
+            form = EditProductForm(request.POST, request.FILES, instance=product)
+
+            if form.is_valid():
+                with transaction.atomic():
+                    isinstance=form.save(commit=False)
+                    isinstance.owner = request.user
+                    isinstance.save()
+                    messages.success(request, "Product updated successfully!")
+                    return redirect(reverse_lazy('product_listings'))
+
+    except Product.DoesNotExist:
+        messages.error(request, "Product not found.")
+        return redirect('product_listings')
+
+    else:
+        form = EditProductForm(instance=product)
+
+    context = {'form': form}
+    return render(request, 'core/edit_product.html', context)

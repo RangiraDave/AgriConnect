@@ -12,14 +12,16 @@
             <div class="col-md-4 mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">{{ profile.name|default:"No Name Set" }}</h5>
+                        <h5 class="card-title">{{ name|default:"No Name Set" }}</h5>
                         <p><strong>Phone:</strong> {{ profile.phone|default:"Not Provided" }}</p>
                         {% if profile.bio %}
                             <p><strong>Bio:</strong> {{ profile.bio }}</p>
                         {% endif %}
                     </div>
                     <!-- Add Product Button -->
-                    <a href="{% url 'add_product' %}" class="btn btn-primary">Add Product</a>
+                    {% if request.user.profile.role|lower in "umuhinzi" and "cooperative" %}
+                        <a href="{% url 'add_product' %}" class="btn btn-primary">Add Product</a>
+                    {% endif %}
                 </div>
             </div>
 
@@ -30,16 +32,21 @@
                 {% else %}
                     {% for product in products %}
                         <!-- Card layout for each product -->
-                        <div class="card mb-3">
-                            <img src="{{ product.media.url }}" alt="{{ product.name }}" width='100%'>
+                        <div class="product-card card mb-4">
+                            {% if product.media %}
+                                <img class="product-image" src="{{ product.media.url }}" alt="{{ product.name }}" width='100%'>
+                            {% else %}
+                                <img class="product-image" src="{% static 'img/no_image.png' %}" alt="No Image Yet" width='100%'>
+                            {% endif %}
                             <div class="card-body">
                                 <h5 class="card-title">{{ product.name }}</h5>
                                 <p><strong>Price per Unit:</strong> {{ product.price_per_unit }} RWF</p>
                                 {% if product.description %}
                                     <p>{{ product.description|truncatewords:20 }}...</p>
                                 {% endif %}
-                                <!-- Assuming there's some form of edit/delete functionality -->
-                                <!-- You might want to add links or buttons here for editing or deleting the product -->
+                                {% if user == request.user %}
+                                    <a href="{% url 'edit_product' pk=product.id %}" class="btn btn-sm btn-outline-primary">Hindura</a>
+                                {% endif %}
                             </div>
                         </div><!-- end card -->
                     {% endfor %}
