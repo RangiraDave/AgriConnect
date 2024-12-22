@@ -3,14 +3,13 @@
 {% load static %}
 
 {% block title %}Add Your Produce - AgriConnect{% endblock %}
-
 {% block content %}
 <div class="container">
-    <h1 class="text-center">Add Your Produce</h1>
+    <h1 class="text-center">{% trans "Add Your Produce" %}</h1>
     <form id="product-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Add Product</button>
+        <button type="submit" class="btn btn-primary">{% trans "Add Product" %}</button>
     </form>
 
     <!-- preview the uploaded image and video files -->

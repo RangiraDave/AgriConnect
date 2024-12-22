@@ -24,30 +24,38 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/">Ahabanza</a>
                     </li>
-                    {% if not user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/signup/">Kora Konti</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link" href="/login/">Injira</a>
-                    </li>
-                    {% endif %}
                     {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/products/">Ibihari</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/profile/">Konte yawe</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/chat/">Chat</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/notifications/">Ubutumwa</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout/">Gusohoka</a>
-                    </li>
+                        {% if user.role|lower == 'cooperative' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/products/">Ibihari</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/chat/">Chat</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/products/">Ibihari</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/profile/">Konte yawe</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/chat/">Chat</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/notifications/">Ubutumwa</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/logout/">Gusohoka</a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/signup/">Kora Konti</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" href="/login/">Injira</a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>

@@ -1,6 +1,6 @@
 # views.py
 from django.shortcuts import render, redirect
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _, gettext_lazy as _lazy
 import random
 import hashlib
 import hmac
@@ -74,8 +74,8 @@ def login_view(request):
         logger.debug(f"User authentication result: {user}")
 
         if user and not user.email_verified:
-                messages.error(request, "Email not verified. Please check your email for the verification link.")
-                return redirect('verify_email')
+            messages.error(request, _("Email not verified. Please check your email for the verification link."))
+            return redirect('verify_email')
 
         if user:
             print(f"Authenticating a User with email: {email}.")
@@ -83,16 +83,17 @@ def login_view(request):
                 user_role = user.profile.role.strip().lower()
                 if user_role == role.lower():
                     login(request, user)
+                    # Redirect to product listings if role is cooperative
+                    if user_role == 'cooperative':
+                        return redirect('product_listings')
                     # messages.success(request, f"Welcome back {user.username}!")
                     # print(f"Login successful for user: {username}")
                     return redirect('user_profile')
                 else:
-                    messages.error(request, "Invalid role for this user.")
+                    messages.error(request, _("Invalid role provided."))
             else:
-                messages.error(request, "User profile not found.")
-        else:
-            # messages.error(request, "Invalid username or password!")
-            pass
+                messages.error(request, _("Invalid username or password!"))
+        return render(request, 'auth/login.html')
     return render(request, 'auth/login.html')
 
 
@@ -116,17 +117,19 @@ def signup(request):
 
         # Check required fields
         if not all([phone, role, email, username, password, confirm_password]):
-            errors['general'] = 'All fields are required.'
+            errors['general'] = _('All fields are required.')
 
         # Check if passwords match
         if password != confirm_password:
-            errors['password'] = 'Passwords do not match.'
+            errors['password'] = _('Passwords do not match.')
 
         # Check for duplicate username or email
         if User.objects.filter(username=username).exists():
-            errors['username'] = 'The username is already taken.'
+            errors['username'] = _('The username is already taken.')
         if User.objects.filter(email=email).exists():
-            errors['email'] = 'The email is already in use.'
+            errors['email'] = _('The email is already in use.')
+        if Profile.objects.filter(phone=phone).exists():
+            errors['phone'] = _('The phone number is already in use.')
 
         # If there are errors, return to the form with errors
         if errors:
@@ -162,14 +165,14 @@ def signup(request):
 
         # Send verification email
         send_mail(
-            'AgriConnect Email Verification',
-            f'Your verification code is: {verification_code.code}',
+            _('AgriConnect Email Verification'),
+            _('Your verification code is: %(code)s') % {'code': verification_code.code},
             settings.EMAIL_HOST_USER,
             [email],
             fail_silently=False,
         )
         request.session['verification_email'] = user.email
-        # messages.success(request, 'Account created successfully! Please check your email for the verification code.')
+        # messages.success(request, _('Account created successfully! Please check your email for the verification code.'))
 
         return redirect('verify_email')
 
@@ -182,7 +185,7 @@ def verify_email(request):
         email = request.session.get('verification_email')
 
         if not email:
-            messages.error(request, "No email found for this session.")
+            messages.error(request, _("No email found for this session."))
             return render(request, 'core/verify_email.html')
 
         verification_code = request.POST.get('verification_code')
@@ -197,13 +200,13 @@ def verify_email(request):
                 user.is_active = True
                 user.is_verified = True  # Allow profile creation
                 user.save()
-                # messages.success(request, "Email verified successfully! You can now log in.")
+                # messages.success(request, _("Email verified successfully! You can now log in."))
                 return redirect('login')
             else:
-                messages.error(request, "Invalid verification code.")
+                messages.error(request, _("Invalid verification code."))
                 # return render(request, 'core/verify_email.html')
         except CustomUser.DoesNotExist:
-            messages.error(request, "Invalid verification process.")
+            messages.error(request, _("Invalid verification process."))
         
         return render(request, 'core/verify_email.html')
 
@@ -222,24 +225,24 @@ def resend_verification_code(request):
     try:
         user = CustomUser.objects.get(email=email)
         if user.email_verified:
-            # messages.info(request, "Your email is already verified.")
+            # messages.info(request, _("Your email is already verified."))
             return redirect('login')
 
         VerificationCode.objects.filter(user=user).delete()
         new_code = VerificationCode.objects.create(user=user)
 
         send_mail(
-            'AgriConnect Email Verification - Resend',
-            f'Your new verification code is: {new_code.code}',
+            _('AgriConnect Email Verification - Resend'),
+            _('Your new verification code is: %(code)s') % {'code': new_code.code},
             settings.EMAIL_HOST_USER,
             [email],
             fail_silently=False,
         )
-        messages.success(request, "A new verification code has been sent to your email.")
+        messages.success(request, _("A new verification code has been sent to your email."))
         return redirect('verify_email')
 
     except CustomUser.DoesNotExist:
-        # messages.error(request, "Email not found.")
+        # messages.error(request, _("Email not found."))
         pass
     
     return render(request, 'core/verify_email.html')
@@ -290,7 +293,7 @@ def add_product(request):
     """
 
     if request.user.profile.role.lower() not in ["umuhinzi", "cooperative"]:
-        messages.error(request, "You are not authorized to add a product.")
+        messages.error(request, _("You are not authorized to add a product."))
         return redirect('product_listings')
 
     if request.method == 'POST':
@@ -302,17 +305,17 @@ def add_product(request):
                     instance = Product(**form.cleaned_data)
                     instance.owner = User.objects.get(id=request.user.id)  # Use get_object_or_404?
                     instance.save()
-                    messages.success(request,"Product added successfully!")
+                    messages.success(request, _("Product added successfully!"))
                     return redirect('product_listings')
 
             except IntegrityError as e:
                 logger.error(f"Integrity error during save: {str(e)}")
-                # messages.error(request,"A database integrity error occurred.")
+                # messages.error(request, _("A database integrity error occurred."))
                 raise
 
             except Exception as e:
                 logger.error(f"General error during save: {str(e)}")
-                messages.error(request, f"An error occurred while saving a product: {e}")
+                messages.error(request, _("An error occurred while saving a product: %(error)s") % {'error': e})
         else:
             logger.debug(f"Form Validation Errors: {form.errors}")
 
@@ -368,11 +371,11 @@ def edit_product(request, pk):
                     isinstance=form.save(commit=False)
                     isinstance.owner = request.user
                     isinstance.save()
-                    messages.success(request, "Product updated successfully!")
+                    messages.success(request, _("Product updated successfully!"))
                     return redirect(reverse_lazy('user_profile'))
 
     except Product.DoesNotExist:
-        messages.error(request, "Product not found.")
+        messages.error(request, _("Product not found."))
         return redirect('user_profile')
 
     else:
@@ -389,22 +392,22 @@ def delete_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
 
     if request.user != product.owner:
-        messages.error(request, "You are not authorized to delete this product.")
+        messages.error(request, _("You are not authorized to delete this product."))
         return redirect('user_profile')
 
     if request.method == 'POST':
         try:
             with transaction.atomic():
                 product.delete()
-                messages.success(request, "Product deleted successfully!")
+                messages.success(request, _("Product deleted successfully!"))
                 return redirect(reverse_lazy('user_profile'))
 
         except Exception as e:
-            messages.error(request, f"An error occurred while deleting the product: {e}")
+            messages.error(request, _("An error occurred while deleting the product: %(error)s") % {'error': e})
             raise
 
         except Exception as e:
-            messages.error(request, f"An error occurred while deleting the product: {e}")
+            messages.error(request, _("An error occurred while deleting the product: %(error)s") % {'error': e})
             raise
 
     context = {'product': product}

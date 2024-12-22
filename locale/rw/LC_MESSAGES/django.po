@@ -23,3 +23,134 @@ msgstr "Izina"
 #: core/views.py:4 templates/core/home.html:5
 msgid "Welcome to AgriConnect!"
 msgstr "Murakaza neza kuri AgriConnect"
+
+#: core/views.py:367
+msgid "Product added successfully!"
+msgstr "Igicuruzwa Cyamazekwongerwaho neza!"
+
+#: core/views.py:394
+msgid "The product has been successfully updated."
+msgstr "Igicuruzwa Cyahinduwe neza."
+
+#: core/views.py:428
+msgid "The product has been successfully deleted."
+msgstr "Igicuruzwa Byamaze Gusibwa."
+
+#: core/templates/core/user_profile.html
+#, fuzzy
+msgid "No Image Yet"
+msgstr "Ntafoto Yari Yashyirwaho"
+
+#: core/templates/core/edit_product.html
+#, fuzzy
+msgid "Edit"
+msgstr "Hindura"
+
+#: core/templates/core/delete_product.html
+#, fuzzy
+msgid "Delete"
+msgstr "Siba"
+
+#: templates/core/signup.html:12
+msgid "Sign Up - AgriConnect"
+msgstr "Iyandikishe - AgriConnect"
+
+#: templates/core/signup.html:16
+msgid "Kora Konti"
+msgstr "Iyandikishe"
+
+#: templates/core/signup.html:20
+msgid "Amazina"
+msgstr "Izina"
+
+#: templates/core/signup.html:24
+msgid "Injiza amazina yawe"
+msgstr "Andika izina ryawe"
+
+#: templates/core/signup.html:29
+msgid "Telefone"
+msgstr "Telefoni"
+
+#: templates/core/signup.html:33
+msgid "Injiza telefone yawe"
+msgstr "Andika nimero ya telefoni yawe"
+
+#: templates/core/signup.html:38
+msgid "Hitamo Icyiciro"
+msgstr "Hitamo Icyiciro"
+
+#: templates/core/signup.html:41
+msgid "Hitamo..."
+msgstr "Hitamo..."
+
+#: templates/core/signup.html:42
+msgid "Umuhinzi"
+msgstr "Umuhinzi"
+
+#: templates/core/signup.html:43
+msgid "Umuguzi"
+msgstr "Umuguzi"
+
+#: templates/core/signup.html:44
+msgid "Cooperative"
+msgstr "Koperative"
+
+#: templates/core/signup.html:49
+msgid "Imeyili"
+msgstr "Imeyili"
+
+#: templates/core/signup.html:53
+msgid "Injiza imeyili yawe"
+msgstr "Andika imeyili yawe"
+
+#: templates/core/signup.html:58
+msgid "Ijambo Ry'ibanga"
+msgstr "Ijambo ry'ibanga"
+
+#: templates/core/signup.html:62
+msgid "Injiza ijambo ry'ibanga"
+msgstr "Andika ijambo ry'ibanga"
+
+#: templates/core/signup.html:67
+msgid "Emeza Ijambo Ry'ibanga"
+msgstr "Emeza ijambo ry'ibanga"
+
+#: templates/core/signup.html:71
+msgid "Injiza ijambo ry'ibanga bwa kabiri"
+msgstr "Andika ijambo ry'ibanga bwa kabiri"
+
+#: templates/core/signup.html:76
+msgid "Kora Konti"
+msgstr "Iyandikishe"
+
+#: templates/core/signup.html:79
+msgid "Ufite konti? Injira"
+msgstr "Ufite konti? Injira"
+
+#: templates/core/product_listings.html:12
+msgid "Ngibi ibicuruzwa bikeneye abaguzi"
+msgstr "Ngibi ibicuruzwa bikeneye abaguzi"
+
+#: templates/core/product_listings.html:16
+msgid "Byose hamwe ni:"
+msgstr "Byose hamwe ni:"
+
+#: templates/core/product_listings.html:20
+msgid "Ibicuruzwa bihari"
+msgstr "Ibicuruzwa bihari"
+
+#: templates/core/product_listings.html:28
+msgid "Owner:"
+msgstr "Nyir'igicuruzwa:"
+
+#: templates/core/product_listings.html:32
+msgid "Contacts:"
+msgstr "Aho wabariza:"
+
+#: templates/core/product_listings.html:36
+msgid "Location:"
+msgstr "Aho giherereye:"
+
+#: templates/core/product_listings.html:40
+msgid "More Details"
+msgstr "Ibindi bisobanuro"
