@@ -43,7 +43,7 @@ class VerificationCode(models.Model):
         return now() > self.expires_at
 
     def __str__(self):
-        return f"Verification Code for {self.user.email}"
+        return f"{self.code}"
 
     def save(self, *args, **kwargs):
         """ Generate a 6-digit code if not provided """

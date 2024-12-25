@@ -21,6 +21,7 @@ import logging
 from django.urls import reverse_lazy
 from django.db import IntegrityError, transaction
 from .forms import AddProductForm, EditProductForm
+from django.core.exceptions import ObjectDoesNotExist
 
 
 logger = logging.getLogger(__name__)
@@ -101,16 +102,17 @@ def cooperative_dashboard(request):
     return render(request, 'cooperative_dashboard.html')
 
 
+# Function to generate random verification code
+def generate_verification_code():
+    return random.randint(100000, 999999)
+
 def signup(request):
-    """
-    Handle the signup form submission and send verification email.
-    """
     if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
         phone = request.POST.get('phone')
         role = request.POST.get('role')
-        email = request.POST.get('email')
-        username = request.POST.get('username')
-        password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
 
         errors = {}
@@ -135,52 +137,46 @@ def signup(request):
         if errors:
             return render(request, 'core/signup.html', {'errors': errors, 'form_data': request.POST})
 
-        # Create the user
-        user = User.objects.create_user(
-            username=username,
-            email=email,
-            password=password,
-        )
-        user.is_active = False  # Mark the user as inactive until verification
-        user.save()
+        try:
+            with transaction.atomic():
+                # Create the user
+                user = User.objects.create_user(username=username, email=email, password=password)
+                user.is_active = False  # Set user as inactive until email verification
+                user.save()
 
-        profile = Profile.objects.create(
-            user=user,
-            phone=phone,
-            role=role,
-        )
+                # Create and save the verification code
+                verification_code = generate_verification_code()
+                VerificationCode.objects.create(user=user, code=verification_code)
 
-        # Check if a Profile already exists for the user
-        if not Profile.objects.filter(user=user).exists():
-            # Create a Profile for the user only if one doesn't already exist
-            profile = Profile.objects.create(
-                user=user,
-                phone=phone,
-                role=role,
-            )
-            # request.session['verification_email'] = user.email
+                # Send email verification code
+                send_mail(
+                    _('AgriConnect Email Verification'),
+                    _('Your verification code is: %(code)s') % {'code': verification_code},
+                    settings.EMAIL_HOST_USER,
+                    [email],
+                    fail_silently=False,
+                )
 
-        # Create a verification code
-        verification_code = VerificationCode.objects.create(user=user)
+                # Create the profile
+                Profile.objects.create(user=user, phone=phone, role=role)
 
-        # Send verification email
-        send_mail(
-            _('AgriConnect Email Verification'),
-            _('Your verification code is: %(code)s') % {'code': verification_code.code},
-            settings.EMAIL_HOST_USER,
-            [email],
-            fail_silently=False,
-        )
-        request.session['verification_email'] = user.email
-        # messages.success(request, _('Account created successfully! Please check your email for the verification code.'))
+                # Mock sending the verification email
+                logger.info(f"Verification code for {email}: {verification_code}")
 
-        return redirect('verify_email')
+                request.session['verification_email'] = email
+                request.session['verification_code'] = verification_code
+                return redirect('verify_email')  # Redirect to email verification page
+
+        except Exception as e:
+            return render(request, 'core/signup.html', {'error': str(e)})
 
     return render(request, 'core/signup.html')
 
 
 def verify_email(request):
-    logger.debug("Entering verify_email view function")
+    """
+    Verify the email address of a user.
+    """
     if request.method == 'POST':
         email = request.session.get('verification_email')
 
@@ -203,7 +199,7 @@ def verify_email(request):
                 # messages.success(request, _("Email verified successfully! You can now log in."))
                 return redirect('login')
             else:
-                messages.error(request, _("Invalid verification code."))
+                messages.error(request, _(f"Invalid verification code. Your codes:{code_instance}, Codes you entered: {verification_code}"))
                 # return render(request, 'core/verify_email.html')
         except CustomUser.DoesNotExist:
             messages.error(request, _("Invalid verification process."))
