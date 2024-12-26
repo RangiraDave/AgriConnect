@@ -56,11 +56,17 @@ class Profile(models.Model):
     """
     Profile model to store additional user details
     """
+    ROLE_CHOICES = [
+        ('umuhinzi', 'Umuhinzi'),
+        ('umuguzi', 'Umuguzi'),
+        ('cooperative', 'Cooperative'),
+    ]
+
     bio = models.TextField(blank=True, null=True)
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='profile', unique=True)
     name = models.CharField(max_length=25, blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True, unique=True)
-    role = models.CharField(max_length=15, blank=True, null=True)
+    role = models.CharField(max_length=15, choices=ROLE_CHOICES, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
