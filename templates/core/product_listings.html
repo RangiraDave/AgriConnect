@@ -31,28 +31,25 @@
            <div class="col-md-4 mb-4">
                <div class="card h-100 card-product">  <!-- Use a specific card style -->
                    {% if product.media %}
-                       <!-- Assuming media is an image -->
                        <img src="{{ MEDIA_URL }}{{ product.media.url }}" alt="{{ product.name }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: cover;">
                    {% else %}
-                       <!-- Placeholder image -->
                        <img src="{% static 'img/no_image.png' %}" alt="{{ product.name }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: cover;">
                    {% endif %}
                    <div class="product-card">
-                       <h5>{{ product.name }}</h5>
-                       {% if product.description %}
-                           <p>{{ product.description|truncatewords:15 }}</p> <!-- Truncate description to 15 words -->
-                       {% endif %}
+                        <h5>{{ product.name }}</h5>
+                        {% if product.description %}
+                            <p>{{ product.description|truncatewords:15 }}</p> <!-- Truncate description to 15 words -->
+                        {% endif %}
 
-                        <!-- Show owner details instead -->
                         <small><strong>{% trans "Owner:" %}</strong> {{ product.owner.profile.role|capfirst }} - {{ product.owner.username }}</small><br>
-
-                        <!-- Show owner's contacts (Phone numbber) -->
                         <small><strong>{% trans "Contacts:" %}</strong> {{ product.owner.profile.phone }}</small>
 
-                       <!-- Show location only if provided -->
-                       {% if product.location %}
-                           <small><strong>{% trans "Location:" %}</strong> {{ product.location }}</small>
-                       {% endif %}
+                        {% if product.location %}
+                            <small><strong>{% trans "Location:" %}</strong> {{ product.location }}</small>
+                        {% endif %}
+
+                        <!-- Chat button -->
+                        <a href="{% url 'start_private_chat' product_id=product.id user_id=product.owner.id %}" class="btn btn-primary btn-sm mt-2">Chat</a>
 
                         <!-- Button for more details or interaction -->
                         <!--<a href="#" onclick="" role="" aria-controls="" aria-selected="" target="_blank">More Details</a>-->

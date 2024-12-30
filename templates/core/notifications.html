@@ -1,0 +1,22 @@
+<!-- templates/core/notifications.html -->
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Notifications - AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Notifications</h2>
+    <ul>
+        {% for notification in notifications %}
+            <li>
+                {% if notification.is_read %}
+                    <p>{{ notification.message }} - {{ notification.timestamp }}</p>
+                {% else %}
+                    <p><strong>{{ notification.message }} - {{ notification.timestamp }}</strong></p>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

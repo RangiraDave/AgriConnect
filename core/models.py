@@ -132,3 +132,54 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.name} by {self.owner.name}"
+
+
+# Chat and Notification models
+class ChatRoom(models.Model):
+    """
+    ChatRoom model to store chat room details
+    """
+    name = models.CharField(max_length=100, unique=True)
+    is_private = models.BooleanField(default=False)
+    paticipants = models.ManyToManyField(User, related_name='chat_rooms')
+
+    def __str__(self):
+        return self.name
+
+
+class Message(models.Model):
+    """
+    Message model to store chat messages
+    """
+    room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE, related_name='messages')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.content[:20]}"
+
+
+class PrivateConversation(models.Model):
+    """
+    PrivateConversation model to store private chat details
+    """
+    user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user1_conversations')
+    user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user2_conversations')
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"Conversation between {self.user1.username} and {self.user2.username}"
+
+    class Meta:
+        unique_together = ['user1', 'user2']
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Notification for {self.user.username}: {self.message[:20]}...'

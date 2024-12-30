@@ -19,6 +19,7 @@
 <!-- Resend Code Button -->
 <form method="POST" action="/resend-code/">
     {% csrf_token %}
+    <input type="email" name="email" placeholder="Enter your email" required>
     <button type="submit">Resend Code</button>
 </form>
 {% endblock %}

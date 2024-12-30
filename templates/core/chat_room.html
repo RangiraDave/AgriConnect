@@ -1,0 +1,47 @@
+<!-- template/core/chat_room.html -->
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Chat Room - AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Chat Room: {{ room.name }}</h2>
+    <div id="chat-log" class="mb-3">
+        {% for message in messages %}
+            <p><strong>{{ message.user.username }}:</strong> {{ message.content }}</p>
+        {% endfor %}
+    </div>
+    <form id="chat-form">
+        <input type="text" id="chat-message-input" class="form-control mb-2" placeholder="Type your message here...">
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+</div>
+
+<script>
+    const roomName = "{{ room.name }}";
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/'
+        + roomName
+        + '/'
+    );
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        document.querySelector('#chat-log').innerHTML += 
+            '<p><strong>' + data.user + ':</strong> ' + data.message + '</p>';
+    };
+
+    document.querySelector('#chat-form').onsubmit = function(e) {
+        e.preventDefault();
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+        messageInputDom.value = '';
+    };
+</script>
+{% endblock %}
