@@ -1,1 +1,168 @@
 # AgriConnect
+
+AgriConnect is a platform designed to connect farmers, buyers, and cooperatives. It provides a marketplace for agricultural products, facilitates communication through chat, and ensures secure transactions.
+
+## Features
+
+### User Authentication
+- **Signup**: Users can create an account by providing their username, email, password, phone number, and role (farmer, buyer, or cooperative).
+- **Login**: Users can log in using their email and password.
+- **Email Verification**: Users must verify their email address before accessing the platform.
+- **Password Reset**: Users can reset their password if they forget it.
+
+### User Roles
+- **Farmer**: Can list products for sale, view their profile, and chat with buyers.
+- **Buyer**: Can browse products, view seller profiles, and chat with sellers.
+- **Cooperative**: Can manage multiple farmers, list products, and communicate with buyers.
+
+### Product Management
+- **Add Product**: Farmers and cooperatives can add products with details such as name, description, price, quantity, and media (images/videos).
+- **Edit Product**: Users can edit the details of their listed products.
+- **Delete Product**: Users can delete their listed products.
+
+### Chat Functionality
+- **Private Chat**: Users can start private conversations with other users.
+- **Chat List**: Users can view a list of recent chats and search for users to start new conversations.
+- **Real-time Messaging**: Messages are sent and received in real-time using WebSockets.
+
+### Notifications
+- **Notifications**: Users receive notifications for important events such as new messages or product updates.
+
+### Localization
+- **Multi-language Support**: The platform supports multiple languages, including English and Kinyarwanda.
+
+## ER Diagram
+
+```mermaid
+erDiagram
+    CUSTOMUSER {
+        int id
+        string username
+        string email
+        string password
+        string role
+        bool is_verified
+        bool email_verified
+    }
+    PROFILE {
+        int id
+        string bio
+        string name
+        string phone
+        string role
+        datetime created_at
+    }
+    VERIFICATIONCODE {
+        int id
+        string code
+        datetime created_at
+        datetime expires_at
+    }
+    PRODUCT {
+        int id
+        string name
+        string contact
+        string description
+        string media
+        decimal price_per_unit
+        int quantity_available
+        string unit
+        float latitude
+        float longitude
+        datetime created_at
+        datetime updated_at
+    }
+    CHATROOM {
+        int id
+        string name
+        bool is_private
+    }
+    MESSAGE {
+        int id
+        string content
+        datetime timestamp
+    }
+    PRIVATECONVERSATION {
+        int id
+    }
+    NOTIFICATION {
+        int id
+        string message
+        datetime timestamp
+        bool is_read
+    }
+    CUSTOMUSER ||--o{ PROFILE : has
+    CUSTOMUSER ||--o{ VERIFICATIONCODE : has
+    CUSTOMUSER ||--o{ PRODUCT : owns
+    CUSTOMUSER ||--o{ MESSAGE : sends
+    CUSTOMUSER ||--o{ NOTIFICATION : receives
+    PROFILE ||--o{ FARMER : is
+    PROFILE ||--o{ BUYER : is
+    PROFILE ||--o{ COOPERATIVE : is
+    PRODUCT ||--o{ PRIVATECONVERSATION : is_about
+    CHATROOM ||--o{ MESSAGE : contains
+    PRIVATECONVERSATION ||--o{ MESSAGE : contains
+```
+
+## Installation
+
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/yourusername/AgriConnect.git
+    cd AgriConnect
+    ```
+
+2. **Create a virtual environment**:
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+
+3. **Install dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4. **Set up the database**:
+    ```bash
+    python manage.py makemigrations
+    python manage.py migrate
+    ```
+
+5. **Run the development server**:
+    ```bash
+    python manage.py runserver
+    ```
+
+## Usage
+
+- **Access the platform**: Open your browser and go to `http://127.0.0.1:8000/`.
+- **Create an account**: Sign up as a farmer, buyer, or cooperative.
+- **Verify your email**: Check your email for the verification code and verify your account.
+- **List products**: If you are a farmer or cooperative, add products to the marketplace.
+- **Browse products**: If you are a buyer, browse the available products and start conversations with sellers.
+- **Chat**: Use the chat functionality to communicate with other users in real-time.
+
+## Contributing
+
+We welcome contributions to AgriConnect! Please follow these steps to contribute:
+
+1. **Fork the repository**.
+2. **Create a new branch**:
+    ```bash
+    git checkout -b feature/your-feature-name
+    ```
+3. **Make your changes**.
+4. **Commit your changes**:
+    ```bash
+    git commit -m "Add your commit message"
+    ```
+5. **Push to the branch**:
+    ```bash
+    git push origin feature/your-feature-name
+    ```
+6. **Create a pull request**.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
