@@ -31,6 +31,32 @@ AgriConnect is a platform designed to connect farmers, buyers, and cooperatives.
 ### Localization
 - **Multi-language Support**: The platform supports multiple languages, including English and Kinyarwanda.
 
+## Tools Used
+
+### Django
+- **Django**: A high-level Python web framework that encourages rapid development and clean, pragmatic design.
+- **Django Channels**: Extends Django to handle WebSockets, enabling real-time communication for the chat functionality.
+
+### Database
+- **PostgreSQL**: A powerful, open-source object-relational database system used to store user data, products, messages, and other information.
+
+### Frontend
+- **Bootstrap**: A popular CSS framework for developing responsive and mobile-first websites.
+- **HTML/CSS**: Standard markup and styling languages used to create the structure and design of the web pages.
+
+### Email
+- **SMTP**: Simple Mail Transfer Protocol used to send email verification codes to users.
+
+### Version Control
+- **Git**: A distributed version control system used to track changes in the source code during software development.
+- **GitHub**: A web-based platform that provides hosting for software development and version control using Git.
+
+### Environment Management
+- **Python Virtual Environment (venv)**: A tool to create isolated Python environments, ensuring that dependencies are managed separately for each project.
+
+### Other Tools
+- **Mermaid**: A JavaScript-based diagramming and charting tool that renders Markdown-inspired text definitions to create and modify diagrams dynamically.
+
 ## ER Diagram
 
 ```mermaid
