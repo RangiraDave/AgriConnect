@@ -130,6 +130,20 @@ erDiagram
     PRIVATECONVERSATION ||--o{ MESSAGE : contains
 ```
 
+## Data Flow Diagram
+
+```mermaid
+graph TD
+    A[User] -->|Signup/Login| B[Authentication Service]
+    B --> C[Database]
+    A -->|Browse/Add Products| D[Product Service]
+    D --> C
+    A -->|Chat| E[Chat Service]
+    E --> C
+    A -->|Receive Notifications| F[Notification Service]
+    F --> C
+```
+
 ## Installation
 
 1. **Clone the repository**:
