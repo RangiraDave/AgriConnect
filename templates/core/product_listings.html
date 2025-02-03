@@ -48,9 +48,6 @@
                             <small><strong>{% trans "Location:" %}</strong> {{ product.location }}</small>
                         {% endif %}
 
-                        <!-- Chat button -->
-                        <a href="{% url 'start_private_chat' product_id=product.id user_id=product.owner.id %}" class="btn btn-primary btn-sm mt-2">Chat</a>
-
                         <!-- Button for more details or interaction -->
                         <!--<a href="#" onclick="" role="" aria-controls="" aria-selected="" target="_blank">More Details</a>-->
                    </div>

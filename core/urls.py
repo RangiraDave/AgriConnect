@@ -19,18 +19,6 @@ urlpatterns = [
     path('profile/', views.user_profile, name='user_profile'),
     path('product/<int:pk>/edit/', views.edit_product, name='edit_product'),
     path('product/<int:pk>/delete/', views.delete_product, name='delete_product'),
-
-    # Chat URLs
-    path('chat/list/', views.chat_list, name='chat_list'),
-    path('chat/<str:room_name>/', views.chat_room, name='chat_room'),
-    path('chat/<str:room_name>/send/', views.send_message, name='send_message'),
-    path('chat/start/<int:product_id>/<int:user_id>/', views.start_private_chat, name='start_private_chat'),
-    path('chat/private/<int:conversation_id>/', views.private_chat, name='private_chat'),
-
-    # Notification URLs
-    path('notifications/', views.notifications, name='notifications'),
-    path('notifications/send/<int:user_id>/<str:message>/', views.send_notification, name='send_notification'),
-    #
 ]
 
 if settings.DEBUG:
