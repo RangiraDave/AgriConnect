@@ -1,6 +1,7 @@
 # core/urls.py
 from django.urls import path
 from . import views
+from chatbot.views import chatbot_response  # Import the chatbot view
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -19,6 +20,7 @@ urlpatterns = [
     path('profile/', views.user_profile, name='user_profile'),
     path('product/<int:pk>/edit/', views.edit_product, name='edit_product'),
     path('product/<int:pk>/delete/', views.delete_product, name='delete_product'),
+    path('chatbot/get_response/', chatbot_response, name='chatbot_response'),  # Add chatbot response URL
 ]
 
 if settings.DEBUG:

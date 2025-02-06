@@ -31,9 +31,9 @@
            <div class="col-md-4 mb-4">
                <div class="card h-100 card-product">  <!-- Use a specific card style -->
                    {% if product.media %}
-                       <img src="{{ MEDIA_URL }}{{ product.media.url }}" alt="{{ product.name }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: cover;">
+                       <img src="{{ MEDIA_URL }}{{ product.media.url }}" alt="{{ product.name }}" class="card-img-top img-fluid">
                    {% else %}
-                       <img src="{% static 'img/no_image.png' %}" alt="{{ product.name }}" class="card-img-top img-fluid" style="max-height: 200px; object-fit: cover;">
+                       <img src="{% static 'img/no_image.png' %}" alt="{{ product.name }}" class="card-img-top img-fluid">
                    {% endif %}
                    <div class="product-card">
                         <h5>{{ product.name }}</h5>
@@ -50,6 +50,7 @@
 
                         <!-- Button for more details or interaction -->
                         <!--<a href="#" onclick="" role="" aria-controls="" aria-selected="" target="_blank">More Details</a>-->
+                        <button class="btn btn-primary mt-2 chatbot-button" data-product-id="{{ product.id }}">Talk to us</button>
                    </div>
                </div>
            </div>
@@ -60,5 +61,73 @@
 
 </div>
 
+<!-- Chatbot interface -->
+<div id="chatbot" class="chatbot">
+    <div class="chatbot-header">
+        <h5>Chat with us</h5>
+        <button onclick="closeChatbot()">x</button>
+    </div>
+    <div class="chatbot-body">
+        <!-- Chat content will go here -->
+    </div>
+    <div class="chatbot-footer">
+        <input type="text" id="chatbot-input" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.chatbot-button').forEach(button => {
+        button.addEventListener('click', function() {
+            openChatbot(this.getAttribute('data-product-id'));
+        });
+    });
+
+    function openChatbot(productId) {
+        document.getElementById('chatbot').style.display = 'block';
+        document.getElementById('chatbot').setAttribute('data-product-id', productId);
+        
+    }
+
+    function closeChatbot() {
+        document.getElementById('chatbot').style.display = 'none';
+        document.querySelector('.chatbot-body').innerHTML = '';
+        document.getElementById('chatbot-input').value = '';
+    }
+
+    function sendMessage() {
+        var input = document.getElementById('chatbot-input');
+        var message = input.value.trim();
+        var productId = document.getElementById('chatbot').getAttribute('data-product-id');
+        if (message) {
+            var chatBody = document.querySelector('.chatbot-body');
+            var userMessage = document.createElement('div');
+            userMessage.className = 'user-message';
+            userMessage.textContent = message;
+            chatBody.appendChild(userMessage);
+            input.value = '';
+
+            // Send the message to the chatbot view
+            fetch(`/chatbot/get_response/?message=${encodeURIComponent(message)}&product_id=${encodeURIComponent(productId)}`)
+                .then(response => response.json())
+                .then(data => {
+                    var botMessage = document.createElement('div');
+                    botMessage.className = 'bot-message';
+                    botMessage.textContent = data.response;
+                    chatBody.appendChild(botMessage);
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    }
+
+    document.getElementById('chatbot-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+</script>
+
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
 {% endblock %}

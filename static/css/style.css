@@ -145,7 +145,6 @@ main {
     flex-wrap: wrap;
 }
 
-
 .product-card {
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -159,7 +158,6 @@ main {
   text-align: center;
   margin-bottom: 10px;
 }
-
 
 .card-product:hover {
     transform: scale(1.05);
@@ -182,4 +180,110 @@ main {
     .row > div[class*='col']{
         margin-bottom: 3rem;
     }
+}
+
+/* Updated Chatbot Styles */
+.chatbot {
+  display: none; /* Hidden by default */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 350px;
+  height: 450px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  overflow: hidden;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.chatbot.active {
+  display: block;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.chatbot-header {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatbot-header h5 {
+  margin: 0;
+  font-size: 1.1em;
+}
+
+.chatbot-header button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.chatbot-body {
+  padding: 15px;
+  height: calc(100% - 100px); /* Adjust for header and footer */
+  overflow-y: auto;
+  background-color: #f9f9f9;
+}
+
+.chatbot-footer {
+  padding: 10px 15px;
+  background-color: #f1f1f1;
+  border-top: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+}
+
+.chatbot-footer input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 8px;
+}
+
+.chatbot-footer button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chatbot-footer button:hover {
+  background-color: #0056b3;
+}
+
+/* Chat message styles */
+.user-message,
+.bot-message {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  max-width: 80%;
+}
+
+.user-message {
+  background-color: #007bff;
+  color: #fff;
+  align-self: flex-end;
+  text-align: right;
+}
+
+.bot-message {
+  background-color: #e9ecef;
+  color: #333;
+  align-self: flex-start;
+  text-align: left;
 }

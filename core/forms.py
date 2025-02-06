@@ -15,7 +15,7 @@ class AddProductForm(forms.ModelForm):
     """ Form to add a product """
     class Meta:
         model = Product
-        fields = ['name', 'description', 'media', 'price_per_unit', 'quantity_available']
+        fields = ['name', 'description', 'contact', 'media', 'price_per_unit', 'quantity_available']
 		
     def clean_quantity_available(self):
         quantity = self.cleaned_data['quantity_available']
