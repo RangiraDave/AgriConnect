@@ -1,6 +1,6 @@
 # AgriConnect
 
-AgriConnect is a platform designed to connect farmers, buyers, and cooperatives. It provides a marketplace for agricultural products, facilitates communication through chat, and ensures secure transactions.
+AgriConnect is a platform designed to connect farmers, buyers, and cooperatives. It provides a marketplace for agricultural products, facilitates communication through a chatbot, and ensures secure transactions.
 
 ## Features
 
@@ -11,8 +11,8 @@ AgriConnect is a platform designed to connect farmers, buyers, and cooperatives.
 - **Password Reset**: Users can reset their password if they forget it.
 
 ### User Roles
-- **Farmer**: Can list products for sale, view their profile, and chat with buyers.
-- **Buyer**: Can browse products, view seller profiles, and chat with sellers.
+- **Farmer**: Can list products for sale, view their profile, and manage their products.
+- **Buyer**: Can browse products, view seller profiles, and interact with the chatbot.
 - **Cooperative**: Can manage multiple farmers, list products, and communicate with buyers.
 
 ### Product Management
@@ -20,13 +20,12 @@ AgriConnect is a platform designed to connect farmers, buyers, and cooperatives.
 - **Edit Product**: Users can edit the details of their listed products.
 - **Delete Product**: Users can delete their listed products.
 
-### Chat Functionality
-- **Private Chat**: Users can start private conversations with other users.
-- **Chat List**: Users can view a list of recent chats and search for users to start new conversations.
-- **Real-time Messaging**: Messages are sent and received in real-time using WebSockets.
+### Chatbot Functionality
+- **Chatbot Interaction**: Buyers can interact with a chatbot to get information about products.
+- **Real-time Responses**: The chatbot provides real-time responses to buyer queries about product details, availability, price, and more.
 
 ### Notifications
-- **Notifications**: Users receive notifications for important events such as new messages or product updates.
+- **Notifications**: Users receive notifications for important events such as product updates.
 
 ### Localization
 - **Multi-language Support**: The platform supports multiple languages, including English and Kinyarwanda.
@@ -35,7 +34,6 @@ AgriConnect is a platform designed to connect farmers, buyers, and cooperatives.
 
 ### Django
 - **Django**: A high-level Python web framework that encourages rapid development and clean, pragmatic design.
-- **Django Channels**: Extends Django to handle WebSockets, enabling real-time communication for the chat functionality.
 
 ### Database
 - **PostgreSQL**: A powerful, open-source object-relational database system used to store user data, products, messages, and other information.
@@ -98,19 +96,6 @@ erDiagram
         datetime created_at
         datetime updated_at
     }
-    CHATROOM {
-        int id
-        string name
-        bool is_private
-    }
-    MESSAGE {
-        int id
-        string content
-        datetime timestamp
-    }
-    PRIVATECONVERSATION {
-        int id
-    }
     NOTIFICATION {
         int id
         string message
@@ -120,14 +105,10 @@ erDiagram
     CUSTOMUSER ||--o{ PROFILE : has
     CUSTOMUSER ||--o{ VERIFICATIONCODE : has
     CUSTOMUSER ||--o{ PRODUCT : owns
-    CUSTOMUSER ||--o{ MESSAGE : sends
     CUSTOMUSER ||--o{ NOTIFICATION : receives
     PROFILE ||--o{ FARMER : is
     PROFILE ||--o{ BUYER : is
     PROFILE ||--o{ COOPERATIVE : is
-    PRODUCT ||--o{ PRIVATECONVERSATION : is_about
-    CHATROOM ||--o{ MESSAGE : contains
-    PRIVATECONVERSATION ||--o{ MESSAGE : contains
 ```
 
 ## Data Flow Diagram
@@ -138,7 +119,7 @@ graph TD
     B --> C[Database]
     A -->|Browse/Add Products| D[Product Service]
     D --> C
-    A -->|Chat| E[Chat Service]
+    A -->|Chatbot Interaction| E[Chatbot Service]
     E --> C
     A -->|Receive Notifications| F[Notification Service]
     F --> C
@@ -180,8 +161,8 @@ graph TD
 - **Create an account**: Sign up as a farmer, buyer, or cooperative.
 - **Verify your email**: Check your email for the verification code and verify your account.
 - **List products**: If you are a farmer or cooperative, add products to the marketplace.
-- **Browse products**: If you are a buyer, browse the available products and start conversations with sellers.
-- **Chat**: Use the chat functionality to communicate with other users in real-time.
+- **Browse products**: If you are a buyer, browse the available products and interact with the chatbot for more information.
+- **Chatbot**: Use the chatbot functionality to get real-time responses about products.
 
 ## Contributing
 
