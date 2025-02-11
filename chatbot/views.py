@@ -1,3 +1,4 @@
+# chatbot/views.py
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 from django.shortcuts import get_object_or_404

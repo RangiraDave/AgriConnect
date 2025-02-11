@@ -1,3 +1,4 @@
+<!-- product_listings.html -->
 {% extends 'core/base.html' %}
 {% load i18n static %}
 
@@ -63,71 +64,90 @@
 
 <!-- Chatbot interface -->
 <div id="chatbot" class="chatbot">
-    <div class="chatbot-header">
-        <h5>Chat with us</h5>
-        <button onclick="closeChatbot()">x</button>
-    </div>
-    <div class="chatbot-body">
-        <!-- Chat content will go here -->
-    </div>
-    <div class="chatbot-footer">
-        <input type="text" id="chatbot-input" placeholder="Type your message...">
-        <button onclick="sendMessage()">Send</button>
-    </div>
+  <div class="chatbot-header">
+    <h5>Chat with us</h5>
+    <button onclick="closeChatbot()">×</button>
+  </div>
+  <div class="chatbot-body">
+    <!-- Chat messages will be appended here -->
+  </div>
+  <div class="chatbot-footer">
+    <input type="text" id="chatbot-input" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
 </div>
 
 <script>
-    document.querySelectorAll('.chatbot-button').forEach(button => {
-        button.addEventListener('click', function() {
-            openChatbot(this.getAttribute('data-product-id'));
-        });
+  // Ensure the DOM is fully loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    // Attach click event listeners to all buttons with class 'chatbot-button'
+    const chatbotButtons = document.querySelectorAll('.chatbot-button');
+    console.log('Found chatbot buttons:', chatbotButtons.length);
+    chatbotButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const productId = this.getAttribute('data-product-id');
+        console.log('Chatbot button clicked for product ID:', productId);
+        openChatbot(productId);
+      });
     });
+  });
 
-    function openChatbot(productId) {
-        document.getElementById('chatbot').style.display = 'block';
-        document.getElementById('chatbot').setAttribute('data-product-id', productId);
-        
+  // Function to show the chatbot window and store the product ID
+  function openChatbot(productId) {
+    const chatbot = document.getElementById('chatbot');
+    chatbot.style.display = 'block';
+    chatbot.setAttribute('data-product-id', productId);
+    console.log('Chatbot opened with product ID:', productId);
+  }
+
+  // Function to hide the chatbot window and reset its content
+  function closeChatbot() {
+    const chatbot = document.getElementById('chatbot');
+    chatbot.style.display = 'none';
+    document.querySelector('.chatbot-body').innerHTML = '';
+    document.getElementById('chatbot-input').value = '';
+    console.log('Chatbot closed');
+  }
+
+  // Function to send a message to the chatbot view and display responses
+  function sendMessage() {
+    const input = document.getElementById('chatbot-input');
+    const message = input.value.trim();
+    const productId = document.getElementById('chatbot').getAttribute('data-product-id');
+    if (message) {
+      const chatBody = document.querySelector('.chatbot-body');
+
+      // Append user's message
+      const userMessage = document.createElement('div');
+      userMessage.className = 'user-message';
+      userMessage.textContent = message;
+      chatBody.appendChild(userMessage);
+      input.value = '';
+
+      // Debug output
+      console.log('Sending message:', message, 'for product ID:', productId);
+
+      // Send the message to the chatbot view using fetch
+      fetch(`/chatbot/get_response/?message=${encodeURIComponent(message)}&product_id=${encodeURIComponent(productId)}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log('Chatbot response:', data.response);
+          const botMessage = document.createElement('div');
+          botMessage.className = 'bot-message';
+          botMessage.textContent = data.response;
+          chatBody.appendChild(botMessage);
+          chatBody.scrollTop = chatBody.scrollHeight;
+        })
+        .catch(error => console.error('Error in sendMessage:', error));
     }
+  }
 
-    function closeChatbot() {
-        document.getElementById('chatbot').style.display = 'none';
-        document.querySelector('.chatbot-body').innerHTML = '';
-        document.getElementById('chatbot-input').value = '';
+  // Allow sending message on pressing Enter key in the chatbot input
+  document.getElementById('chatbot-input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sendMessage();
     }
-
-    function sendMessage() {
-        var input = document.getElementById('chatbot-input');
-        var message = input.value.trim();
-        var productId = document.getElementById('chatbot').getAttribute('data-product-id');
-        if (message) {
-            var chatBody = document.querySelector('.chatbot-body');
-            var userMessage = document.createElement('div');
-            userMessage.className = 'user-message';
-            userMessage.textContent = message;
-            chatBody.appendChild(userMessage);
-            input.value = '';
-
-            // Send the message to the chatbot view
-            fetch(`/chatbot/get_response/?message=${encodeURIComponent(message)}&product_id=${encodeURIComponent(productId)}`)
-                .then(response => response.json())
-                .then(data => {
-                    var botMessage = document.createElement('div');
-                    botMessage.className = 'bot-message';
-                    botMessage.textContent = data.response;
-                    chatBody.appendChild(botMessage);
-                    chatBody.scrollTop = chatBody.scrollHeight;
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    }
-
-    document.getElementById('chatbot-input').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
+  });
 </script>
-
-<link rel="stylesheet" href="{% static 'css/styles.css' %}">
-
 {% endblock %}
