@@ -341,9 +341,9 @@ def user_profile(request):
     Returns:
         HttpResponse: Rendered page with user profile details.
     """
-    if request.user.profile.role.lower() == "umuguzi":
-        messages.error(request, _("You are not authorized to access the user profile."))
-        return redirect('product_listings')
+    # if request.user.profile.role.lower() == "umuguzi":
+    #     messages.error(request, _("You are not authorized to access the user profile."))
+    #     return redirect('product_listings')
 
     # Fetch the user's profile
     profile = Profile.objects.get(user=request.user)
@@ -487,9 +487,11 @@ def buyer_dashboard(request):
     top_products = user_ratings.order_by('-rating')[:5]
 
     # Get the highest-rated farmers
-    top_farmers = Farmer.objects.filter(
-        id__in=[rating.product.owner.id for rating in user_ratings]
-    ).order_by('-rating')[:5]
+    top_farmers = (
+        Farmer.objects
+        .annotate(avg_rating=Avg('profile__user__ratings__rating'))
+        .order_by('-avg_rating')[:5]
+    )
 
     context = {
         'user_ratings': user_ratings,
