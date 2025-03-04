@@ -1,6 +1,6 @@
 # AgriConnect
 
-AgriConnect is a platform designed to connect farmers, buyers, and cooperatives. It provides a marketplace for agricultural products, facilitates communication through a chatbot, and ensures secure transactions.
+AgriConnect is a comprehensive platform designed to connect farmers, buyers, and cooperatives. It provides a marketplace for agricultural products, facilitates communication through a chatbot, and ensures secure transactions. The platform aims to streamline the agricultural supply chain by providing tools for product management, user interaction, and market insights.
 
 ## Features
 
@@ -11,9 +11,9 @@ AgriConnect is a platform designed to connect farmers, buyers, and cooperatives.
 - **Password Reset**: Users can reset their password if they forget it.
 
 ### User Roles
-- **Farmer**: Can list products for sale, view their profile, and manage their products.
-- **Buyer**: Can browse products, view seller profiles, and interact with the chatbot.
-- **Cooperative**: Can manage multiple farmers, list products, and communicate with buyers.
+- **Farmer**: Can list products for sale, view their profile, manage their products, and access market insights.
+- **Buyer**: Can browse products, view seller profiles, interact with the chatbot, rate products, and access a personalized dashboard.
+- **Cooperative**: Can manage multiple farmers, list products, communicate with buyers, and access market insights.
 
 ### Product Management
 - **Add Product**: Farmers and cooperatives can add products with details such as name, description, price, quantity, and media (images/videos).
@@ -26,6 +26,12 @@ AgriConnect is a platform designed to connect farmers, buyers, and cooperatives.
 
 ### Notifications
 - **Notifications**: Users receive notifications for important events such as product updates.
+
+### Market Insights
+- **Market Insights**: Users can access analytics highlighting top-rated products and farmers, providing valuable market insights.
+
+### Account Management
+- **Delete Account**: Users can delete their account from the user profile page.
 
 ### Localization
 - **Multi-language Support**: The platform supports multiple languages, including English and Kinyarwanda.
@@ -102,13 +108,19 @@ erDiagram
         datetime timestamp
         bool is_read
     }
+    PRODUCTRATING {
+        int id
+        int rating
+    }
     CUSTOMUSER ||--o{ PROFILE : has
     CUSTOMUSER ||--o{ VERIFICATIONCODE : has
     CUSTOMUSER ||--o{ PRODUCT : owns
     CUSTOMUSER ||--o{ NOTIFICATION : receives
+    CUSTOMUSER ||--o{ PRODUCTRATING : rates
     PROFILE ||--o{ FARMER : is
     PROFILE ||--o{ BUYER : is
     PROFILE ||--o{ COOPERATIVE : is
+    PRODUCT ||--o{ PRODUCTRATING : has
 ```
 
 ## Data Flow Diagram
@@ -123,6 +135,8 @@ graph TD
     E --> C
     A -->|Receive Notifications| F[Notification Service]
     F --> C
+    A -->|Access Market Insights| G[Market Insights Service]
+    G --> C
 ```
 
 ## Installation
@@ -163,6 +177,8 @@ graph TD
 - **List products**: If you are a farmer or cooperative, add products to the marketplace.
 - **Browse products**: If you are a buyer, browse the available products and interact with the chatbot for more information.
 - **Chatbot**: Use the chatbot functionality to get real-time responses about products.
+- **Rate products**: Buyers can rate products they have purchased.
+- **Market Insights**: Access analytics to view top-rated products and farmers.
 
 ## Contributing
 

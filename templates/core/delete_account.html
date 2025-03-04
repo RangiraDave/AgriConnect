@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+{% load i18n %}
+
+{% block title %}Delete Account - AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% trans "Delete Account" %}</h2>
+    <p>{% trans "Are you sure you want to delete your account? This action cannot be undone." %}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">{% trans "Delete Account" %}</button>
+        <a href="{% url 'user_profile' %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+    </form>
+</div>
+{% endblock %}

@@ -125,7 +125,7 @@ class Product(models.Model):
     media = models.FileField(upload_to='products/media/', blank=True, null=True)  # Image or video
     # location = models.CharField(max_length=255)  # Location where the product is available
 
-    price_per_unit = models.DecimalField(max_digits=10, decimal_places=2)
+    price_per_unit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     quantity_available = models.PositiveIntegerField()
     unit = models.CharField(max_length=10, choices=UNIT_CHOICES)
     #location fields for future geo-search:
@@ -145,3 +145,23 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.owner.username}"
+
+
+class ProductRating(models.Model):
+    """
+    Stores ratings for a Product from a specific buyer.
+    """
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
+    rating = models.PositiveIntegerField(default=1) # Ratings from 1 to 5
+
+    class Meta:
+        """
+        Meta class for the ProductRating model
+        """
+        unique_together = ['product', 'user']
+        verbose_name = 'Product Rating'
+        verbose_name_plural = 'Product Ratings'
+
+    def __str__(self):
+        return f"{self.user.username} rated {self.product.name} {self.rating} stars"

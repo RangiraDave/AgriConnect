@@ -1,0 +1,31 @@
+<!-- templates/core/market_insights.html -->
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Market Insights{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Market Insights</h2>
+  
+  <h4>Top Rated Products</h4>
+  <ul>
+    {% for product in top_products %}
+      <li>
+        {{ product.name }} — Average Rating:
+        {{ product.avg_rating|floatformat:1 }}
+      </li>
+    {% endfor %}
+  </ul>
+
+  <h4>Top Farmers by Average Rating</h4>
+  <ul>
+    {% for farmer in top_farmers %}
+      <li>
+        Farmer: {{ farmer.owner__username }} — 
+        Average Rating: {{ farmer.avg_rating|floatformat:1 }} 
+        ({{ farmer.rating_count }} ratings)
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

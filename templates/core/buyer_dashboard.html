@@ -1,0 +1,39 @@
+<!-- templates/core/buyer_dashboard.html -->
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Buyer Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1>Welcome, {{ request.user.username }}!</h1>
+  <p>This is your buyer dashboard. Below are the products you’ve rated.</p>
+
+  {% if user_ratings %}
+    <div class="row">
+      {% for rating in user_ratings %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          {% if rating.product.media %}
+            <img src="{{ rating.product.media.url }}" class="card-img-top" alt="{{ rating.product.name }}">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ rating.product.name }}</h5>
+            <p>Your Rating: <strong>{{ rating.rating }}</strong></p>
+            <p>Owner: {{ rating.product.owner.username }}</p>
+            <!-- If you want to let user re-rate here, you can place a small form -->
+            <form method="post" action="{% url 'rate_product' rating.product.id %}">
+              {% csrf_token %}
+              <label for="rating">Rate again (1-5):</label>
+              <input type="number" name="rating" min="1" max="5" value="{{ rating.rating }}">
+              <button type="submit" class="btn btn-sm btn-info">Update</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>You haven't rated any products yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

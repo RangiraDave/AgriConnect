@@ -21,6 +21,11 @@ urlpatterns = [
     path('product/<int:pk>/edit/', views.edit_product, name='edit_product'),
     path('product/<int:pk>/delete/', views.delete_product, name='delete_product'),
     path('chatbot/get_response/', chatbot_response, name='chatbot_response'),  # Add chatbot response URL
+    path('delete-account/', views.delete_account, name='delete_account'),
+
+    path('buyer_dashboard/', views.buyer_dashboard, name='buyer_dashboard'),
+    path('rate-product/<int:product_id>/', views.rate_product, name='rate_product'),
+    path('market-insights/', views.market_insights, name='market_insights'),
 ]
 
 if settings.DEBUG:

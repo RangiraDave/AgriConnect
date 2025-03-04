@@ -26,16 +26,25 @@
                         <a class="nav-link" href="/">Ahabanza</a>
                     </li>
                     {% if user.is_authenticated %}
-                        {% if user.role|lower == 'cooperative' %}
+                        {% if user.profile.role == 'umuhinzi' or user.profile.role == 'cooperative' %}
                             <li class="nav-item">
                                 <a class="nav-link" href="/products/">Ibihari</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/profile/">Konte yawe</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/market-insights/">Market Insights</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/logout/">Gusohoka</a>
                             </li>
                         {% else %}
                             <li class="nav-item">
                                 <a class="nav-link" href="/products/">Ibihari</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/profile/">Konte yawe</a>
+                                <a class="nav-link" href="/market-insights/">Market Insights</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="/logout/">Gusohoka</a>

@@ -19,9 +19,11 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 import logging
 from django.urls import reverse_lazy
-from django.db import IntegrityError, transaction
+from django.db import IntegrityError, transaction, models
+from .models import ProductRating
 from .forms import AddProductForm, EditProductForm
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Avg, Count
 
 
 logger = logging.getLogger(__name__)
@@ -84,6 +86,7 @@ def login_view(request):
                 user_role = user.profile.role.strip().lower()
                 if user_role == role.lower():
                     login(request, user)
+                    request.session['role'] = user_role  # Store the user role in the session
                     # Redirect to product listings if role is cooperative
                     if user_role == 'cooperative':
                         return redirect('product_listings')
@@ -287,6 +290,9 @@ def add_product(request):
     Returns:
         HttpResponse: Rendered page with product listings or redirection to product listing upon success.
     """
+    if request.user.profile.role.lower() == "umuguzi":
+        messages.error(request, _("You are not authorized to add a product."))
+        return redirect('product_listings')
 
     if request.user.profile.role.lower() not in ["umuhinzi", "cooperative"]:
         messages.error(request, _("You are not authorized to add a product."))
@@ -301,7 +307,7 @@ def add_product(request):
                     instance = Product(**form.cleaned_data)
                     instance.owner = User.objects.get(id=request.user.id)  # Use get_object_or_404?
                     instance.save()
-                    messages.success(request, _("Product added successfully!"))
+                    # messages.success(request, _("Product added successfully!"))
                     return redirect('product_listings')
 
             except IntegrityError as e:
@@ -325,7 +331,7 @@ def add_product(request):
 @login_required(login_url='/login/')
 def user_profile(request):
     """
-    Display the user profile.
+    Display the farmer/cooperative user profile.
     
     This view function fetches the user's profile details and renders them on a template.
     
@@ -335,6 +341,10 @@ def user_profile(request):
     Returns:
         HttpResponse: Rendered page with user profile details.
     """
+    if request.user.profile.role.lower() == "umuguzi":
+        messages.error(request, _("You are not authorized to access the user profile."))
+        return redirect('product_listings')
+
     # Fetch the user's profile
     profile = Profile.objects.get(user=request.user)
     # Fetch the user's products
@@ -344,9 +354,9 @@ def user_profile(request):
     context = {
         'profile': profile,
         'name': request.user.username,
-        'welcome_message': _("Welcome to your profile!"),
         'products': products,
         'product_count': len(products),
+        'user_role': request.user.profile.role,
     }
 
     return render(request, 'core/user_profile.html', context)
@@ -356,6 +366,10 @@ def edit_product(request, pk):
     """
     This view handles editing a product by its primary key.
     """
+    if request.user.profile.role.lower() == "umuguzi":
+        messages.error(request, _("You are not authorized to edit a product."))
+        return redirect('product_listings')
+
     try:
         product = get_object_or_404(Product, pk=pk)
 
@@ -385,6 +399,10 @@ def delete_product(request, pk):
     """
     This view handles deleting a product by its primary key.
     """
+    if request.user.profile.role.lower() == "umuguzi":
+        messages.error(request, _("You are not authorized to delete a product."))
+        return redirect('product_listings')
+
     product = get_object_or_404(Product, pk=pk)
 
     if request.user != product.owner:
@@ -395,7 +413,7 @@ def delete_product(request, pk):
         try:
             with transaction.atomic():
                 product.delete()
-                messages.success(request, _("Product deleted successfully!"))
+                # messages.success(request, _("Product deleted successfully!"))
                 return redirect(reverse_lazy('user_profile'))
 
         except Exception as e:
@@ -408,3 +426,103 @@ def delete_product(request, pk):
 
     context = {'product': product}
     return render(request, 'core/delete_product.html', context)
+
+
+@login_required(login_url='/login/')
+def delete_account(request):
+    """
+    Handle the account deletion.
+    """
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        # messages.success(request, _("Your account has been deleted successfully."))
+        return redirect('homepage')
+
+    return render(request, 'core/delete_account.html')
+
+
+@login_required
+def rate_product(request, product_id):
+    """
+    Handle rating submissions. Only buyers should be able to rate, presumably.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        product_id (int): The ID of the product being rated.
+
+    Returns:
+        HttpResponse: Redirect to the buyer
+    """
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        rating_value = request.POST.get('rating')
+        try:
+            rating_value = int(rating_value)
+            # 1) Check if user has a rating for this product
+            existing = ProductRating.objects.filter(product=product, user=request.user).first()
+            if existing:
+                existing.rating = rating_value
+                existing.save()
+                messages.success(request, "Your rating has been updated.")
+            else:
+                ProductRating.objects.create(product=product, user=request.user, rating=rating_value)
+                messages.success(request, "Your rating has been submitted.")
+        except ValueError:
+            messages.error(request, "Invalid rating value.")
+    return redirect('buyer_dashboard')  # or wherever you want to redirect
+
+
+@login_required
+def buyer_dashboard(request):
+    """
+    A separate dashboard for 'buyer' users.
+    Show the user's highest-rated or 'liked' farmers, or simply a list of rated products.
+    """
+
+    # Get the user's ratings
+    user_ratings = ProductRating.objects.filter(user=request.user)
+
+    # Get the highest-rated products
+    top_products = user_ratings.order_by('-rating')[:5]
+
+    # Get the highest-rated farmers
+    top_farmers = Farmer.objects.filter(
+        id__in=[rating.product.owner.id for rating in user_ratings]
+    ).order_by('-rating')[:5]
+
+    context = {
+        'user_ratings': user_ratings,
+        'top_products': top_products,
+        'top_farmers': top_farmers,
+    }
+
+    return render(request, 'core/buyer_dashboard.html', context)
+
+@login_required
+def market_insights(request):
+    """
+    Simple analytics page highlighting top-rated products/farmers, etc.
+    """
+    # Get the top-rated products
+    top_products = (
+        Product.objects
+        .annotate(avg_rating=models.Avg('ratings__rating'))
+        .order_by('-avg_rating')[:5]
+    )
+
+    # Top 5 farmers with the highest ratings
+    top_farmers = (
+        Product.objects
+        .values('owner__username')
+        .annotate(avg_rating=Avg('ratings__rating'),
+        rating_count=Count('ratings'))
+        .order_by('-avg_rating')[:5]
+    )
+
+    context = {
+        'top_products': top_products,
+        'top_farmers': top_farmers,
+    }
+
+    return render(request, 'core/market_insights.html', context)
