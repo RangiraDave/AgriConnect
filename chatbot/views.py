@@ -27,11 +27,16 @@ def chatbot_response(request):
     state = request.session['conversation_state']
     message = request.GET.get('message', '').lower()
     product_id = request.GET.get('product_id')
+    user_name = request.user.username if request.user.is_authenticated else "Guest"
 
     response = ""
 
     if state == 'start':
-        response = "Hello! How can I help you today?"
+        if product_id:
+            product = get_object_or_404(Product, id=product_id)
+            response = f"Hello {user_name}, thank you for choosing {product.name}. I am LEA. How may I assist you?"
+        else:
+            response = "Hello! How can I help you today?"
         request.session['conversation_state'] = 'waiting_for_query'
     elif state == 'waiting_for_query':
         if product_id:
@@ -55,6 +60,8 @@ def chatbot_response(request):
                 response = f"Here is a video of the product: {product.media.url}" if product.media else "No video available for this product."
             elif re.search(r'\bthank you\b', message):
                 response = "You're welcome! Let me know if you need any more information."
+            elif re.search(r'\bwho are you\b', message):
+                response = f"I am AgriConnect, your friendly assistant!\nThis product is offered to you by {product.owner}."
             else:
                 response = "Could you please rephrase your question?"
         else:
@@ -63,4 +70,3 @@ def chatbot_response(request):
         response = "I'm sorry, I didn't understand that. Could you please rephrase?"
 
     return JsonResponse({'response': response})
-    

@@ -25,6 +25,16 @@
 <script>
 document.getElementById('talk-to-us').addEventListener('click', function() {
     document.getElementById('chat-window').style.display = 'block';
+    const productId = "{{ product.id }}";
+    const userName = "{{ request.user.username }}";
+    const productName = "{{ product.name }}";
+    const welcomeMessage = `Hello ${userName}, thank you for choosing ${productName}. I am LEA. How may I assist you?`;
+
+    const chatMessages = document.getElementById('chat-messages');
+    const botMessage = document.createElement('div');
+    botMessage.textContent = `Bot: ${welcomeMessage}`;
+    chatMessages.appendChild(botMessage);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
 });
 
 document.getElementById('send-message').addEventListener('click', function() {

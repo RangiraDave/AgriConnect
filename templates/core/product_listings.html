@@ -18,19 +18,18 @@
 
     <p>{% trans "Ngibi ibicuruzwa bikeneye abaguzi byashyizweho n'abahinzi bo mu Rwanda bagera kuri" %} {{ user_count }} {% trans "." %}</p>
     
-   <!-- If you want to include some stats or information -->
-   <div class="row mb-4">
-       <div class="col-md-6">
-           <p>{% trans "Byose hamwe ni:" %} {{ total_products }}</p>
-       </div>
-   </div>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <p>{% trans "Byose hamwe ni:" %} {{ total_products }}</p>
+        </div>
+    </div>
 
-   <!-- Start of product listing -->
-   <h2>{% trans "Ibicuruzwa bihari" %}</h2>
-   <div class="row product-list-row">  <!-- Add this class for styling -->
+    <!-- Start of product listing -->
+    <h2>{% trans "Ibicuruzwa bihari" %}</h2>
+    <div class="row product-list-row">
        {% for product in products %}
            <div class="col-md-4 mb-4">
-               <div class="card h-100 card-product">  <!-- Use a specific card style -->
+               <div class="card h-100 card-product">
                    {% if product.media %}
                        <img src="{{ MEDIA_URL }}{{ product.media.url }}" alt="{{ product.name }}" class="card-img-top img-fluid">
                    {% else %}
@@ -39,7 +38,7 @@
                    <div class="product-card">
                         <h5>{{ product.name }}</h5>
                         {% if product.description %}
-                            <p>{{ product.description|truncatewords:15 }}</p> <!-- Truncate description to 15 words -->
+                            <p>{{ product.description|truncatewords:15 }}</p>
                         {% endif %}
 
                         <small><strong>{% trans "Owner:" %}</strong> {{ product.owner.profile.role|capfirst }} - {{ product.owner.username }}</small><br>
@@ -49,21 +48,21 @@
                             <small><strong>{% trans "Location:" %}</strong> {{ product.location }}</small>
                         {% endif %}
 
-                        <!-- Button for more details or interaction -->
-                        <!--<a href="#" onclick="" role="" aria-controls="" aria-selected="" target="_blank">More Details</a>-->
-                        <button class="btn btn-primary mt-2 chatbot-button" data-product-id="{{ product.id }}">Talk to us</button>
+                        <!-- Button to open chatbot -->
+                        <button class="btn btn-primary mt-2 chatbot-button"
+                                data-product-id="{{ product.id }}">
+                            Talk to us
+                        </button>
                    </div>
                </div>
            </div>
-
-        {% cycle '' '' '<div class="w-100"></div>' %}
-        {% endfor %}
-   </div>
-
+           {% cycle '' '' '<div class="w-100"></div>' %}
+       {% endfor %}
+    </div>
 </div>
 
 <!-- Chatbot interface -->
-<div id="chatbot" class="chatbot">
+<div id="chatbot" class="chatbot" style="display: none;">
   <div class="chatbot-header">
     <h5>Chat with us</h5>
     <button onclick="closeChatbot()">×</button>
@@ -78,60 +77,65 @@
 </div>
 
 <script>
-  // Ensure the DOM is fully loaded
   document.addEventListener('DOMContentLoaded', () => {
-    // Attach click event listeners to all buttons with class 'chatbot-button'
     const chatbotButtons = document.querySelectorAll('.chatbot-button');
-    console.log('Found chatbot buttons:', chatbotButtons.length);
     chatbotButtons.forEach(button => {
       button.addEventListener('click', function() {
         const productId = this.getAttribute('data-product-id');
-        console.log('Chatbot button clicked for product ID:', productId);
         openChatbot(productId);
+
+        // Display welcome message
+        const welcomeText = "{{ welcome_message|escapejs }}";
+        displayWelcomeMessage(welcomeText);
       });
     });
   });
 
-  // Function to show the chatbot window and store the product ID
   function openChatbot(productId) {
     const chatbot = document.getElementById('chatbot');
     chatbot.style.display = 'block';
     chatbot.setAttribute('data-product-id', productId);
-    console.log('Chatbot opened with product ID:', productId);
   }
 
-  // Function to hide the chatbot window and reset its content
   function closeChatbot() {
     const chatbot = document.getElementById('chatbot');
     chatbot.style.display = 'none';
+
+    // Clear chat content and input
     document.querySelector('.chatbot-body').innerHTML = '';
     document.getElementById('chatbot-input').value = '';
-    console.log('Chatbot closed');
   }
 
-  // Function to send a message to the chatbot view and display responses
+  function displayWelcomeMessage(msg) {
+    const chatBody = document.querySelector('.chatbot-body');
+    // If you want to clear old messages, do it here, or leave them
+    // chatBody.innerHTML = '';
+    const welcomeDiv = document.createElement('div');
+    welcomeDiv.className = 'bot-message';
+    welcomeDiv.textContent = msg;
+    chatBody.appendChild(welcomeDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
   function sendMessage() {
     const input = document.getElementById('chatbot-input');
     const message = input.value.trim();
     const productId = document.getElementById('chatbot').getAttribute('data-product-id');
+
     if (message) {
       const chatBody = document.querySelector('.chatbot-body');
 
-      // Append user's message
+      // Append user message
       const userMessage = document.createElement('div');
       userMessage.className = 'user-message';
       userMessage.textContent = message;
       chatBody.appendChild(userMessage);
       input.value = '';
 
-      // Debug output
-      console.log('Sending message:', message, 'for product ID:', productId);
-
-      // Send the message to the chatbot view using fetch
+      // Make request to chatbot
       fetch(`/chatbot/get_response/?message=${encodeURIComponent(message)}&product_id=${encodeURIComponent(productId)}`)
         .then(response => response.json())
         .then(data => {
-          console.log('Chatbot response:', data.response);
           const botMessage = document.createElement('div');
           botMessage.className = 'bot-message';
           botMessage.textContent = data.response;
@@ -142,8 +146,7 @@
     }
   }
 
-  // Allow sending message on pressing Enter key in the chatbot input
-  document.getElementById('chatbot-input').addEventListener('keypress', function (e) {
+  document.getElementById('chatbot-input').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
       e.preventDefault();
       sendMessage();

@@ -112,6 +112,12 @@ class Product(models.Model):
     """
     Product model to store produce details
     """
+    UNIT_CHOICES = [
+        ('kg', 'Kilogram'),
+        ('g', 'Gram'),
+        ('l', 'Litre'),
+        ('unit', 'Unit')
+    ]
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=25)  # Product name
     contact = models.CharField(max_length=25)  # Contact details
@@ -121,8 +127,7 @@ class Product(models.Model):
 
     price_per_unit = models.DecimalField(max_digits=10, decimal_places=2)
     quantity_available = models.PositiveIntegerField()
-    unit = models.CharField(max_length=10, choices=[('kg', 'Kilogram'), ('g', 'Gram'), ('l', 'Litre'), ('unit', 'Unit')])
-
+    unit = models.CharField(max_length=10, choices=UNIT_CHOICES)
     #location fields for future geo-search:
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
@@ -130,13 +135,13 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
-
-class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
-    message = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-    is_read = models.BooleanField(default=False)
+    class Meta:
+        """
+        Meta class for the Product model
+        """
+        verbose_name = 'Product'
+        verbose_name_plural = 'Products'
+        ordering = ['-created_at']
 
     def __str__(self):
-        return f'Notification for {self.user.username}: {self.message[:20]}...'
+        return f"{self.name} - {self.owner.username}"
