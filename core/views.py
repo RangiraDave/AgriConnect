@@ -1,29 +1,23 @@
 # views.py
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import gettext as _, gettext_lazy as _lazy
-import random
-import hashlib
-import hmac
+import random, hashlib, hmac, base64, json
 from django.conf import settings
 from django.utils.crypto import get_random_string   
-import base64
-import json
 from django.core.mail import send_mail
 from django.http import JsonResponse
-from core.models import CustomUser
+from core.models import CustomUser, Profile, Farmer, VerificationCode, Product, ProductRating
 from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.contrib import messages
-from django.views.decorators.csrf import csrf_exempt
-from .models import Profile, Farmer, VerificationCode, Product
-from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.views.decorators.http import require_GET, require_POST
 from django.contrib.auth.decorators import login_required
-import logging
 from django.urls import reverse_lazy
 from django.db import IntegrityError, transaction, models
-from .models import ProductRating
-from .forms import AddProductForm, EditProductForm
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Avg, Count
+import logging
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 logger = logging.getLogger(__name__)
@@ -489,7 +483,7 @@ def buyer_dashboard(request):
     # Get the highest-rated farmers
     top_farmers = (
         Farmer.objects
-        .annotate(avg_rating=Avg('profile__user__ratings__rating'))
+        .annotate(avg_rating=models.Avg('profile__user__ratings__rating'))
         .order_by('-avg_rating')[:5]
     )
 
@@ -509,7 +503,7 @@ def market_insights(request):
     # Get the top-rated products
     top_products = (
         Product.objects
-        .annotate(avg_rating=models.Avg('ratings__rating'))
+        .annotate(avg_rating=models.Avg('productrating__rating'))
         .order_by('-avg_rating')[:5]
     )
 
@@ -517,8 +511,8 @@ def market_insights(request):
     top_farmers = (
         Product.objects
         .values('owner__username')
-        .annotate(avg_rating=Avg('ratings__rating'),
-        rating_count=Count('ratings'))
+        .annotate(avg_rating=models.Avg('productrating__rating'),
+        rating_count=models.Count('productrating'))
         .order_by('-avg_rating')[:5]
     )
 
@@ -528,3 +522,49 @@ def market_insights(request):
     }
 
     return render(request, 'core/market_insights.html', context)
+
+
+@login_required
+@require_POST
+def ajax_rate_product(request, product_id):
+    """
+    AJAX view to handle rating submissions asynchronously.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        product_id (int): The ID of the product being rated.
+
+    Returns:
+        JsonResponse: JSON response with a message.
+    """
+    product = get_object_or_404(Product, id=product_id)
+    try:
+        data = json.loads(request.body)
+        rating_value = int(data.get('rating'))
+        if rating_value < 1 or rating_value > 5:
+            return JsonResponse({'message': _('Invalid rating value.')}, status=400)
+
+        # Check if the user has already rated this product
+        existing_rating = ProductRating.objects.filter(product=product, user=request.user).first()
+        if existing_rating:
+            existing_rating.rating = rating_value
+            existing_rating.save()
+            message = _("Your rating has been updated.")
+        else:
+            ProductRating.objects.create(product=product, user=request.user, rating=rating_value)
+            message = _("Your rating has been submitted.")
+
+        # Send notification to the product owner
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"user_{product.owner.id}",
+            {
+                "type": "rating.notification",
+                "message": f"Your product '{product.name}' received a {rating_value}-star rating! 🎉",
+            },
+        )
+
+        return JsonResponse({'message': message})
+    except Exception as e:
+        logger.error("Error in ajax_rate_product: %s", str(e))
+        return JsonResponse({'message': _("Error in rating the product.")}, status=400)

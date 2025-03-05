@@ -32,8 +32,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',
     'channels',
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +67,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'AgriConnect.wsgi.application'
 
+# Channels configuration
+ASGI_APPLICATION = 'AgriConnect.routing.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

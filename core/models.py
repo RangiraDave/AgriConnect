@@ -165,3 +165,16 @@ class ProductRating(models.Model):
 
     def __str__(self):
         return f"{self.user.username} rated {self.product.name} {self.rating} stars"
+
+
+class ProductRating(models.Model):
+    """
+    A model to 
+    """
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} rated {self.product.name} {self.rating} stars"

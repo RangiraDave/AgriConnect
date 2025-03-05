@@ -1,7 +1,7 @@
 # core/urls.py
 from django.urls import path
 from . import views
-from chatbot.views import chatbot_response  # Import the chatbot view
+from chatbot.views import chatbot_response  # Import the chatbot view from the correct module
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -22,7 +22,7 @@ urlpatterns = [
     path('product/<int:pk>/delete/', views.delete_product, name='delete_product'),
     path('chatbot/get_response/', chatbot_response, name='chatbot_response'),  # Add chatbot response URL
     path('delete-account/', views.delete_account, name='delete_account'),
-
+    path('rate_product/<int:product_id>/', views.ajax_rate_product, name='ajax_rate_product'),  # Ensure this URL pattern is defined
     path('buyer_dashboard/', views.buyer_dashboard, name='buyer_dashboard'),
     path('rate-product/<int:product_id>/', views.rate_product, name='rate_product'),
     path('market-insights/', views.market_insights, name='market_insights'),

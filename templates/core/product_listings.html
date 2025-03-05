@@ -48,10 +48,19 @@
                             <small><strong>{% trans "Location:" %}</strong> {{ product.location }}</small>
                         {% endif %}
 
+                        <!-- Rating mechanism -->
+                        <div class="rating mt-2" data-product-id="{{ product.id }}">
+                            <i class="fa fa-star star" data-value="1"></i>
+                            <i class="fa fa-star star" data-value="2"></i>
+                            <i class="fa fa-star star" data-value="3"></i>
+                            <i class="fa fa-star star" data-value="4"></i>
+                            <i class="fa fa-star star" data-value="5"></i>
+                        </div>
+                        <div class="rating-feedback text-success" id="rating-feedback-{{ product.id }}"></div>
+
                         <!-- Button to open chatbot -->
-                        <button class="btn btn-primary mt-2 chatbot-button"
-                                data-product-id="{{ product.id }}">
-                            Talk to us
+                        <button class="btn btn-primary mt-2 chatbot-button" data-product-id="{{ product.id }}">
+                            {% trans "Talk to us" %}
                         </button>
                    </div>
                </div>
@@ -77,80 +86,136 @@
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const chatbotButtons = document.querySelectorAll('.chatbot-button');
-    chatbotButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        const productId = this.getAttribute('data-product-id');
-        openChatbot(productId);
+document.addEventListener('DOMContentLoaded', () => {
+  // Attach event listeners for chatbot buttons
+  const chatbotButtons = document.querySelectorAll('.chatbot-button');
+  chatbotButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const productId = this.getAttribute('data-product-id');
+      openChatbot(productId);
 
-        // Display welcome message
-        const welcomeText = "{{ welcome_message|escapejs }}";
-        displayWelcomeMessage(welcomeText);
-      });
+      // Display welcome message
+      const welcomeText = "{{ welcome_message|escapejs }}";
+      displayWelcomeMessage(welcomeText);
     });
   });
 
-  function openChatbot(productId) {
-    const chatbot = document.getElementById('chatbot');
-    chatbot.style.display = 'block';
-    chatbot.setAttribute('data-product-id', productId);
-  }
+  // Attach click events to rating stars
+  const stars = document.querySelectorAll('.star');
+  stars.forEach(star => {
+    star.addEventListener('click', function() {
+      const rating = this.getAttribute('data-value');
+      const productId = this.parentElement.getAttribute('data-product-id');
+      rateProduct(productId, rating);
+      highlightStars(this.parentElement, rating);
+    });
+  });
+});
 
-  function closeChatbot() {
-    const chatbot = document.getElementById('chatbot');
-    chatbot.style.display = 'none';
-
-    // Clear chat content and input
-    document.querySelector('.chatbot-body').innerHTML = '';
-    document.getElementById('chatbot-input').value = '';
-  }
-
-  function displayWelcomeMessage(msg) {
-    const chatBody = document.querySelector('.chatbot-body');
-    // If you want to clear old messages, do it here, or leave them
-    // chatBody.innerHTML = '';
-    const welcomeDiv = document.createElement('div');
-    welcomeDiv.className = 'bot-message';
-    welcomeDiv.textContent = msg;
-    chatBody.appendChild(welcomeDiv);
-    chatBody.scrollTop = chatBody.scrollHeight;
-  }
-
-  function sendMessage() {
-    const input = document.getElementById('chatbot-input');
-    const message = input.value.trim();
-    const productId = document.getElementById('chatbot').getAttribute('data-product-id');
-
-    if (message) {
-      const chatBody = document.querySelector('.chatbot-body');
-
-      // Append user message
-      const userMessage = document.createElement('div');
-      userMessage.className = 'user-message';
-      userMessage.textContent = message;
-      chatBody.appendChild(userMessage);
-      input.value = '';
-
-      // Make request to chatbot
-      fetch(`/chatbot/get_response/?message=${encodeURIComponent(message)}&product_id=${encodeURIComponent(productId)}`)
-        .then(response => response.json())
-        .then(data => {
-          const botMessage = document.createElement('div');
-          botMessage.className = 'bot-message';
-          botMessage.textContent = data.response;
-          chatBody.appendChild(botMessage);
-          chatBody.scrollTop = chatBody.scrollHeight;
-        })
-        .catch(error => console.error('Error in sendMessage:', error));
-    }
-  }
-
-  document.getElementById('chatbot-input').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      sendMessage();
+// Function to highlight stars up to the selected rating
+function highlightStars(ratingContainer, rating) {
+  const stars = ratingContainer.querySelectorAll('.star');
+  stars.forEach(star => {
+    if (parseInt(star.getAttribute('data-value')) <= rating) {
+      star.classList.add('text-warning');
+    } else {
+      star.classList.remove('text-warning');
     }
   });
+}
+
+function rateProduct(productId, rating) {
+  const csrftoken = getCookie('csrftoken');
+  // Use Django's URL template tag to generate the correct URL
+  const ratingUrl = "{% url 'ajax_rate_product' 0 %}".replace('0', productId);
+  
+  fetch(ratingUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrftoken,
+    },
+    body: JSON.stringify({ rating: rating }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    const feedbackDiv = document.getElementById(`rating-feedback-${productId}`);
+    feedbackDiv.textContent = data.message;
+  })
+  .catch(error => {
+    console.error('Error while rating product:', error);
+  });
+}
+
+// Helper function to get CSRF token from cookies
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+function openChatbot(productId) {
+  const chatbot = document.getElementById('chatbot');
+  chatbot.style.display = 'block';
+  chatbot.setAttribute('data-product-id', productId);
+}
+
+function closeChatbot() {
+  const chatbot = document.getElementById('chatbot');
+  chatbot.style.display = 'none';
+  document.querySelector('.chatbot-body').innerHTML = '';
+  document.getElementById('chatbot-input').value = '';
+}
+
+function displayWelcomeMessage(msg) {
+  const chatBody = document.querySelector('.chatbot-body');
+  const welcomeDiv = document.createElement('div');
+  welcomeDiv.className = 'bot-message';
+  welcomeDiv.textContent = msg;
+  chatBody.appendChild(welcomeDiv);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatbot-input');
+  const message = input.value.trim();
+  const productId = document.getElementById('chatbot').getAttribute('data-product-id');
+
+  if (message) {
+    const chatBody = document.querySelector('.chatbot-body');
+    const userMessage = document.createElement('div');
+    userMessage.className = 'user-message';
+    userMessage.textContent = message;
+    chatBody.appendChild(userMessage);
+    input.value = '';
+
+    fetch(`/chatbot/get_response/?message=${encodeURIComponent(message)}&product_id=${encodeURIComponent(productId)}`)
+      .then(response => response.json())
+      .then(data => {
+        const botMessage = document.createElement('div');
+        botMessage.className = 'bot-message';
+        botMessage.textContent = data.response;
+        chatBody.appendChild(botMessage);
+        chatBody.scrollTop = chatBody.scrollHeight;
+      })
+      .catch(error => console.error('Error in sendMessage:', error));
+  }
+}
+
+document.getElementById('chatbot-input').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    sendMessage();
+  }
+});
 </script>
 {% endblock %}

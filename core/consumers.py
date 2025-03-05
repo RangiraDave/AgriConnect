@@ -77,3 +77,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
         """
         room = ChatRoom.objects.get(name=self.room_name)
         Message.objects.create(room=room, user=user, content=message)
+
+
+class RatingNotificationConsumer(AsyncWebsocketConsumer):
+    """
+    This consumer handles WebSocket connections for rating notifications.
+    """
+    async def connect(self):
+        self.user_group = f"user_{self.scope['user'].id}"
+        await self.channel_layer.group_add(self.user_group, self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.user_group, self.channel_name)
+
+    async def rating_notification(self, event):
+        await self.send(text_data=json.dumps({
+            "message": event["message"]
+        }))

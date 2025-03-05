@@ -36,4 +36,25 @@
     <p>You haven't rated any products yet.</p>
   {% endif %}
 </div>
+
+<script>
+const socket = new WebSocket("ws://" + window.location.host + "/ws/notifications/");
+
+socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    showToastNotification(data.message);
+};
+
+function showToastNotification(message) {
+    const notificationBox = document.getElementById("notifications");
+    const newNotification = document.createElement("div");
+    newNotification.classList.add("alert", "alert-success");
+    newNotification.innerHTML = message;
+    notificationBox.appendChild(newNotification);
+
+    setTimeout(() => {
+        newNotification.remove();
+    }, 5000);
+}
+</script>
 {% endblock %}
