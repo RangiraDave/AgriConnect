@@ -4,7 +4,6 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from .models import ChatRoom, Message
 
-
 class ChatConsumer(AsyncWebsocketConsumer):
     """
     This consumer handles WebSocket connections for the chat room.
