@@ -60,7 +60,7 @@ AgriConnect is a comprehensive platform designed to connect farmers, buyers, and
 
 ### Other Tools
 - **Mermaid**: A JavaScript-based diagramming and charting tool that renders Markdown-inspired text definitions to create and modify diagrams dynamically.
-
+<!-- 
 ## ER Diagram
 
 ```mermaid
@@ -121,7 +121,7 @@ erDiagram
     PROFILE ||--o{ BUYER : is
     PROFILE ||--o{ COOPERATIVE : is
     PRODUCT ||--o{ PRODUCTRATING : has
-```
+``` -->
 
 ## Data Flow Diagram
 
