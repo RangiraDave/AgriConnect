@@ -5,10 +5,9 @@ from django.urls import re_path
 from core.consumers import RatingNotificationConsumer
 
 application = ProtocolTypeRouter({
-    # (http->django views is added by default)
-    'websocket': AuthMiddlewareStack(
+    "websocket": AuthMiddlewareStack(
         URLRouter([
-            re_path(r'ws/notifications/$', RatingNotificationConsumer.as_asgi()),
+            re_path(r'^ws/notifications/$', RatingNotificationConsumer.as_asgi()),
         ])
     ),
 })

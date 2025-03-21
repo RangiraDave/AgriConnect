@@ -157,6 +157,6 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
 }
