@@ -8,13 +8,11 @@
 
 <div class="jumbotron text-center bg-success text-white p-5">
     <h1 class="display-4">Murakaza neza kuri AgriConnect!</h1>
-    <p class="lead">Dufasha abahinzi kugera ku isoko rikwiye no kubona inyungu nyinshi.</p>
+    <p class="lead">Dufasha abahinzi kugera ku isoko rikwiye muburyo bworoshye.</p>
     <div class="mt-4">
         {% if user.is_authenticated %}
             <a class="btn btn-primary btn-lg" href="/products/">Ibihari</a>
             <a class="btn btn-primary btn-lg" href="/profile/">Konte yawe</a>
-            <a class="btn btn-primary btn-lg" href="/notifications/">Ubutumwa</a>
-            <a class="btn btn-primary btn-lg" href="/chat/">Chat</a>
         {% else %}
             <a class="btn btn-primary btn-lg" href="/signup/">Kora Konti</a>
             <a class="btn btn-primary btn-lg" href="/login/">Injira</a>

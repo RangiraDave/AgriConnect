@@ -79,20 +79,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 
 class RatingNotificationConsumer(AsyncWebsocketConsumer):
-    """
-    This consumer handles WebSocket connections for rating notifications.
-    """
     async def connect(self):
+        # Only allow connection if the user is authenticated.
         if self.scope["user"].is_anonymous:
             await self.close()
         else:
+            # Add the user to a group named with their user ID.
             self.group_name = f"user_{self.scope['user'].id}"
             await self.channel_layer.group_add(self.group_name, self.channel_name)
             await self.accept()
 
     async def disconnect(self, close_code):
+        # Remove the user from the group on disconnect.
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def rating_notification(self, event):
-        message = event["message"]
+        # Send the notification message over the WebSocket.
+        message = event.get("message", "")
         await self.send(text_data=json.dumps({"message": message}))

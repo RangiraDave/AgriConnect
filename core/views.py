@@ -14,7 +14,7 @@ from core.models import CustomUser
 from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
-from .models import Profile, Farmer, VerificationCode, Product
+from .models import Profile, Farmer, VerificationCode, Product, ProductRating
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 import logging
@@ -22,6 +22,9 @@ from django.urls import reverse_lazy
 from django.db import IntegrityError, transaction
 from .forms import AddProductForm, EditProductForm
 from django.core.exceptions import ObjectDoesNotExist
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from django.db.models import Avg, Count
 
 
 logger = logging.getLogger(__name__)
@@ -408,3 +411,86 @@ def delete_product(request, pk):
 
     context = {'product': product}
     return render(request, 'core/delete_product.html', context)
+
+
+@login_required
+def rate_product(request, pk):
+    """
+    Handle product rating submission and send notification to product owner.
+    """
+    if request.method == 'POST':
+        try:
+            product = get_object_or_404(Product, pk=pk)
+            rating = request.POST.get('rating')
+            
+            if not rating or not rating.isdigit() or not (1 <= int(rating) <= 5):
+                messages.error(request, _("Please provide a valid rating between 1 and 5."))
+                return redirect('product_listings')
+
+            # Create or update the rating
+            rating_obj, created = ProductRating.objects.update_or_create(
+                product=product,
+                user=request.user,
+                defaults={'rating': rating}
+            )
+
+            # Send notification to product owner via WebSocket
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"user_{product.owner.id}",
+                {
+                    "type": "rating_notification",
+                    "message": f"Your product '{product.name}' received a {rating}-star rating!"
+                }
+            )
+
+            messages.success(request, _("Rating submitted successfully!"))
+            return redirect('product_listings')
+
+        except Exception as e:
+            messages.error(request, str(e))
+            return redirect('product_listings')
+
+    return redirect('product_listings')
+
+
+@login_required
+def market_insights(request):
+    """
+    Display market insights including top-rated products and farmers.
+    """
+    # Get top rated products
+    top_products = Product.objects.annotate(
+        avg_rating=Avg('ratings__rating'),
+        num_ratings=Count('ratings')
+    ).filter(num_ratings__gt=0).order_by('-avg_rating', '-num_ratings')[:5]
+
+    # Get top rated farmers (users with role 'umuhinzi')
+    top_farmers = CustomUser.objects.filter(
+        profile__role='umuhinzi'
+    ).annotate(
+        avg_product_rating=Avg('product__ratings__rating'),
+        num_products=Count('product', distinct=True),
+        num_ratings=Count('product__ratings', distinct=True)
+    ).filter(num_products__gt=0).order_by('-avg_product_rating', '-num_ratings')[:5]
+
+    context = {
+        'top_products': top_products,
+        'top_farmers': top_farmers,
+    }
+
+    return render(request, 'core/market_insights.html', context)
+
+
+@login_required(login_url='/login/')
+def delete_account(request):
+    """
+    Handle the account deletion.
+    """
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        messages.success(request, _("Your account has been deleted successfully."))
+        return redirect('homepage')
+
+    return render(request, 'core/delete_account.html')
