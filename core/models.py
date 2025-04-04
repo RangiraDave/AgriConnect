@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.timezone import now, timedelta
 import uuid
+import random
 
 
 class CustomUser(AbstractUser):
@@ -48,7 +49,7 @@ class VerificationCode(models.Model):
     def save(self, *args, **kwargs):
         """ Generate a 6-digit code if not provided """
         if not self.pk:
-            self.code = str(uuid.uuid4())[:6] # Generate a 6-digit code on creation
+            self.code = f"{random.randint(100000, 999999)}"  # Ensure 6-digit code
         super(VerificationCode, self).save(*args, **kwargs)
 
 

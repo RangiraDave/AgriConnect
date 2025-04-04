@@ -16,13 +16,11 @@ class AddProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'description', 'contact', 'media', 'price_per_unit', 'quantity_available']
-		
+
     def clean_quantity_available(self):
         quantity = self.cleaned_data['quantity_available']
-
-        if not isinstance(quantity, int) or quantity < 0:
+        if quantity < 0:
             raise forms.ValidationError("Quantity must be a positive number.")
-
         return quantity
 
 

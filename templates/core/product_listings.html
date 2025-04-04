@@ -31,7 +31,7 @@
            <div class="col-md-4 mb-4">
                <div class="card h-100 card-product">
                    {% if product.media %}
-                       <img src="{{ MEDIA_URL }}{{ product.media.url }}" alt="{{ product.name }}" class="card-img-top img-fluid">
+                       <img src="{{ product.media.url }}" alt="{{ product.name }}" class="card-img-top img-fluid">
                    {% else %}
                        <img src="{% static 'img/no_image.png' %}" alt="{{ product.name }}" class="card-img-top img-fluid">
                    {% endif %}

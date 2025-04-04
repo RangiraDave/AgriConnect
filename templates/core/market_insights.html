@@ -21,9 +21,9 @@
   <ul>
     {% for farmer in top_farmers %}
       <li>
-        Farmer: {{ farmer.owner__username }} — 
-        Average Rating: {{ farmer.avg_rating|floatformat:1 }} 
-        ({{ farmer.rating_count }} ratings)
+        Farmer: {{ farmer.username }} — 
+        Average Rating: {{ farmer.avg_product_rating|floatformat:1 }} 
+        ({{ farmer.num_ratings }} ratings)
       </li>
     {% endfor %}
   </ul>
