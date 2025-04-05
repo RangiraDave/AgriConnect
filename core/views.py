@@ -130,7 +130,7 @@ def verify_email(request):
     """Verify the email address of a user."""
     if request.method == 'POST':
         email = request.session.get('verification_email')
-        verification_code = request.POST.get('verification_code')
+        verification_code = request.POST.get('verification_code', '').strip()  # Strip spaces
 
         if not email:
             messages.error(request, _("No email found for this session. Please try resending the verification code."))
@@ -140,16 +140,16 @@ def verify_email(request):
             user = User.objects.get(email=email)
             code_instance = get_object_or_404(VerificationCode, user=user)
 
-            if code_instance.code == verification_code.strip() and not code_instance.is_expired():
+            if code_instance.code == verification_code and not code_instance.is_expired():
                 user.email_verified = True
                 user.is_active = True
                 user.save()
 
-                # Automatically log in the user after successful verification
-                login(request, user)
+                # Delete the verification code after successful verification
+                code_instance.delete()
 
-                messages.success(request, _("Email verified successfully! You are now logged in."))
-                return redirect('user_profile')  # Redirect to the user's profile page
+                messages.success(request, _("Email verified successfully! You can now log in."))
+                return redirect('login')
             else:
                 messages.error(request, _("Invalid or expired verification code. Please try again."))
         except User.DoesNotExist:
@@ -159,11 +159,17 @@ def verify_email(request):
 
 
 def resend_verification_code(request):
-    """Resend the verification code to the user's email."""
+    """
+    Resend the verification code to the user email.
+    """
     if request.method != 'POST':
         return redirect('signup')
 
+    # Get the email from the POST data or session.
     email = request.POST.get('email', request.session.get('verification_email'))
+    if not email:
+        messages.error(request, _("No email provided for verification."))
+        return redirect('signup')
 
     try:
         user = User.objects.get(email=email)
@@ -171,9 +177,12 @@ def resend_verification_code(request):
             messages.info(request, _("Your email is already verified."))
             return redirect('login')
 
+        # Delete any existing verification codes for the user
         VerificationCode.objects.filter(user=user).delete()
+        # Create a new verification code
         new_code = VerificationCode.objects.create(user=user)
 
+        # Send the new verification code via email
         send_mail(
             _('AgriConnect Email Verification - Resend'),
             _('Your new verification code is: %(code)s') % {'code': new_code.code},
@@ -181,13 +190,16 @@ def resend_verification_code(request):
             [email],
             fail_silently=False,
         )
+
+        # Set the email in session for later use in the verify_email view
+        request.session['verification_email'] = email
+
         messages.success(request, _("A new verification code has been sent to your email."))
         return redirect('verify_email')
 
     except User.DoesNotExist:
-        messages.error(request, _("Email not found. Please try again."))
-
-    return render(request, 'core/verify_email.html')
+        messages.error(request, _("Email not found."))
+        return redirect('signup')
 
 
 @login_required
@@ -308,11 +320,35 @@ def rate_product(request, pk):
 @login_required
 def market_insights(request):
     """Display market insights including top-rated products and farmers."""
+    # Calculate total products
+    total_products = Product.objects.count()
+
+    # Calculate active farmers (users with the role 'umuhinzi' who have at least one product)
+    active_farmers = User.objects.filter(
+        profile__role='umuhinzi',
+        product__isnull=False
+    ).distinct().count()
+
+    # Calculate average rating across all products
+    avg_rating = ProductRating.objects.aggregate(Avg('rating'))['rating__avg'] or 0
+
+    # Get top-rated products
     top_products = Product.objects.annotate(
         avg_rating=Avg('ratings__rating'),
         num_ratings=Count('ratings')
     ).filter(num_ratings__gt=0).order_by('-avg_rating', '-num_ratings')[:5]
 
+    # Serialize top products for JSON
+    top_products_data = [
+        {
+            "name": product.name,
+            "avg_rating": float(product.avg_rating),
+            "num_ratings": product.num_ratings,
+        }
+        for product in top_products
+    ]
+
+    # Get top-performing farmers
     top_farmers = User.objects.filter(
         profile__role='umuhinzi'
     ).annotate(
@@ -321,9 +357,25 @@ def market_insights(request):
         num_ratings=Count('product__ratings', distinct=True)
     ).filter(num_products__gt=0).order_by('-avg_product_rating', '-num_ratings')[:5]
 
+    # Serialize top farmers for JSON
+    top_farmers_data = [
+        {
+            "username": farmer.username,
+            "avg_product_rating": float(farmer.avg_product_rating) if farmer.avg_product_rating else 0,
+            "num_ratings": farmer.num_ratings,
+        }
+        for farmer in top_farmers
+    ]
+
+    import json
     context = {
+        'total_products': total_products,
+        'active_farmers': active_farmers,
+        'avg_rating': avg_rating,
         'top_products': top_products,
+        'top_products_json': json.dumps(top_products_data),  # Convert to JSON string
         'top_farmers': top_farmers,
+        'top_farmers_json': json.dumps(top_farmers_data),  # Convert to JSON string
     }
     return render(request, 'core/market_insights.html', context)
 

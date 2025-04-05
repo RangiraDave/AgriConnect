@@ -40,7 +40,7 @@ class VerificationCode(models.Model):
     expires_at = models.DateTimeField(default=default_expiry)  # Code expires in 10 mins
 
     def is_expired(self):
-        """ Check if the code has expired """
+        """Check if the code has expired."""
         return now() > self.expires_at
 
     def __str__(self):
