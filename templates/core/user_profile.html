@@ -13,7 +13,7 @@
       <!-- Basic user info card -->
       <div class="card mb-3">
         <div class="card-body">
-          <h5 class="card-title">{{ name|default:_("No Name Set") }}</h5>
+          <h5 class="card-title">{{ request.user.username }}</h5>
           <p><strong>Phone:</strong> {{ profile.phone|default:"Not Provided" }}</p>
           {% if profile.bio %}
             <p><strong>Bio:</strong> {{ profile.bio }}</p>

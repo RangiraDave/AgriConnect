@@ -49,9 +49,7 @@ def login_view(request):
                 login(request, user)
                 if user.profile.role.lower() == 'cooperative':
                     return redirect('product_listings')
-                return redirect('user_profile')
-            else:
-                messages.error(request, _("Invalid role provided."))
+                return redirect('user_profile') 
         else:
             messages.error(request, _("Invalid username or password!"))
 
@@ -148,7 +146,7 @@ def verify_email(request):
                 # Delete the verification code after successful verification
                 code_instance.delete()
 
-                messages.success(request, _("Email verified successfully! You can now log in."))
+                # messages.success(request, _("Email verified successfully! You can now log in."))
                 return redirect('login')
             else:
                 messages.error(request, _("Invalid or expired verification code. Please try again."))

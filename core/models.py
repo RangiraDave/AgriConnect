@@ -25,6 +25,10 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
+    class Meta:
+        ordering = ['id']
+
+
 class VerificationCode(models.Model):
     """
     Model to store email verification codes
@@ -52,6 +56,9 @@ class VerificationCode(models.Model):
             self.code = f"{random.randint(100000, 999999)}"  # Ensure 6-digit code
         super(VerificationCode, self).save(*args, **kwargs)
 
+    class Meta:
+        ordering = ['id']
+
 
 class Profile(models.Model):
     """
@@ -73,6 +80,9 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.role}"
 
+    class Meta:
+        ordering = ['id']
+
 
 class Farmer(models.Model):
     """
@@ -84,6 +94,9 @@ class Farmer(models.Model):
     def __str__(self):
         return f"Farmer: {self.profile.name}"
 
+    class Meta:
+        ordering = ['id']
+
 
 class Buyer(models.Model):
     """
@@ -94,6 +107,9 @@ class Buyer(models.Model):
     def __str__(self):
         return f"Buyer: {self.profile.name}"
 
+    class Meta:
+        ordering = ['id']
+
 
 class Cooperative(models.Model):
     """
@@ -103,6 +119,9 @@ class Cooperative(models.Model):
 
     def __str__(self):
         return f"Cooperative: {self.profile.name}"
+
+    class Meta:
+        ordering = ['id']
 
 
 from django.contrib.auth import get_user_model
@@ -142,7 +161,7 @@ class Product(models.Model):
         """
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
-        ordering = ['-created_at']
+        ordering = ['id']
 
     def __str__(self):
         return f"{self.name} - {self.owner.username}"
@@ -163,6 +182,7 @@ class ProductRating(models.Model):
         unique_together = ['product', 'user']
         verbose_name = 'Product Rating'
         verbose_name_plural = 'Product Ratings'
+        ordering = ['id']
 
     def __str__(self):
         return f"{self.user.username} rated {self.product.name} {self.rating} stars"

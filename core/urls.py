@@ -1,9 +1,30 @@
 # core/urls.py
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from . import views
 from chatbot.views import chatbot_response
 from django.conf import settings
 from django.conf.urls.static import static
+from .api_views import (
+    UserViewSet, ProfileViewSet, FarmerViewSet, BuyerViewSet,
+    CooperativeViewSet, ProductViewSet, ProductRatingViewSet,
+    VerificationCodeViewSet
+)
+
+# router = DefaultRouter()
+# router.register(r'products', ProductViewSet, basename='product')
+# router.register(r'profiles', ProfileViewSet, basename='profile')
+# router.register(r'ratings', ProductRatingViewSet, basename='rating')
+
+router = DefaultRouter()
+router.register(r'users', UserViewSet, basename='user')
+router.register(r'profiles', ProfileViewSet, basename='profile')
+router.register(r'farmers', FarmerViewSet, basename='farmer')
+router.register(r'buyers', BuyerViewSet, basename='buyer')
+router.register(r'cooperatives', CooperativeViewSet)
+router.register(r'products', ProductViewSet)
+router.register(r'ratings', ProductRatingViewSet)
+router.register(r'verification-codes', VerificationCodeViewSet)
 
 urlpatterns = [
     path('', views.homepage, name='homepage'),
@@ -22,6 +43,7 @@ urlpatterns = [
     path('chatbot/get_response/', chatbot_response, name='chatbot_response'),
     path('market-insights/', views.market_insights, name='market_insights'),
     path('delete-account/', views.delete_account, name='delete_account'),
+    path('api/', include(router.urls)),  # Add API routes
 ]
 
 if settings.DEBUG:

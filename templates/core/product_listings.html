@@ -31,7 +31,16 @@
            <div class="col-md-4 mb-4">
                <div class="card h-100 card-product">
                    {% if product.media %}
-                       <img src="{{ product.media.url }}" alt="{{ product.name }}" class="card-img-top img-fluid">
+                       {% with ext=product.media.url|lower|slice:"-4:" %}
+                           {% if ext == ".mp4" %}
+                               <video controls class="card-img-top img-fluid">
+                                   <source src="{{ product.media.url }}" type="video/mp4">
+                                   Your browser does not support the video tag.
+                               </video>
+                           {% else %}
+                               <img src="{{ product.media.url }}" alt="{{ product.name }}" class="card-img-top img-fluid">
+                           {% endif %}
+                       {% endwith %}
                    {% else %}
                        <img src="{% static 'img/no_image.png' %}" alt="{{ product.name }}" class="card-img-top img-fluid">
                    {% endif %}
