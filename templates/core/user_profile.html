@@ -29,9 +29,11 @@
     </div>
     
     <div class="col-md-8">
-      {% if product_count == 0 %}
-        <p>You haven't added any products yet!</p>
-      {% else %}
+      {% if request.user.profile.role|lower in "umuhinzi" and "cooperative" %}
+        {% if product_count == 0 %}
+          <p>You haven't added any products yet!</p>
+        {% else %}
+      {% endif %}
         <h4>Your Products</h4>
         <div class="row">
           {% for product in products %}

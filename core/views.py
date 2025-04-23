@@ -311,7 +311,7 @@ def rate_product(request, pk):
             }
         )
 
-        messages.success(request, _("Rating submitted successfully!"))
+        # messages.success(request, _("Rating submitted successfully!"))
         return redirect('product_listings')
 
     return redirect('product_listings')
@@ -385,7 +385,7 @@ def delete_account(request):
     """Handle account deletion."""
     if request.method == 'POST':
         request.user.delete()
-        messages.success(request, _("Your account has been deleted successfully."))
+        # messages.success(request, _("Your account has been deleted successfully."))
         return redirect('homepage')
 
     return render(request, 'core/delete_account.html')
