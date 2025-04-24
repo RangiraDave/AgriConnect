@@ -1,17 +1,17 @@
 from rest_framework import serializers
-from .models import Product, Profile, ProductRating, CustomUser, User, VerificationCode
+from ..models import Product, Profile, ProductRating, CustomUser, User, VerificationCode
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'role', 'is_verified', 'email_verified']
+        fields = ['id', 'username', 'email', 'role']
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
 
     class Meta:
         model = Profile
-        fields = ['id', 'user', 'bio', 'phone', 'created_at']
+        fields = ['id', 'user', 'bio', 'phone']
 
     def create(self, validated_data):
         """
@@ -21,6 +21,26 @@ class ProfileSerializer(serializers.ModelSerializer):
         user = CustomUser.objects.create(**user_data)  # Create the user
         profile = Profile.objects.create(user=user, **validated_data)  # Create the profile
         return profile
+
+class SignupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username','email','password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated):
+        user = User.objects.create_user(
+            username=validated['username'],
+            email=validated['email'],
+            password=validated['password'],
+            is_active=False
+        )
+        # generate & email code…
+        return user
+
+class VerifyEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField()
 
 class FarmerSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
@@ -57,6 +77,13 @@ class ProductSerializer(serializers.ModelSerializer):
             'media', 'price_per_unit', 'quantity_available',
             'unit', 'owner'
         ]
+
+class RateSerializer(serializers.Serializer):
+    rating = serializers.IntegerField(min_value=1, max_value=5)
+
+class MarketInsightsSerializer(serializers.Serializer):
+    top_products = ProductSerializer(many=True)
+    top_farmers = serializers.ListField()
 
 class ProductRatingSerializer(serializers.ModelSerializer):
     user = UserSerializer()

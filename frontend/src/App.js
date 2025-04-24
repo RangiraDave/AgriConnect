@@ -1,71 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import Navbar from './components/Navbar';
+import BaseLayout from './components/BaseLayout';
 import ProductListings from './components/ProductListings';
 import MarketInsights from './components/MarketInsights';
 import VerifyEmail from './components/VerifyEmail';
 
 function App() {
-  // Example props for demonstration
-  const products = []; // Replace with actual product data
-  const userCount = 100; // Replace with actual user count
-  const totalProducts = 50; // Replace with actual total products
-  const welcomeMessage = 'Welcome to AgriConnect!';
-  const topProducts = []; // Replace with actual top products
-  const topFarmers = []; // Replace with actual top farmers
-  const verificationEmail = 'user@example.com'; // Replace with actual email
+  const [token] = useState(null); // Removed setToken since it's unused
+  const user = {
+    isAuthenticated: true, // Replace with actual authentication logic
+    profile: { role: 'umuhinzi' }, // Replace with actual user profile data
+  };
 
   return (
     <Router>
-      <Navbar />
-      <div className="App">
+      <BaseLayout user={user}>
         <Routes>
-          {/* Route for Product Listings */}
-          <Route
-            path="/products"
-            element={
-              <ProductListings
-                products={products}
-                userCount={userCount}
-                totalProducts={totalProducts}
-                welcomeMessage={welcomeMessage}
-              />
-            }
-          />
-
-          {/* Route for Market Insights */}
-          <Route
-            path="/market-insights"
-            element={
-              <MarketInsights
-                totalProducts={totalProducts}
-                activeFarmers={10}
-                avgRating={4.5}
-                topProducts={topProducts}
-                topFarmers={topFarmers}
-              />
-            }
-          />
-
-          {/* Route for Verify Email */}
-          <Route
-            path="/verify-email"
-            element={<VerifyEmail verificationEmail={verificationEmail} />}
-          />
-
-          {/* Default Route (Homepage or Redirect) */}
+          <Route path="/products" element={<ProductListings token={token} />} />
+          <Route path="/market-insights" element={<MarketInsights />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route
             path="/"
             element={
-              <div className="container mt-4">
-                <h1>Welcome to AgriConnect</h1>
-                <p>Select a page from the navigation menu.</p>
+              <div className="home-page">
+                <div className="jumbotron text-center">
+                  <h1>Welcome to AgriConnect</h1>
+                  <p>Your one-stop platform for connecting farmers and buyers.</p>
+                  <div className="btn-group mt-4">
+                    <a href="/products" className="btn btn-primary">
+                      Explore Products
+                    </a>
+                    <a href="/signup" className="btn btn-success">
+                      Join Us
+                    </a>
+                  </div>
+                </div>
               </div>
             }
           />
         </Routes>
-      </div>
+      </BaseLayout>
     </Router>
   );
 }

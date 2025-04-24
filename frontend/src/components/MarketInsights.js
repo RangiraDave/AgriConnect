@@ -1,58 +1,98 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../css/style.css';
 import Chart from 'chart.js/auto';
+import { getMarketInsights } from '../api';
 
-const MarketInsights = ({ totalProducts, activeFarmers, avgRating, topProducts, topFarmers }) => {
+const MarketInsights = () => {
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [activeFarmers, setActiveFarmers] = useState(0);
+  const [avgRating, setAvgRating] = useState(0); // Default to 0
+  const [topProducts, setTopProducts] = useState([]);
+  const [topFarmers, setTopFarmers] = useState([]);
+
   useEffect(() => {
-    const productsChart = new Chart(document.getElementById('productsChart'), {
-      type: 'bar',
-      data: {
-        labels: topProducts.map((product) => product.name),
-        datasets: [
-          {
-            label: 'Average Rating',
-            data: topProducts.map((product) => product.avg_rating),
-            backgroundColor: '#28a745',
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 5,
-          },
-        },
-      },
-    });
+    // Fetch market insights from the API
+    getMarketInsights()
+      .then((response) => {
+        setTotalProducts(response.data.total_products || 0); // Fallback to 0
+        setActiveFarmers(response.data.active_farmers || 0); // Fallback to 0
+        setAvgRating(response.data.avg_rating || 0); // Fallback to 0
+        setTopProducts(response.data.top_products || []); // Fallback to empty array
+        setTopFarmers(response.data.top_farmers || []); // Fallback to empty array
+      })
+      .catch((error) => {
+        console.error('Error fetching market insights:', error);
+      });
+  }, []);
 
-    const farmersChart = new Chart(document.getElementById('farmersChart'), {
-      type: 'bar',
-      data: {
-        labels: topFarmers.map((farmer) => farmer.username),
-        datasets: [
-          {
-            label: 'Average Product Rating',
-            data: topFarmers.map((farmer) => farmer.avg_product_rating),
-            backgroundColor: '#007bff',
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 5,
-          },
-        },
-      },
-    });
+  useEffect(() => {
+    let productsChart = null;
+    let farmersChart = null;
 
+    if (topProducts.length > 0) {
+      const productsCanvas = document.getElementById('productsChart');
+      if (productsCanvas) {
+        productsChart = new Chart(productsCanvas, {
+          type: 'bar',
+          data: {
+            labels: topProducts.map((product) => product.name),
+            datasets: [
+              {
+                label: 'Average Rating',
+                data: topProducts.map((product) => product.avg_rating),
+                backgroundColor: '#28a745',
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 5,
+              },
+            },
+          },
+        });
+      }
+    }
+
+    if (topFarmers.length > 0) {
+      const farmersCanvas = document.getElementById('farmersChart');
+      if (farmersCanvas) {
+        farmersChart = new Chart(farmersCanvas, {
+          type: 'bar',
+          data: {
+            labels: topFarmers.map((farmer) => farmer.username),
+            datasets: [
+              {
+                label: 'Average Product Rating',
+                data: topFarmers.map((farmer) => farmer.avg_product_rating),
+                backgroundColor: '#007bff',
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 5,
+              },
+            },
+          },
+        });
+      }
+    }
+
+    // Cleanup function to destroy charts
     return () => {
-      productsChart.destroy();
-      farmersChart.destroy();
+      if (productsChart) {
+        productsChart.destroy();
+      }
+      if (farmersChart) {
+        farmersChart.destroy();
+      }
     };
   }, [topProducts, topFarmers]);
 
@@ -71,7 +111,7 @@ const MarketInsights = ({ totalProducts, activeFarmers, avgRating, topProducts, 
           <div className="stat-label">Active Farmers</div>
         </div>
         <div className="stat-card">
-          <div className="stat-value">{avgRating.toFixed(1)}</div>
+          <div className="stat-value">{avgRating.toFixed(1)}</div> {/* Ensure avgRating is a number */}
           <div className="stat-label">Average Rating</div>
         </div>
       </div>

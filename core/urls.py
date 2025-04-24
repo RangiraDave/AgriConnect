@@ -5,7 +5,7 @@ from . import views
 from chatbot.views import chatbot_response
 from django.conf import settings
 from django.conf.urls.static import static
-from .api_views import (
+from core.api.api_views import (
     UserViewSet, ProfileViewSet, FarmerViewSet, BuyerViewSet,
     CooperativeViewSet, ProductViewSet, ProductRatingViewSet,
     VerificationCodeViewSet
@@ -21,7 +21,7 @@ router.register(r'users', UserViewSet, basename='user')
 router.register(r'profiles', ProfileViewSet, basename='profile')
 router.register(r'farmers', FarmerViewSet, basename='farmer')
 router.register(r'buyers', BuyerViewSet, basename='buyer')
-router.register(r'cooperatives', CooperativeViewSet)
+router.register(r'cooperatives', CooperativeViewSet, basename='cooperative')  # Provide a unique basename
 router.register(r'products', ProductViewSet)
 router.register(r'ratings', ProductRatingViewSet)
 router.register(r'verification-codes', VerificationCodeViewSet)
