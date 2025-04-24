@@ -1,0 +1,315 @@
+body {
+    /* background: url("../img/background.jpg") no-repeat center center fixed; */
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+html, body {
+    height: 100%;
+}
+
+/* Home Page Jumbotron */
+.home-jumbotron {
+    background-color: #28a745; /* Green background */
+    color: white;             /* White text */
+    text-align: center;       /* Center text */
+    padding: 2rem;            /* Padding around the content */
+}
+
+/* Custom Footer */
+.footer {
+    background-color: #f8f9fa; /* Light background */
+    width: 100%;
+    text-align: center;
+    padding: 1rem;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    position: fixed;
+    bottom: 0;
+}
+
+.navbar {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.jumbotron {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+}
+
+.jumbotron h1 {
+    font-weight: bold;
+}
+
+.jumbotron p {
+    font-size: 1.2rem;
+}
+
+.btn-outline-success,
+.btn-outline-primary,
+.btn-outline-warning {
+    font-size: 1.1rem;
+    padding: 10px 20px;
+    border-width: 2px;
+}
+
+form {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form .form-label {
+    font-weight: bold;
+}
+
+form .btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2rem;
+}
+
+.main-content {
+    padding: 1rem;
+    height: 100vh;
+    margin-bottom: 60px; /* Adjust based on footer height */
+}
+
+button#get-code-btn {
+    display: inline-block;
+    width: auto;
+}
+
+#verification-code-group {
+    margin-top: 20px;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.login-form label {
+    font-weight: bold;
+}
+
+.login-form input, .login-form select {
+    margin-bottom: 15px;
+}
+
+.login-form button {
+    width: 100%;
+    background-color: #007bff;
+    border: none;
+    padding: 10px;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.login-form button:hover {
+    background-color: #0056b3;
+}
+
+main {
+    flex: 1;
+}
+
+.container {
+    min-height: calc(100vh - 200px); /* Adjust based on header and footer height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-bottom: 60px; /* Adjust based on footer height */
+}
+
+/* Styles for Product Listings */
+.product-list-row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.product-card {
+    flex: 1;
+    margin: 10px;
+    border-radius: 5px;
+    padding: 15px;
+    background-color: white;
+    transition: all .3s ease-in-out;
+}
+
+.product-image {
+  font-size: 80px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.card-product:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+  height: auto;
+}
+
+@media (max-width: 768px) {
+    .card-columns {
+        column-count: auto !important;
+    }
+
+    .card-deck .card {
+        margin-bottom: 1rem;
+    }
+
+    .row > div[class*='col']{
+        margin-bottom: 3rem;
+    }
+}
+
+/* Chatbot container styling */
+.chatbot {
+  display: none;
+  position: fixed;
+  bottom: 30px;
+  right: 20px;
+  width: 350px;
+  height: 450px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header styling */
+.chatbot-header {
+  background-color: #03da80;
+  color: #fff;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Body styling */
+.chatbot-body {
+    flex: 1;
+    padding: 15px;
+    background-color: #f9f9f9;
+    height: calc(100% - 100px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Footer styling */
+.chatbot-footer {
+  padding: 5px;
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
+}
+
+.chatbot-footer input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 8px;
+}
+
+.chatbot-footer button {
+  background-color: #03da80;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chatbot-footer button:hover {
+  background-color: #04a346;
+}
+
+/* Message styling */
+.user-message, .bot-message {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  max-width: 75%;
+  line-height: 1.4;
+}
+
+.user-message {
+  background-color: #007bff;
+  color: #fff;
+  align-self: flex-end;
+  margin-left: auto;
+  margin-right: 0;
+  text-align: left;
+}
+
+.bot-message {
+  background-color: #e9ecef;
+  color: #333;
+  align-self: flex-start;
+  text-align: left;
+}
+
+/* Market Insights Page */
+.insights-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 15px;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.rating-stars {
+    color: #ffc107;
+}
