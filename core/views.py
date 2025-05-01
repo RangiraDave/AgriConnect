@@ -257,6 +257,10 @@ def user_profile(request):
 def edit_product(request, pk):
     """Handle editing a product."""
     product = get_object_or_404(Product, pk=pk)
+    if request.user != product.owner and request.user.profile.role.lower() not in ["umuhinzi", "cooperative"]:
+        messages.error(request, _("You are not authorized to edit this product."))
+        return redirect('product_listings')
+        
     if request.method == 'POST':
         form = EditProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
@@ -272,9 +276,9 @@ def edit_product(request, pk):
 def delete_product(request, pk):
     """Handle deleting a product."""
     product = get_object_or_404(Product, pk=pk)
-    if request.user != product.owner:
+    if request.user != product.owner and request.user.profile.role.lower() not in ["umuhinzi", "cooperative"]:
         messages.error(request, _("You are not authorized to delete this product."))
-        return redirect('user_profile')
+        return redirect('product_listings')
 
     if request.method == 'POST':
         product.delete()
