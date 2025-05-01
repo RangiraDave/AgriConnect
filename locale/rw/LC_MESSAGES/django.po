@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-17 13:00+0200\n"
+"POT-Creation-Date: 2025-05-01 09:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: rw <rw@li.org>\n"
@@ -16,141 +16,280 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: core/models.py:5
+#: AgriConnect/settings.py:115
+msgid "English"
+msgstr "Icyongereza"
+
+#: AgriConnect/settings.py:116
+msgid "Kinyarwanda"
+msgstr "Ikinyarwanda"
+
+#: core/forms.py:11
 msgid "Name"
 msgstr "Izina"
 
-#: core/views.py:4 templates/core/home.html:5
-msgid "Welcome to AgriConnect!"
-msgstr "Murakaza neza kuri AgriConnect"
+#: core/views.py:44
+msgid "Email not verified. Please check your email for the verification link."
+msgstr ""
+"Imeyili ntiyemejwe. Nyamuneka reba ubutumwa bwo kwemeza muri imeyili yawe."
 
-#: core/views.py:367
+#: core/views.py:54
+msgid "Invalid username or password!"
+msgstr "Izina ry'umukoresha cyangwa ijambo ry'ibanga ntabwo ari byo!"
+
+#: core/views.py:83
+msgid "All fields are required."
+msgstr "Inyandiko zose zirakenewe."
+
+#: core/views.py:86
+msgid "Passwords do not match."
+msgstr "Ijambo ry'ibanga ntabwo rihuye."
+
+#: core/views.py:89
+msgid "The username is already taken."
+msgstr "Izina ry'umukoresha ryamaze gufatwa."
+
+#: core/views.py:91
+msgid "The email is already in use."
+msgstr "Imeyili yarakoreshejwe."
+
+#: core/views.py:93
+msgid "The phone number is already in use."
+msgstr "Nimero ya telefoni yarakoreshejwe."
+
+#: core/views.py:108
+msgid "AgriConnect Email Verification"
+msgstr "Kwemeza Imeyili ya AgriConnect"
+
+#: core/views.py:109
+#, python-format
+msgid "Your verification code is: %(code)s"
+msgstr "Kode yo kwemeza ni: %(code)s"
+
+#: core/views.py:134
+msgid ""
+"No email found for this session. Please try resending the verification code."
+msgstr ""
+"Nta meyili yabonetse kuri iyi session. Nyamuneka gerageza kongera kohereza "
+"kode yo kwemeza."
+
+#: core/views.py:152
+msgid "Invalid or expired verification code. Please try again."
+msgstr ""
+"Kode yo kwemeza ntabwo ari yo cyangwa yararangiye. Nyamuneka gerageza "
+"kongera."
+
+#: core/views.py:154
+msgid "Invalid verification process. Please try again."
+msgstr "Uburyo bwo kwemeza ntabwo ari bwo. Nyamuneka gerageza kongera."
+
+#: core/views.py:169
+msgid "No email provided for verification."
+msgstr "Nta meyili yatanzwe yo kwemeza."
+
+#: core/views.py:175
+msgid "Your email is already verified."
+msgstr "Imeyili yawe yarangije kwemezwa."
+
+#: core/views.py:185
+msgid "AgriConnect Email Verification - Resend"
+msgstr "Kwemeza Imeyili ya AgriConnect - Ongera wohereze"
+
+#: core/views.py:186
+#, python-format
+msgid "Your new verification code is: %(code)s"
+msgstr "Kode nshya yo kwemeza ni: %(code)s"
+
+#: core/views.py:195
+msgid "A new verification code has been sent to your email."
+msgstr "Kode nshya yo kwemeza yoherejwe kuri imeyili yawe."
+
+#: core/views.py:199
+msgid "Email not found."
+msgstr "Imeyili ntabwo yabonetse."
+
+#: core/views.py:209
+msgid "Murakaza neza kurubuga rwa AgriConnect!"
+msgstr ""
+
+#: core/views.py:220
+#, fuzzy
+#| msgid "You are not authorized to delete this product."
+msgid "You are not authorized to add a product."
+msgstr "Nta burenganzira ufite bwo gusiba iki gicuruzwa."
+
+#: core/views.py:231
 msgid "Product added successfully!"
 msgstr "Igicuruzwa Cyamazekwongerwaho neza!"
 
-#: core/views.py:394
-msgid "The product has been successfully updated."
-msgstr "Igicuruzwa Cyahinduwe neza."
+#: core/views.py:235
+msgid "An error occurred while saving the product."
+msgstr ""
 
-#: core/views.py:428
-msgid "The product has been successfully deleted."
-msgstr "Igicuruzwa Byamaze Gusibwa."
-
-#: core/templates/core/user_profile.html
+#: core/views.py:264
 #, fuzzy
-msgid "No Image Yet"
-msgstr "Ntafoto Yari Yashyirwaho"
+#| msgid "Product added successfully!"
+msgid "Product updated successfully!"
+msgstr "Igicuruzwa Cyamazekwongerwaho neza!"
 
-#: core/templates/core/edit_product.html
-#, fuzzy
-msgid "Edit"
-msgstr "Hindura"
+#: core/views.py:276
+msgid "You are not authorized to delete this product."
+msgstr "Nta burenganzira ufite bwo gusiba iki gicuruzwa."
 
-#: core/templates/core/delete_product.html
+#: core/views.py:281
 #, fuzzy
-msgid "Delete"
+#| msgid "Product added successfully!"
+msgid "Product deleted successfully!"
+msgstr "Igicuruzwa Cyamazekwongerwaho neza!"
+
+#: core/views.py:294
+msgid "Please provide a valid rating between 1 and 5."
+msgstr "Nyamuneka tanga amanota ari hagati ya 1 na 5."
+
+#: templates/core/add_product.html:8
+msgid "Add Your Produce"
+msgstr "Ongeraho Umusaruro Wawe"
+
+#: templates/core/add_product.html:13 templates/core/add_product.html:25
+msgid "Image Preview"
+msgstr "Ifoto Yerekana"
+
+#: templates/core/add_product.html:15 templates/core/user_profile.html:23
+msgid "Add Product"
+msgstr "Ongeraho Igicuruzwa"
+
+#: templates/core/delete_account.html:8 templates/core/delete_account.html:12
+#, fuzzy
+msgid "Delete Account"
 msgstr "Siba"
 
-#: templates/core/signup.html:12
-msgid "Sign Up - AgriConnect"
-msgstr "Iyandikishe - AgriConnect"
+#: templates/core/delete_account.html:9
+msgid ""
+"Are you sure you want to delete your account? This action cannot be undone."
+msgstr "Urashaka koko gusiba konti yawe? Iki gikorwa ntikizagarurwa."
 
-#: templates/core/signup.html:16
-msgid "Kora Konti"
-msgstr "Iyandikishe"
+#: templates/core/delete_account.html:13
+msgid "Cancel"
+msgstr "Hagarika"
 
-#: templates/core/signup.html:20
-msgid "Amazina"
-msgstr "Izina"
+#: templates/core/product_listings.html:19
+msgid ""
+"Ngibi ibicuruzwa bikeneye abaguzi byashyizweho n'abahinzi bo mu Rwanda "
+"bagera kuri"
+msgstr ""
 
-#: templates/core/signup.html:24
-msgid "Injiza amazina yawe"
-msgstr "Andika izina ryawe"
+#: templates/core/product_listings.html:19
+msgid "."
+msgstr ""
 
-#: templates/core/signup.html:29
-msgid "Telefone"
-msgstr "Telefoni"
-
-#: templates/core/signup.html:33
-msgid "Injiza telefone yawe"
-msgstr "Andika nimero ya telefoni yawe"
-
-#: templates/core/signup.html:38
-msgid "Hitamo Icyiciro"
-msgstr "Hitamo Icyiciro"
-
-#: templates/core/signup.html:41
-msgid "Hitamo..."
-msgstr "Hitamo..."
-
-#: templates/core/signup.html:42
-msgid "Umuhinzi"
-msgstr "Umuhinzi"
-
-#: templates/core/signup.html:43
-msgid "Umuguzi"
-msgstr "Umuguzi"
-
-#: templates/core/signup.html:44
-msgid "Cooperative"
-msgstr "Koperative"
-
-#: templates/core/signup.html:49
-msgid "Imeyili"
-msgstr "Imeyili"
-
-#: templates/core/signup.html:53
-msgid "Injiza imeyili yawe"
-msgstr "Andika imeyili yawe"
-
-#: templates/core/signup.html:58
-msgid "Ijambo Ry'ibanga"
-msgstr "Ijambo ry'ibanga"
-
-#: templates/core/signup.html:62
-msgid "Injiza ijambo ry'ibanga"
-msgstr "Andika ijambo ry'ibanga"
-
-#: templates/core/signup.html:67
-msgid "Emeza Ijambo Ry'ibanga"
-msgstr "Emeza ijambo ry'ibanga"
-
-#: templates/core/signup.html:71
-msgid "Injiza ijambo ry'ibanga bwa kabiri"
-msgstr "Andika ijambo ry'ibanga bwa kabiri"
-
-#: templates/core/signup.html:76
-msgid "Kora Konti"
-msgstr "Iyandikishe"
-
-#: templates/core/signup.html:79
-msgid "Ufite konti? Injira"
-msgstr "Ufite konti? Injira"
-
-#: templates/core/product_listings.html:12
-msgid "Ngibi ibicuruzwa bikeneye abaguzi"
-msgstr "Ngibi ibicuruzwa bikeneye abaguzi"
-
-#: templates/core/product_listings.html:16
+#: templates/core/product_listings.html:23
 msgid "Byose hamwe ni:"
-msgstr "Byose hamwe ni:"
-
-#: templates/core/product_listings.html:20
-msgid "Ibicuruzwa bihari"
-msgstr "Ibicuruzwa bihari"
+msgstr ""
 
 #: templates/core/product_listings.html:28
+msgid "Ibicuruzwa bihari"
+msgstr ""
+
+#: templates/core/product_listings.html:53
 msgid "Owner:"
 msgstr "Nyir'igicuruzwa:"
 
-#: templates/core/product_listings.html:32
+#: templates/core/product_listings.html:54
 msgid "Contacts:"
 msgstr "Aho wabariza:"
 
-#: templates/core/product_listings.html:36
+#: templates/core/product_listings.html:57
 msgid "Location:"
 msgstr "Aho giherereye:"
 
-#: templates/core/product_listings.html:40
-msgid "More Details"
-msgstr "Ibindi bisobanuro"
+#: templates/core/product_listings.html:73
+msgid "Submit Rating"
+msgstr "Ohereza Amanota"
+
+#: templates/core/product_listings.html:78
+msgid "Average Rating:"
+msgstr "Amanota Y'Impuzandengo:"
+
+#: templates/core/product_listings.html:85
+msgid "Talk to us"
+msgstr "Tuganirize"
+
+#~ msgid "All are:"
+#~ msgstr "Byose hamwe ni:"
+
+#~ msgid "Available products"
+#~ msgstr "Ibicuruzwa bihari"
+
+#~ msgid "Welcome to AgriConnect!"
+#~ msgstr "Murakaza neza kuri AgriConnect"
+
+#~ msgid "The product has been successfully updated."
+#~ msgstr "Igicuruzwa Cyahinduwe neza."
+
+#~ msgid "The product has been successfully deleted."
+#~ msgstr "Igicuruzwa Byamaze Gusibwa."
+
+#, fuzzy
+#~ msgid "No Image Yet"
+#~ msgstr "Ntafoto Yari Yashyirwaho"
+
+#, fuzzy
+#~ msgid "Edit"
+#~ msgstr "Hindura"
+
+#~ msgid "Sign Up - AgriConnect"
+#~ msgstr "Iyandikishe - AgriConnect"
+
+#~ msgid "Amazina"
+#~ msgstr "Izina"
+
+#~ msgid "Write your names"
+#~ msgstr "Andika izina ryawe"
+
+#~ msgid "Telefone"
+#~ msgstr "Telefoni"
+
+#~ msgid "Write your phone number"
+#~ msgstr "Andika nimero ya telefoni yawe"
+
+#~ msgid "Choose a role"
+#~ msgstr "Hitamo Icyiciro"
+
+#~ msgid "Choose..."
+#~ msgstr "Hitamo..."
+
+#~ msgid "Farmer"
+#~ msgstr "Umuhinzi"
+
+#~ msgid "Buyer"
+#~ msgstr "Umuguzi"
+
+#~ msgid "Cooperative"
+#~ msgstr "Koperative"
+
+#~ msgid "Email"
+#~ msgstr "Imeyili"
+
+#~ msgid "Write your email"
+#~ msgstr "Andika imeyili yawe"
+
+#~ msgid "Password"
+#~ msgstr "Ijambo ry'ibanga"
+
+#~ msgid "Enter password"
+#~ msgstr "Andika ijambo ry'ibanga"
+
+#~ msgid "Confirm password"
+#~ msgstr "Andika ijambo ry'ibanga bwa kabiri"
+
+#~ msgid "Create account"
+#~ msgstr "Iyandikishe"
+
+#~ msgid "Have an account? Login"
+#~ msgstr "Ufite konti? Injira"
+
+#~ msgid "Here are the available products"
+#~ msgstr "Ngibi ibicuruzwa bikeneye abaguzi"
+
+#~ msgid "More Details"
+#~ msgstr "Ibindi bisobanuro"

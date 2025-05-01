@@ -5,170 +5,194 @@
 {% block title %}Product Listings - AgriConnect{% endblock %}
 
 {% block content %}
-<h1 class="text-center">{{ welcome_message }}</h1>
-<div class="container mt-4">
-    
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <p>{% trans "Ngibi ibicuruzwa bikeneye abaguzi byashyizweho n'abahinzi bo mu Rwanda bagera kuri" %} {{ user_count }} {% trans "." %}</p>
-    
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <p>{% trans "Byose hamwe ni:" %} {{ total_products }}</p>
+<div class="container">
+    <!-- Welcome Section -->
+    <div class="welcome-section text-center mb-5 fade-in">
+        <h1 class="display-4 mb-3">{{ welcome_message }}</h1>
+        <p class="lead text-muted">
+            {% trans "Ngibi ibicuruzwa bikeneye abaguzi byashyizweho n'abahinzi bo mu Rwanda bagera kuri" %} 
+            <span class="badge bg-success">{{ user_count }}</span>
+        </p>
+        <div class="stats-banner d-flex justify-content-center gap-4 mt-4">
+            <div class="stat-item">
+                <i class="fas fa-box-open fa-2x text-success mb-2"></i>
+                <h3>{{ total_products }}</h3>
+                <p class="text-muted">{% trans "Total Products" %}</p>
+            </div>
         </div>
     </div>
 
-    <!-- Start of product listing -->
-    <h2>{% trans "Ibicuruzwa bihari" %}</h2>
-    <div class="row product-list-row">
-       {% for product in products %}
-           <div class="col-md-4 mb-4">
-               <div class="card h-100 card-product">
-                   {% if product.media %}
-                       {% with ext=product.media.url|lower|slice:"-4:" %}
-                           {% if ext == ".mp4" %}
-                               <video controls class="card-img-top img-fluid">
-                                   <source src="{{ product.media.url }}" type="video/mp4">
-                                   Your browser does not support the video tag.
-                               </video>
-                           {% else %}
-                               <img src="{{ product.media.url }}" alt="{{ product.name }}" class="card-img-top img-fluid">
-                           {% endif %}
-                       {% endwith %}
-                   {% else %}
-                       <img src="{% static 'img/no_image.png' %}" alt="{{ product.name }}" class="card-img-top img-fluid">
-                   {% endif %}
-                   <div class="product-card">
-                        <h5>{{ product.name }}</h5>
-                        {% if product.description %}
-                            <p>{{ product.description|truncatewords:15 }}</p>
-                        {% endif %}
-
-                        <small><strong>{% trans "Owner:" %}</strong> {{ product.owner.profile.role|capfirst }} - {{ product.owner.username }}</small><br>
-                        <small><strong>{% trans "Contacts:" %}</strong> {{ product.owner.profile.phone }}</small>
-
-                        {% if product.location %}
-                            <small><strong>{% trans "Location:" %}</strong> {{ product.location }}</small>
-                        {% endif %}
-
-                        <!-- Rating mechanism -->
-                        <div class="rating mt-2">
-                            <form action="{% url 'rate_product' product.id %}" method="POST" class="rating-form">
-                                {% csrf_token %}
-                                <div class="stars">
-                                    <i class="fa fa-star star" data-value="1"></i>
-                                    <i class="fa fa-star star" data-value="2"></i>
-                                    <i class="fa fa-star star" data-value="3"></i>
-                                    <i class="fa fa-star star" data-value="4"></i>
-                                    <i class="fa fa-star star" data-value="5"></i>
-                                </div>
-                                <input type="hidden" name="rating" class="rating-value">
-                                <button type="submit" class="btn btn-sm btn-success mt-2 submit-rating" style="display: none;">
-                                    {% trans "Submit Rating" %}
-                                </button>
-                            </form>
-                            {% if product.ratings.all %}
-                                <div class="current-rating">
-                                    {% trans "Average Rating:" %} {{ product.ratings.all|length }}
-                                </div>
+    <!-- Products Grid -->
+    <div class="product-grid">
+        {% for product in products %}
+            <div class="card product-card fade-in">
+                <div class="card-img-wrapper">
+                    {% if product.media %}
+                        {% with ext=product.media.url|lower|slice:"-4:" %}
+                            {% if ext == ".mp4" %}
+                                <video controls class="card-img-top">
+                                    <source src="{{ product.media.url }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            {% else %}
+                                <img src="{{ product.media.url }}" alt="{{ product.name }}" class="card-img-top">
                             {% endif %}
+                        {% endwith %}
+                    {% else %}
+                        <img src="{% static 'img/no_image.png' %}" alt="{{ product.name }}" class="card-img-top">
+                    {% endif %}
+                    <div class="card-img-overlay d-flex justify-content-end">
+                        <span class="badge bg-success">{{ product.unit }}</span>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    {% if product.description %}
+                        <p class="card-text text-muted">{{ product.description|truncatewords:15 }}</p>
+                    {% endif %}
+                    
+                    <div class="product-meta">
+                        <div class="owner-info mb-2">
+                            <i class="fas fa-user text-success me-1"></i>
+                            <small>{{ product.owner.profile.role|capfirst }} - {{ product.owner.username }}</small>
                         </div>
+                        <div class="contact-info mb-2">
+                            <i class="fas fa-phone text-success me-1"></i>
+                            <small>{{ product.owner.profile.phone }}</small>
+                        </div>
+                        {% if product.location %}
+                            <div class="location-info mb-2">
+                                <i class="fas fa-map-marker-alt text-success me-1"></i>
+                                <small>{{ product.location }}</small>
+                            </div>
+                        {% endif %}
+                    </div>
 
-                        <!-- Button to open chatbot -->
-                        <button class="btn btn-primary mt-2 chatbot-button" data-product-id="{{ product.id }}">
-                            {% trans "Talk to us" %}
-                        </button>
-                   </div>
-               </div>
-           </div>
-           {% cycle '' '' '<div class="w-100"></div>' %}
-       {% endfor %}
+                    <!-- Rating Section -->
+                    <div class="rating-section mt-3">
+                        <form action="{% url 'rate_product' product.id %}" method="POST" class="rating-form">
+                            {% csrf_token %}
+                            <div class="stars">
+                                {% for i in "12345" %}
+                                    <i class="fas fa-star star" data-value="{{ i }}"></i>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" name="rating" class="rating-value">
+                            <button type="submit" class="btn btn-sm btn-success mt-2 submit-rating" style="display: none;">
+                                {% trans "Submit Rating" %}
+                            </button>
+                        </form>
+                        {% if product.ratings.all %}
+                            <div class="current-rating mt-2">
+                                <i class="fas fa-star text-warning"></i>
+                                <span>{{ product.ratings.all|length }} {% trans "ratings" %}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Chat Button -->
+                    <button class="btn btn-primary w-100 mt-3 chatbot-button" data-product-id="{{ product.id }}">
+                        <i class="fas fa-comments me-2"></i>{% trans "Talk to us" %}
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 </div>
 
-<!-- Chatbot interface -->
+<!-- Chatbot Interface -->
 <div id="chatbot" class="chatbot" style="display: none;">
-  <div class="chatbot-header">
-    <h5>Chat with us</h5>
-    <button onclick="closeChatbot()">×</button>
-  </div>
-  <div class="chatbot-body">
-    <!-- Chat messages will be appended here -->
-  </div>
-  <div class="chatbot-footer">
-    <input type="text" id="chatbot-input" placeholder="Type your message...">
-    <button onclick="sendMessage()">Send</button>
-  </div>
+    <div class="chatbot-header">
+        <h5 class="mb-0"><i class="fas fa-robot me-2"></i>Chat with us</h5>
+        <button class="btn-close btn-close-white" onclick="closeChatbot()"></button>
+    </div>
+    <div class="chatbot-body">
+        <!-- Chat messages will be appended here -->
+    </div>
+    <div class="chatbot-footer">
+        <input type="text" id="chatbot-input" class="form-control" placeholder="Type your message...">
+        <button class="btn btn-success ms-2" onclick="sendMessage()">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
 </div>
+{% endblock %}
 
+{% block extra_scripts %}
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Setup WebSocket connection for notifications
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize WebSocket connection
+    const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
     const notificationSocket = new WebSocket(
-        'ws://' + window.location.host + '/ws/notifications/'
+        ws_scheme + '://' + window.location.host + '/ws/notifications/'
     );
 
     notificationSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        // Show notification using bootstrap toast or alert
-        const notification = document.createElement('div');
-        notification.className = 'alert alert-success alert-dismissible fade show';
-        notification.innerHTML = `
-            ${data.message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        `;
-        document.querySelector('.container').insertBefore(notification, document.querySelector('.container').firstChild);
+        showToast(data.message);
     };
 
     // Rating functionality
-    document.querySelectorAll('.rating .stars').forEach(starsContainer => {
-        const form = starsContainer.closest('form');
+    document.querySelectorAll('.rating-form').forEach(form => {
+        const stars = form.querySelectorAll('.star');
         const ratingInput = form.querySelector('.rating-value');
         const submitButton = form.querySelector('.submit-rating');
-        const stars = starsContainer.querySelectorAll('.star');
 
         stars.forEach(star => {
             star.addEventListener('click', function() {
                 const rating = this.getAttribute('data-value');
                 ratingInput.value = rating;
-                highlightStars(starsContainer, rating);
+                highlightStars(stars, rating);
                 submitButton.style.display = 'block';
             });
 
             star.addEventListener('mouseover', function() {
                 const rating = this.getAttribute('data-value');
-                highlightStars(starsContainer, rating);
+                highlightStars(stars, rating);
             });
         });
 
-        starsContainer.addEventListener('mouseleave', function() {
+        form.addEventListener('mouseleave', function() {
             const currentRating = ratingInput.value;
-            highlightStars(starsContainer, currentRating);
+            highlightStars(stars, currentRating);
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    showToast('Rating submitted successfully!');
+                    submitButton.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error submitting rating');
+            });
         });
     });
 
-    // Attach event listeners for chatbot buttons
-    const chatbotButtons = document.querySelectorAll('.chatbot-button');
-    chatbotButtons.forEach(button => {
+    // Chatbot functionality
+    document.querySelectorAll('.chatbot-button').forEach(button => {
         button.addEventListener('click', function() {
             const productId = this.getAttribute('data-product-id');
             openChatbot(productId);
-
-            // Display welcome message
-            const welcomeText = "{{ welcome_message|escapejs }}";
-            displayWelcomeMessage(welcomeText);
         });
     });
 });
 
-function highlightStars(container, rating) {
-    container.querySelectorAll('.star').forEach(star => {
+function highlightStars(stars, rating) {
+    stars.forEach(star => {
         const value = star.getAttribute('data-value');
         if (value <= rating) {
             star.classList.add('text-warning');
@@ -178,26 +202,39 @@ function highlightStars(container, rating) {
     });
 }
 
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast fade-in';
+    toast.innerHTML = `
+        <div class="toast-body">
+            <i class="fas fa-bell me-2"></i>${message}
+        </div>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+}
+
 function openChatbot(productId) {
     const chatbot = document.getElementById('chatbot');
     chatbot.style.display = 'block';
     chatbot.setAttribute('data-product-id', productId);
+    
+    // Clear previous messages
+    const chatBody = chatbot.querySelector('.chatbot-body');
+    chatBody.innerHTML = '';
+    
+    // Add welcome message
+    const welcomeMessage = document.createElement('div');
+    welcomeMessage.className = 'message bot-message';
+    welcomeMessage.textContent = 'Hello! How can I help you with this product?';
+    chatBody.appendChild(welcomeMessage);
 }
 
 function closeChatbot() {
     const chatbot = document.getElementById('chatbot');
     chatbot.style.display = 'none';
-    document.querySelector('.chatbot-body').innerHTML = '';
+    chatbot.querySelector('.chatbot-body').innerHTML = '';
     document.getElementById('chatbot-input').value = '';
-}
-
-function displayWelcomeMessage(msg) {
-    const chatBody = document.querySelector('.chatbot-body');
-    const welcomeDiv = document.createElement('div');
-    welcomeDiv.className = 'bot-message';
-    welcomeDiv.textContent = msg;
-    chatBody.appendChild(welcomeDiv);
-    chatBody.scrollTop = chatBody.scrollHeight;
 }
 
 function sendMessage() {
@@ -207,25 +244,34 @@ function sendMessage() {
 
     if (message) {
         const chatBody = document.querySelector('.chatbot-body');
+        
+        // Add user message
         const userMessage = document.createElement('div');
-        userMessage.className = 'user-message';
+        userMessage.className = 'message user-message';
         userMessage.textContent = message;
         chatBody.appendChild(userMessage);
+        
+        // Clear input
         input.value = '';
 
+        // Send message to server
         fetch(`/chatbot/get_response/?message=${encodeURIComponent(message)}&product_id=${encodeURIComponent(productId)}`)
             .then(response => response.json())
             .then(data => {
                 const botMessage = document.createElement('div');
-                botMessage.className = 'bot-message';
+                botMessage.className = 'message bot-message';
                 botMessage.textContent = data.response;
                 chatBody.appendChild(botMessage);
                 chatBody.scrollTop = chatBody.scrollHeight;
             })
-            .catch(error => console.error('Error in sendMessage:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error sending message');
+            });
     }
 }
 
+// Add event listener for Enter key in chat input
 document.getElementById('chatbot-input').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         e.preventDefault();

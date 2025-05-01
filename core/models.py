@@ -142,7 +142,8 @@ class Product(models.Model):
     name = models.CharField(max_length=25)  # Product name
     contact = models.CharField(max_length=25)  # Contact details
     description = models.TextField(blank=True, null=True)  # Product description
-    media = models.FileField(upload_to='products/media/', blank=True, null=True)  # Image or video
+    image = models.ImageField(upload_to='products/images/', blank=True, null=True)  # Product image
+    media = models.FileField(upload_to='media/', blank=True, null=True)
     # location = models.CharField(max_length=255)  # Location where the product is available
 
     price_per_unit = models.DecimalField(max_digits=10, decimal_places=2, default=0)

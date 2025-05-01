@@ -2,99 +2,114 @@
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
-    {% load static  %}
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}AgriConnect{% endblock %}</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+
+    <!-- Modern CSS Frameworks -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="/">AgriConnect</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+<body class="d-flex flex-column min-vh-100">
+    <!-- Modern Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{% static 'img/logo.png' %}" alt="AgriConnect Logo" height="40" class="me-2">
+                <span class="fw-bold text-success">AgriConnect</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Ahabanza</a>
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Ahabanza</a>
                     </li>
                     {% if user.is_authenticated %}
-                        {% if user.profile.role == 'umuhinzi' or user.profile.role == 'cooperative' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="/products/">Ibihari</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/profile/">Konte yawe</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/market-insights/">Market Insights</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/logout/">Gusohoka</a>
-                            </li>
-                        {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="/products/">Ibihari</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/profile/">Konte yawe</a>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/market-insights/">Market Insights</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/logout/">Gusohoka</a>
-                            </li>
-                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/products/"><i class="fas fa-shopping-basket me-1"></i>Ibihari</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/profile/"><i class="fas fa-user me-1"></i>Konte yawe</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/market-insights/"><i class="fas fa-chart-line me-1"></i>Market Insights</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="/logout/"><i class="fas fa-sign-out-alt me-1"></i>Gusohoka</a>
+                        </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/signup/">Kora Konti</a>
+                            <a class="nav-link btn btn-outline-success me-2" href="/signup/"><i class="fas fa-user-plus me-1"></i>Kora Konti</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link" href="/login/">Injira</a>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-success" href="/login/"><i class="fas fa-sign-in-alt me-1"></i>Injira</a>
                         </li>
                     {% endif %}
                 </ul>
             </div>
-        </nav>
-    </header>
-    <main class="flex-fill main-content">
-        <div class="container mt-4">
-            {% block content %}
-            <!-- Main content will be injected here -->
-            {% endblock %}
-            {% block extra_scripts %}{% endblock %}
         </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content flex-grow-1">
+        {% if messages %}
+            <div class="container mt-4">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
     </main>
 
-    <!-- <footer class="footer">
-        <p>&copy; 2024 AgriConnect All Rights Reserved.</p>
-    </footer> -->
+    <!-- Modern Footer -->
+    <footer class="footer mt-auto py-4 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="text-success">AgriConnect</h5>
+                    <p class="text-muted">Connecting farmers to markets</p>
+                </div>
+                <div class="col-md-4">
+                    <h6>Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-decoration-none text-muted">Home</a></li>
+                        <li><a href="/products/" class="text-decoration-none text-muted">Products</a></li>
+                        <li><a href="/market-insights/" class="text-decoration-none text-muted">Market Insights</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6>Contact Us</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i>support@agriconnect.com</li>
+                        <li><i class="fas fa-phone me-2"></i>+250 123 456 789</li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p class="mb-0">&copy; 2024 AgriConnect. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
-    <!-- <script src="{% static 'bootstrap.bundle.min.js' %}"></script> -->
-
-    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // WebSocket connection for notifications
-        const notificationSocket = new WebSocket(
-            "ws://" + window.location.host + "/ws/notifications/"
-        );
-
-        notificationSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            alert(data.message);  // Display the notification message
-        };
-
-        notificationSocket.onclose = function(e) {
-            console.error('Notification socket closed unexpectedly');
-        };
-    </script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>

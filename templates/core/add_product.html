@@ -9,49 +9,34 @@
     <form id="product-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
+        <div id="image-preview" class="mt-3 mb-3">
+            <p>{% trans "Image Preview" %}</p>
+        </div>
         <button type="submit" class="btn btn-primary">{% trans "Add Product" %}</button>
     </form>
 
-    <!-- preview the uploaded image and video files -->
+    <!-- preview the uploaded image -->
     <script>
     document.getElementById('id_image').addEventListener('change', function(event) {
         const file = event.target.files[0];
+        const previewContainer = document.getElementById('image-preview');
+        
+        // Clear previous preview
+        previewContainer.innerHTML = '<p>{% trans "Image Preview" %}</p>';
+        
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 const imgPreview = document.createElement('img');
                 imgPreview.src = e.target.result;
-                imgPreview.style.maxWidth = '200px';
-                imgPreview.style.maxHeight = '200px';
-                const previewContainer = document.getElementById('image-preview');
-                previewContainer.innerHTML = '';
+                imgPreview.style.maxWidth = '300px';
+                imgPreview.style.maxHeight = '300px';
+                imgPreview.className = 'img-fluid rounded';
                 previewContainer.appendChild(imgPreview);
             };
             reader.readAsDataURL(file);
         }
     });
-
-    document.getElementById('id_video').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const videoPreview = document.createElement('video');
-                videoPreview.src = e.target.result;
-                videoPreview.controls = true;
-                videoPreview.style.maxWidth = '200px';
-                videoPreview.style.maxHeight = '200px';
-                const previewContainer = document.getElementById('video-preview');
-                previewContainer.innerHTML = '';
-                previewContainer.appendChild(videoPreview);
-            };
-            reader.readAsDataURL(file);
-        }
-    });
     </script>
-
-    <div id="image-preview">Image Preview</div>
-    <div id="video-preview">Video Preview</div>
-
 </div>
 {% endblock %}

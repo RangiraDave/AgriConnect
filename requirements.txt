@@ -24,3 +24,5 @@ traitlets==5.14.3
 wcwidth==0.2.13
 djangorestframework
 djangorestframework-simplejwt
+django-cors-headers==4.7.0
+Pillow==11.1.0
