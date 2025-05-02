@@ -64,7 +64,7 @@ def cooperative_dashboard(request):
 
 def generate_verification_code():
     """Generate a random 6-digit verification code."""
-    return random.randint(100000, 999999)
+    return str(random.randint(100000, 999999))
 
 
 def signup(request):
@@ -101,9 +101,17 @@ def signup(request):
                 user.is_active = False
                 user.save()
 
+                # Generate verification code
                 verification_code = generate_verification_code()
+                logger.info(f"Generated verification code for {email}: {verification_code}")
+                
+                # Delete any existing verification codes
+                VerificationCode.objects.filter(user=user).delete()
+                
+                # Create new verification code
                 VerificationCode.objects.create(user=user, code=verification_code)
 
+                # Send verification email
                 send_mail(
                     _('AgriConnect Email Verification'),
                     _('Your verification code is: %(code)s') % {'code': verification_code},
@@ -128,7 +136,9 @@ def verify_email(request):
     """Verify the email address of a user."""
     if request.method == 'POST':
         email = request.session.get('verification_email')
-        verification_code = request.POST.get('verification_code', '').strip()  # Strip spaces
+        verification_code = request.POST.get('verification_code', '').strip()
+
+        logger.info(f"Verification attempt - Email: {email}, Code: {verification_code}")
 
         if not email:
             messages.error(request, _("No email found for this session. Please try resending the verification code."))
@@ -136,35 +146,43 @@ def verify_email(request):
 
         try:
             user = User.objects.get(email=email)
-            code_instance = get_object_or_404(VerificationCode, user=user)
+            code_instance = VerificationCode.objects.filter(user=user).order_by('-created_at').first()
 
-            if code_instance.code == verification_code and not code_instance.is_expired():
-                user.email_verified = True
-                user.is_active = True
-                user.save()
+            logger.info(f"Found verification code instance: {code_instance}")
 
-                # Delete the verification code after successful verification
-                code_instance.delete()
+            if not code_instance:
+                messages.error(request, _("No verification code found. Please request a new one."))
+                return redirect('resend_verification')
 
-                # messages.success(request, _("Email verified successfully! You can now log in."))
-                return redirect('login')
+            if code_instance.code == verification_code:
+                if not code_instance.is_expired():
+                    user.email_verified = True
+                    user.is_active = True
+                    user.save()
+                    code_instance.delete()
+                    messages.success(request, _("Email verified successfully! You can now log in."))
+                    return redirect('login')
+                else:
+                    logger.warning(f"Code expired for user {user.email}")
+                    messages.error(request, _("Verification code has expired. Please request a new one."))
             else:
-                messages.error(request, _("Invalid or expired verification code. Please try again."))
+                logger.warning(f"Invalid code for user {user.email}. Expected: {code_instance.code}, Got: {verification_code}")
+                messages.error(request, _("Invalid verification code. Please try again."))
         except User.DoesNotExist:
+            logger.error(f"User not found for email: {email}")
             messages.error(request, _("Invalid verification process. Please try again."))
 
     return render(request, 'core/verify_email.html')
 
 
 def resend_verification_code(request):
-    """
-    Resend the verification code to the user email.
-    """
+    """Resend the verification code to the user email."""
     if request.method != 'POST':
         return redirect('signup')
 
-    # Get the email from the POST data or session.
     email = request.POST.get('email', request.session.get('verification_email'))
+    logger.info(f"Resending verification code to: {email}")
+
     if not email:
         messages.error(request, _("No email provided for verification."))
         return redirect('signup')
@@ -175,15 +193,20 @@ def resend_verification_code(request):
             messages.info(request, _("Your email is already verified."))
             return redirect('login')
 
-        # Delete any existing verification codes for the user
+        # Delete any existing verification codes
         VerificationCode.objects.filter(user=user).delete()
-        # Create a new verification code
-        new_code = VerificationCode.objects.create(user=user)
+        
+        # Generate new verification code
+        verification_code = generate_verification_code()
+        logger.info(f"Generated new verification code for {email}: {verification_code}")
+        
+        # Create new verification code instance
+        VerificationCode.objects.create(user=user, code=verification_code)
 
         # Send the new verification code via email
         send_mail(
             _('AgriConnect Email Verification - Resend'),
-            _('Your new verification code is: %(code)s') % {'code': new_code.code},
+            _('Your new verification code is: %(code)s') % {'code': verification_code},
             settings.EMAIL_HOST_USER,
             [email],
             fail_silently=False,
@@ -196,6 +219,7 @@ def resend_verification_code(request):
         return redirect('verify_email')
 
     except User.DoesNotExist:
+        logger.error(f"User not found for email: {email}")
         messages.error(request, _("Email not found."))
         return redirect('signup')
 

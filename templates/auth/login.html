@@ -1,30 +1,116 @@
 <!-- templates/auth/login.html -->
 {% extends 'core/base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans "Login" %} - AgriConnect{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div>
-        <form method="POST" action="{% url 'login' %}">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" class="form-control" required placeholder="Enter your email">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-success text-white text-center py-4">
+                    <h3 class="mb-0"><i class="fas fa-sign-in-alt me-2"></i>{% trans "Login" %}</h3>
+                </div>
+                <div class="card-body p-4">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" action="{% url 'login' %}" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="form-floating mb-3">
+                            <input type="email" id="email" name="email" class="form-control" required 
+                                   placeholder="name@example.com">
+                            <label for="email"><i class="fas fa-envelope me-2"></i>{% trans "Email Address" %}</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="password" id="password" name="password" class="form-control" required 
+                                   placeholder="Password">
+                            <label for="password"><i class="fas fa-lock me-2"></i>{% trans "Password" %}</label>
+                        </div>
+
+                        <div class="form-floating mb-4">
+                            <select id="role" name="role" class="form-select" required>
+                                <option value="">{% trans "Select your role" %}</option>
+                                <option value="umuhinzi">{% trans "Umuhinzi (Farmer)" %}</option>
+                                <option value="umuguzi">{% trans "Umuguzi (Buyer)" %}</option>
+                                <option value="cooperative">{% trans "Cooperative" %}</option>
+                            </select>
+                            <label for="role"><i class="fas fa-user-tag me-2"></i>{% trans "Role" %}</label>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>{% trans "Login" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center py-3">
+                    <div class="small">
+                        {% trans "Don't have an account?" %} 
+                        <a href="{% url 'signup' %}" class="text-success">
+                            {% trans "Sign up now!" %}
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" class="form-control" required placeholder="Enter your password">
-            </div>
-            <div class="mb-3">
-                <label for="role">Role:</label>
-                <select id="role" name="role" class="form-control" required>
-                    <option value="umuhinzi">Umuhinzi</option>
-                    <option value="umuguzi">Umuguzi</option>
-                    <option value="cooperative">Cooperative</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
-        <p class="text-center mt-3">Nta konte ufite? <a href="{% url 'signup' %}">Yikore</a>.</p>
+        </div>
     </div>
 </div>
+
+<style>
+.form-floating > .form-control,
+.form-floating > .form-select {
+    height: calc(3.5rem + 2px);
+    line-height: 1.25;
+}
+
+.form-floating > label {
+    padding: 1rem 0.75rem;
+}
+
+.card {
+    border-radius: 1rem;
+}
+
+.card-header {
+    border-radius: 1rem 1rem 0 0 !important;
+}
+
+.btn-success {
+    padding: 0.8rem;
+    font-weight: 500;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+</style>
+
+<script>
+// Form validation
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+</script>
 {% endblock %}

@@ -51,8 +51,8 @@ class VerificationCode(models.Model):
         return f"{self.code}"
 
     def save(self, *args, **kwargs):
-        """ Generate a 6-digit code if not provided """
-        if not self.pk:
+        """ Only generate code if it's not provided """
+        if not self.code:
             self.code = f"{random.randint(100000, 999999)}"  # Ensure 6-digit code
         super(VerificationCode, self).save(*args, **kwargs)
 

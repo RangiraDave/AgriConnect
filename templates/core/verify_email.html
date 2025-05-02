@@ -1,34 +1,119 @@
 <!-- templates/core/verify_email.html -->
 {% extends "core/base.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Verify Your Email" %} - AgriConnect{% endblock %}
 
 {% block content %}
-    <h1>Verify Your Email</h1>
-    <p>Please enter the verification code sent to your email.</p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">{% trans "Verify Your Email" %}</h2>
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
 
-    <!-- Form for entering the verification code -->
-    <form method="POST" action="{% url 'verify_email' %}">
-        {% csrf_token %}
-        <label for="verification_code">Verification Code:</label>
-        <input type="text" id="verification_code" name="verification_code" required>
-        <button type="submit">Verify</button>
-    </form>
+                    <div class="verification-form">
+                        <p class="text-muted text-center mb-4">
+                            {% trans "Please enter the 6-digit verification code sent to your email address." %}
+                        </p>
 
-    <hr>
+                        <form method="POST" action="{% url 'verify_email' %}" class="mb-4">
+                            {% csrf_token %}
+                            <div class="verification-inputs mb-3">
+                                <input type="text" name="verification_code" class="form-control form-control-lg text-center" 
+                                       maxlength="6" pattern="\d{6}" required
+                                       placeholder="000000" autocomplete="off">
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">
+                                {% trans "Verify Email" %}
+                            </button>
+                        </form>
 
-    <!-- Form for resending the verification code -->
-    <h2>Didn't receive the code?</h2>
-    <form method="POST" action="{% url 'resend_verification' %}">
-        {% csrf_token %}
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="{{ request.session.verification_email }}" required>
-        <button type="submit">Resend Code</button>
-    </form>
+                        <div class="resend-section text-center">
+                            <p class="text-muted mb-2">{% trans "Didn't receive the code?" %}</p>
+                            <form method="POST" action="{% url 'resend_verification' %}" id="resendForm">
+                                {% csrf_token %}
+                                <input type="hidden" name="email" value="{{ request.session.verification_email }}">
+                                <button type="submit" class="btn btn-outline-primary" id="resendButton" disabled>
+                                    {% trans "Resend Code" %} (<span id="countdown">5</span>s)
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+<style>
+.verification-inputs input {
+    letter-spacing: 0.5em;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.verification-form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#resendButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const resendButton = document.getElementById('resendButton');
+    const countdownSpan = document.getElementById('countdown');
+    let countdown = 5;
+    let timer;
+
+    function startCountdown() {
+        resendButton.disabled = true;
+        countdown = 5;
+        countdownSpan.textContent = countdown;
+        
+        timer = setInterval(() => {
+            countdown--;
+            countdownSpan.textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(timer);
+                resendButton.disabled = false;
+                countdownSpan.textContent = '';
+            }
+        }, 1000);
+    }
+
+    // Start countdown when page loads
+    startCountdown();
+
+    // Handle resend form submission
+    document.getElementById('resendForm').addEventListener('submit', function(e) {
+        if (resendButton.disabled) {
+            e.preventDefault();
+            return;
+        }
+        startCountdown();
+    });
+
+    // Handle verification code input
+    const verificationInput = document.querySelector('input[name="verification_code"]');
+    verificationInput.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+});
+</script>
 {% endblock %}
