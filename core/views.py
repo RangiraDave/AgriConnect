@@ -8,8 +8,8 @@ from django.contrib import messages
 from django.db import IntegrityError, transaction
 from django.db.models import Avg, Count
 from django.http import JsonResponse
-from .models import Profile, Farmer, VerificationCode, Product, ProductRating
-from .forms import AddProductForm, EditProductForm
+from .models import Profile, Farmer, VerificationCode, Product, ProductRating, Province, District, Sector, Cell, Village, Cooperative, Buyer
+from .forms import AddProductForm, EditProductForm, ProfileEditForm
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import random
@@ -45,11 +45,21 @@ def login_view(request):
             return redirect('verify_email')
 
         if user:
-            if hasattr(user, 'profile') and user.profile.role.strip().lower() == role.lower():
-                login(request, user)
-                if user.profile.role.lower() == 'cooperative':
-                    return redirect('product_listings')
-                return redirect('user_profile') 
+            try:
+                # Check if user has a profile and if the role matches
+                if hasattr(user, 'profile') and user.profile and user.profile.role:
+                    user_role = user.profile.role.strip().lower()
+                    if user_role == role.lower():
+                        login(request, user)
+                        if user_role == 'cooperative':
+                            return redirect('product_listings')
+                        return redirect('user_profile')
+                    else:
+                        messages.error(request, _("Invalid role selected for this account."))
+                else:
+                    messages.error(request, _("User profile not properly configured. Please contact support."))
+            except AttributeError:
+                messages.error(request, _("User profile not properly configured. Please contact support."))
         else:
             messages.error(request, _("Invalid username or password!"))
 
@@ -77,10 +87,22 @@ def signup(request):
         role = request.POST.get('role')
         confirm_password = request.POST.get('confirm_password')
 
+        # Get location data
+        province_id = request.POST.get('province')
+        district_id = request.POST.get('district')
+        sector_id = request.POST.get('sector')
+        cell_id = request.POST.get('cell')
+        village_id = request.POST.get('village')
+        specific_location = request.POST.get('specific_location')
+
         errors = {}
 
         if not all([username, email, password, phone, role, confirm_password]):
             errors['general'] = _('All fields are required.')
+
+        # Validate location data for all roles
+        if not all([province_id, district_id, sector_id, cell_id, village_id]):
+            errors['location'] = _('All location fields are required.')
 
         if password != confirm_password:
             errors['password'] = _('Passwords do not match.')
@@ -120,7 +142,40 @@ def signup(request):
                     fail_silently=False,
                 )
 
-                Profile.objects.create(user=user, phone=phone, role=role)
+                # Create profile
+                profile = Profile.objects.create(user=user, phone=phone, role=role)
+
+                # Create role-specific profile with location data
+                if role == 'umuhinzi':
+                    Farmer.objects.create(
+                        profile=profile,
+                        province_id=province_id,
+                        district_id=district_id,
+                        sector_id=sector_id,
+                        cell_id=cell_id,
+                        village_id=village_id,
+                        specific_location=specific_location
+                    )
+                elif role == 'cooperative':
+                    Cooperative.objects.create(
+                        profile=profile,
+                        province_id=province_id,
+                        district_id=district_id,
+                        sector_id=sector_id,
+                        cell_id=cell_id,
+                        village_id=village_id,
+                        specific_location=specific_location
+                    )
+                elif role == 'umuguzi':
+                    Buyer.objects.create(
+                        profile=profile,
+                        province_id=province_id,
+                        district_id=district_id,
+                        sector_id=sector_id,
+                        cell_id=cell_id,
+                        village_id=village_id,
+                        specific_location=specific_location
+                    )
 
                 request.session['verification_email'] = email
                 return redirect('verify_email')
@@ -415,3 +470,130 @@ def delete_account(request):
         return redirect('homepage')
 
     return render(request, 'core/delete_account.html')
+
+
+def get_provinces(request):
+    """AJAX endpoint to get all provinces"""
+    provinces = Province.objects.all().values('id', 'name')
+    return JsonResponse(list(provinces), safe=False)
+
+def get_districts(request):
+    """AJAX endpoint to get districts for a province"""
+    province_id = request.GET.get('province')
+    if province_id:
+        districts = District.objects.filter(province_id=province_id).values('id', 'name')
+        return JsonResponse(list(districts), safe=False)
+    return JsonResponse([], safe=False)
+
+def get_sectors(request):
+    """AJAX endpoint to get sectors for a district"""
+    district_id = request.GET.get('district')
+    if district_id:
+        sectors = Sector.objects.filter(district_id=district_id).values('id', 'name')
+        return JsonResponse(list(sectors), safe=False)
+    return JsonResponse([], safe=False)
+
+def get_cells(request):
+    """AJAX endpoint to get cells for a sector"""
+    sector_id = request.GET.get('sector')
+    if sector_id:
+        cells = Cell.objects.filter(sector_id=sector_id).values('id', 'name')
+        return JsonResponse(list(cells), safe=False)
+    return JsonResponse([], safe=False)
+
+def get_villages(request):
+    """AJAX endpoint to get villages for a cell"""
+    cell_id = request.GET.get('cell')
+    if cell_id:
+        villages = Village.objects.filter(cell_id=cell_id).values('id', 'name')
+        return JsonResponse(list(villages), safe=False)
+    return JsonResponse([], safe=False)
+
+def product_list(request):
+    """View for listing products with location-based filtering"""
+    products = Product.objects.filter(is_available=True)
+    
+    # Get filter parameters
+    province_id = request.GET.get('province')
+    district_id = request.GET.get('district')
+    sector_id = request.GET.get('sector')
+    cell_id = request.GET.get('cell')
+    village_id = request.GET.get('village')
+    
+    # Apply filters
+    if province_id:
+        products = products.filter(owner__farmer__province_id=province_id) | \
+                  products.filter(owner__cooperative__province_id=province_id)
+    if district_id:
+        products = products.filter(owner__farmer__district_id=district_id) | \
+                  products.filter(owner__cooperative__district_id=district_id)
+    if sector_id:
+        products = products.filter(owner__farmer__sector_id=sector_id) | \
+                  products.filter(owner__cooperative__sector_id=sector_id)
+    if cell_id:
+        products = products.filter(owner__farmer__cell_id=cell_id) | \
+                  products.filter(owner__cooperative__cell_id=cell_id)
+    if village_id:
+        products = products.filter(owner__farmer__village_id=village_id) | \
+                  products.filter(owner__cooperative__village_id=village_id)
+    
+    # Get all provinces for the filter dropdown
+    provinces = Province.objects.all()
+    
+    context = {
+        'products': products,
+        'provinces': provinces,
+        'selected_province': province_id,
+        'selected_district': district_id,
+        'selected_sector': sector_id,
+        'selected_cell': cell_id,
+        'selected_village': village_id,
+    }
+    
+    return render(request, 'core/product_list.html', context)
+
+@login_required
+def edit_profile(request):
+    """View for editing user profile."""
+    profile = request.user.profile
+    
+    if request.method == 'POST':
+        form = ProfileEditForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Profile updated successfully.'))
+            return redirect('user_profile')
+    else:
+        form = ProfileEditForm(instance=profile)
+        
+        # Set initial values for location fields
+        try:
+            if profile.role == 'umuhinzi':
+                location = profile.farmer
+            elif profile.role == 'cooperative':
+                location = profile.cooperative
+            else:  # umuguzi
+                location = profile.buyer
+                
+            if location:
+                # Set initial values and data attributes for location fields
+                if location.province:
+                    form.fields['province'].initial = location.province.id
+                    form.fields['province'].widget.attrs['data-initial'] = location.province.id
+                if location.district:
+                    form.fields['district'].initial = location.district.id
+                    form.fields['district'].widget.attrs['data-initial'] = location.district.id
+                if location.sector:
+                    form.fields['sector'].initial = location.sector.id
+                    form.fields['sector'].widget.attrs['data-initial'] = location.sector.id
+                if location.cell:
+                    form.fields['cell'].initial = location.cell.id
+                    form.fields['cell'].widget.attrs['data-initial'] = location.cell.id
+                if location.village:
+                    form.fields['village'].initial = location.village.id
+                    form.fields['village'].widget.attrs['data-initial'] = location.village.id
+                form.fields['specific_location'].initial = location.specific_location
+        except (Farmer.DoesNotExist, Cooperative.DoesNotExist, Buyer.DoesNotExist):
+            pass
+    
+    return render(request, 'core/edit_profile.html', {'form': form})

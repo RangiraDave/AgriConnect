@@ -1,0 +1,256 @@
+{% extends 'core/base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans "Products" %} - AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Location Filter Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-filter me-2"></i>{% trans "Location Filter" %}</h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{% url 'product_list' %}" id="locationFilter">
+                        <!-- Province -->
+                        <div class="mb-3">
+                            <label for="province" class="form-label">{% trans "Province" %}</label>
+                            <select class="form-select" id="province" name="province">
+                                <option value="">{% trans "Select Province" %}</option>
+                                {% for province in provinces %}
+                                    <option value="{{ province.id }}" {% if selected_province == province.id|stringformat:"i" %}selected{% endif %}>
+                                        {{ province.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- District -->
+                        <div class="mb-3">
+                            <label for="district" class="form-label">{% trans "District" %}</label>
+                            <select class="form-select" id="district" name="district" {% if not selected_district %}disabled{% endif %}>
+                                <option value="">{% trans "Select District" %}</option>
+                            </select>
+                        </div>
+
+                        <!-- Sector -->
+                        <div class="mb-3">
+                            <label for="sector" class="form-label">{% trans "Sector" %}</label>
+                            <select class="form-select" id="sector" name="sector" {% if not selected_sector %}disabled{% endif %}>
+                                <option value="">{% trans "Select Sector" %}</option>
+                            </select>
+                        </div>
+
+                        <!-- Cell -->
+                        <div class="mb-3">
+                            <label for="cell" class="form-label">{% trans "Cell" %}</label>
+                            <select class="form-select" id="cell" name="cell" {% if not selected_cell %}disabled{% endif %}>
+                                <option value="">{% trans "Select Cell" %}</option>
+                            </select>
+                        </div>
+
+                        <!-- Village -->
+                        <div class="mb-3">
+                            <label for="village" class="form-label">{% trans "Village" %}</label>
+                            <select class="form-select" id="village" name="village" {% if not selected_village %}disabled{% endif %}>
+                                <option value="">{% trans "Select Village" %}</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-search me-2"></i>{% trans "Apply Filter" %}
+                            </button>
+                            <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>{% trans "Clear Filter" %}
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="col-lg-9">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for product in products %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text text-muted">
+                                <small>
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    {% if product.owner.farmer %}
+                                        {{ product.owner.farmer.province.name }}, {{ product.owner.farmer.district.name }}
+                                    {% else %}
+                                        {{ product.owner.cooperative.province.name }}, {{ product.owner.cooperative.district.name }}
+                                    {% endif %}
+                                </small>
+                            </p>
+                            <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h5 mb-0">RWF {{ product.price }}</span>
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-success">
+                                    <i class="fas fa-eye me-1"></i>{% trans "View" %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>{% trans "No products found matching your criteria." %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const provinceSelect = document.getElementById('province');
+    const districtSelect = document.getElementById('district');
+    const sectorSelect = document.getElementById('sector');
+    const cellSelect = document.getElementById('cell');
+    const villageSelect = document.getElementById('village');
+
+    // Function to fetch and populate dropdown
+    async function fetchAndPopulate(url, selectElement, paramName, paramValue) {
+        try {
+            const response = await fetch(`${url}?${paramName}=${paramValue}`);
+            const data = await response.json();
+            
+            // Clear existing options except the first one
+            while (selectElement.options.length > 1) {
+                selectElement.remove(1);
+            }
+            
+            // Add new options
+            data.forEach(item => {
+                const option = new Option(item.name, item.id);
+                selectElement.add(option);
+            });
+            
+            // Enable the select
+            selectElement.disabled = false;
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+    // Province change handler
+    provinceSelect.addEventListener('change', function() {
+        const provinceId = this.value;
+        if (provinceId) {
+            fetchAndPopulate('/api/districts/', districtSelect, 'province_id', provinceId);
+        } else {
+            districtSelect.disabled = true;
+            districtSelect.innerHTML = '<option value="">{% trans "Select District" %}</option>';
+        }
+        // Reset other dropdowns
+        sectorSelect.disabled = true;
+        cellSelect.disabled = true;
+        villageSelect.disabled = true;
+        sectorSelect.innerHTML = '<option value="">{% trans "Select Sector" %}</option>';
+        cellSelect.innerHTML = '<option value="">{% trans "Select Cell" %}</option>';
+        villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+    });
+
+    // District change handler
+    districtSelect.addEventListener('change', function() {
+        const districtId = this.value;
+        if (districtId) {
+            fetchAndPopulate('/api/sectors/', sectorSelect, 'district_id', districtId);
+        } else {
+            sectorSelect.disabled = true;
+            sectorSelect.innerHTML = '<option value="">{% trans "Select Sector" %}</option>';
+        }
+        // Reset other dropdowns
+        cellSelect.disabled = true;
+        villageSelect.disabled = true;
+        cellSelect.innerHTML = '<option value="">{% trans "Select Cell" %}</option>';
+        villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+    });
+
+    // Sector change handler
+    sectorSelect.addEventListener('change', function() {
+        const sectorId = this.value;
+        if (sectorId) {
+            fetchAndPopulate('/api/cells/', cellSelect, 'sector_id', sectorId);
+        } else {
+            cellSelect.disabled = true;
+            cellSelect.innerHTML = '<option value="">{% trans "Select Cell" %}</option>';
+        }
+        // Reset village dropdown
+        villageSelect.disabled = true;
+        villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+    });
+
+    // Cell change handler
+    cellSelect.addEventListener('change', function() {
+        const cellId = this.value;
+        if (cellId) {
+            fetchAndPopulate('/api/villages/', villageSelect, 'cell_id', cellId);
+        } else {
+            villageSelect.disabled = true;
+            villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+        }
+    });
+
+    // Initialize dropdowns if values are pre-selected
+    if (provinceSelect.value) {
+        provinceSelect.dispatchEvent(new Event('change'));
+    }
+    if (districtSelect.value) {
+        districtSelect.dispatchEvent(new Event('change'));
+    }
+    if (sectorSelect.value) {
+        sectorSelect.dispatchEvent(new Event('change'));
+    }
+    if (cellSelect.value) {
+        cellSelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.form-select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+.btn-success {
+    padding: 0.5rem 1rem;
+}
+
+.btn-outline-success:hover {
+    background-color: #198754;
+    color: white;
+}
+</style>
+{% endblock %}
+{% endblock %} 

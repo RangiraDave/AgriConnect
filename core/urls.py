@@ -37,6 +37,7 @@ urlpatterns = [
     path('products/', views.product_listings, name='product_listings'),
     path('add-product/', views.add_product, name='add_product'),
     path('profile/', views.user_profile, name='user_profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
     path('product/<int:pk>/edit/', views.edit_product, name='edit_product'),
     path('product/<int:pk>/delete/', views.delete_product, name='delete_product'),
     path('product/<int:pk>/rate/', views.rate_product, name='rate_product'),
@@ -44,6 +45,12 @@ urlpatterns = [
     path('market-insights/', views.market_insights, name='market_insights'),
     path('delete-account/', views.delete_account, name='delete_account'),
     path('api/', include(router.urls)),  # Add API routes
+    path('products/', views.product_list, name='product_list'),
+    path('api/districts/', views.get_districts, name='get_districts'),
+    path('api/sectors/', views.get_sectors, name='get_sectors'),
+    path('api/cells/', views.get_cells, name='get_cells'),
+    path('api/villages/', views.get_villages, name='get_villages'),
+    path('api/provinces/', views.get_provinces, name='get_provinces'),
 ]
 
 if settings.DEBUG:

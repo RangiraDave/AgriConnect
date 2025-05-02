@@ -84,12 +84,82 @@ class Profile(models.Model):
         ordering = ['id']
 
 
+class Province(models.Model):
+    """Model for Rwanda's provinces"""
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=2, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
+class District(models.Model):
+    """Model for Rwanda's districts"""
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=4, unique=True)
+    province = models.ForeignKey(Province, on_delete=models.CASCADE, related_name='districts')
+
+    def __str__(self):
+        return f"{self.name}, {self.province.name}"
+
+    class Meta:
+        ordering = ['name']
+
+
+class Sector(models.Model):
+    """Model for Rwanda's sectors"""
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=6, unique=True)
+    district = models.ForeignKey(District, on_delete=models.CASCADE, related_name='sectors')
+
+    def __str__(self):
+        return f"{self.name}, {self.district.name}"
+
+    class Meta:
+        ordering = ['name']
+
+
+class Cell(models.Model):
+    """Model for Rwanda's cells"""
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=8, unique=True)
+    sector = models.ForeignKey(Sector, on_delete=models.CASCADE, related_name='cells')
+
+    def __str__(self):
+        return f"{self.name}, {self.sector.name}"
+
+    class Meta:
+        ordering = ['name']
+
+
+class Village(models.Model):
+    """Model for Rwanda's villages"""
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=10, unique=True)
+    cell = models.ForeignKey(Cell, on_delete=models.CASCADE, related_name='villages')
+
+    def __str__(self):
+        return f"{self.name}, {self.cell.name}"
+
+    class Meta:
+        ordering = ['name']
+
+
 class Farmer(models.Model):
     """
     Farmer-specific details, linked to Profile
     """
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
-    location = models.CharField(max_length=255)
+    province = models.ForeignKey(Province, on_delete=models.SET_NULL, null=True, related_name='farmers')
+    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, related_name='farmers')
+    sector = models.ForeignKey(Sector, on_delete=models.SET_NULL, null=True, related_name='farmers')
+    cell = models.ForeignKey(Cell, on_delete=models.SET_NULL, null=True, related_name='farmers')
+    village = models.ForeignKey(Village, on_delete=models.SET_NULL, null=True, related_name='farmers')
+    specific_location = models.CharField(max_length=255, blank=True, null=True, 
+                                       help_text="Additional location details (e.g., house number, landmark)")
 
     def __str__(self):
         return f"Farmer: {self.profile.name}"
@@ -116,6 +186,13 @@ class Cooperative(models.Model):
     Cooperative-specific details
     """
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    province = models.ForeignKey(Province, on_delete=models.SET_NULL, null=True, related_name='cooperatives')
+    district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, related_name='cooperatives')
+    sector = models.ForeignKey(Sector, on_delete=models.SET_NULL, null=True, related_name='cooperatives')
+    cell = models.ForeignKey(Cell, on_delete=models.SET_NULL, null=True, related_name='cooperatives')
+    village = models.ForeignKey(Village, on_delete=models.SET_NULL, null=True, related_name='cooperatives')
+    specific_location = models.CharField(max_length=255, blank=True, null=True,
+                                       help_text="Additional location details (e.g., office number, landmark)")
 
     def __str__(self):
         return f"Cooperative: {self.profile.name}"
@@ -142,30 +219,29 @@ class Product(models.Model):
     name = models.CharField(max_length=25)  # Product name
     contact = models.CharField(max_length=25)  # Contact details
     description = models.TextField(blank=True, null=True)  # Product description
-    image = models.ImageField(upload_to='products/images/', blank=True, null=True)  # Product image
-    media = models.FileField(upload_to='media/', blank=True, null=True)
-    # location = models.CharField(max_length=255)  # Location where the product is available
-
+    media = models.FileField(upload_to='products/', blank=True, null=True, 
+                           help_text="Upload an image (jpg, png) or video (mp4)")  # Single media field for both images and videos
     price_per_unit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     quantity_available = models.PositiveIntegerField()
     unit = models.CharField(max_length=10, choices=UNIT_CHOICES)
-    #location fields for future geo-search:
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        """
-        Meta class for the Product model
-        """
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
         ordering = ['id']
 
     def __str__(self):
         return f"{self.name} - {self.owner.username}"
+
+    def is_video(self):
+        """Check if the media is a video file"""
+        if self.media:
+            return self.media.name.lower().endswith('.mp4')
+        return False
 
 
 class ProductRating(models.Model):

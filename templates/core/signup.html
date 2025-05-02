@@ -85,6 +85,63 @@
                             </div>
                         </div>
 
+                        <!-- Location Fields (initially hidden) -->
+                        <div id="locationFields" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <select id="province" name="province" class="form-select">
+                                            <option value="">{% trans "Select Province" %}</option>
+                                        </select>
+                                        <label for="province"><i class="fas fa-map-marker-alt me-2"></i>{% trans "Province" %}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <select id="district" name="district" class="form-select" disabled>
+                                            <option value="">{% trans "Select District" %}</option>
+                                        </select>
+                                        <label for="district"><i class="fas fa-map-marker-alt me-2"></i>{% trans "District" %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <select id="sector" name="sector" class="form-select" disabled>
+                                            <option value="">{% trans "Select Sector" %}</option>
+                                        </select>
+                                        <label for="sector"><i class="fas fa-map-marker-alt me-2"></i>{% trans "Sector" %}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <select id="cell" name="cell" class="form-select" disabled>
+                                            <option value="">{% trans "Select Cell" %}</option>
+                                        </select>
+                                        <label for="cell"><i class="fas fa-map-marker-alt me-2"></i>{% trans "Cell" %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <select id="village" name="village" class="form-select" disabled>
+                                            <option value="">{% trans "Select Village" %}</option>
+                                        </select>
+                                        <label for="village"><i class="fas fa-map-marker-alt me-2"></i>{% trans "Village" %}</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" id="specific_location" name="specific_location" class="form-control" 
+                                               placeholder="Specific Location">
+                                        <label for="specific_location"><i class="fas fa-map-marker-alt me-2"></i>{% trans "Specific Location" %}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="d-grid">
                             <button type="submit" class="btn btn-success btn-lg">
                                 <i class="fas fa-user-plus me-2"></i>{% trans "Create Account" %}
@@ -141,30 +198,264 @@
 </style>
 
 <script>
-// Form validation
-(function () {
-    'use strict'
-    var forms = document.querySelectorAll('.needs-validation')
-    Array.prototype.slice.call(forms).forEach(function (form) {
-        form.addEventListener('submit', function (event) {
-            if (!form.checkValidity()) {
-                event.preventDefault()
-                event.stopPropagation()
-            }
-            form.classList.add('was-validated')
-        }, false)
-    })
-})()
+document.addEventListener('DOMContentLoaded', function() {
+    let isSubmitting = false;
 
-// Password confirmation validation
-document.getElementById('confirm_password').addEventListener('input', function() {
-    const password = document.getElementById('password').value;
-    const confirmPassword = this.value;
-    
-    if (password !== confirmPassword) {
-        this.setCustomValidity("{% trans 'Passwords do not match' %}");
-    } else {
-        this.setCustomValidity('');
+    // Form validation
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            if (isSubmitting) {
+                e.preventDefault();
+                return;
+            }
+
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                e.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
+
+            // Validate location fields if role is farmer or cooperative
+            const role = document.getElementById('role').value;
+            if (role === 'umuhinzi' || role === 'cooperative') {
+                const locationFields = ['province', 'district', 'sector', 'cell', 'village'];
+                for (const field of locationFields) {
+                    const select = document.getElementById(field);
+                    if (!select.value) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        select.setCustomValidity("{% trans 'This field is required' %}");
+                        select.reportValidity();
+                        return;
+                    }
+                }
+            }
+
+            isSubmitting = true;
+            const submitButton = form.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>{% trans "Creating Account..." %}';
+            }
+        });
+    }
+
+    // Password confirmation validation
+    const confirmPassword = document.getElementById('confirm_password');
+    if (confirmPassword) {
+        confirmPassword.addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            if (password !== this.value) {
+                this.setCustomValidity("{% trans 'Passwords do not match' %}");
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    }
+
+    // Function to load provinces
+    async function loadProvinces() {
+        const provinceSelect = document.getElementById('province');
+        if (!provinceSelect) return;
+
+        try {
+            const response = await fetch('/api/provinces/');
+            if (!response.ok) throw new Error('Failed to load provinces');
+            const data = await response.json();
+            
+            provinceSelect.innerHTML = '<option value="">{% trans "Select Province" %}</option>';
+            data.forEach(province => {
+                const option = document.createElement('option');
+                option.value = province.id;
+                option.textContent = province.name;
+                provinceSelect.appendChild(option);
+            });
+            provinceSelect.disabled = false;
+        } catch (error) {
+            console.error('Error loading provinces:', error);
+            alert("{% trans 'Failed to load provinces. Please try again.' %}");
+        }
+    }
+
+    // Function to load districts
+    async function loadDistricts(provinceId) {
+        const districtSelect = document.getElementById('district');
+        if (!districtSelect) return;
+
+        if (!provinceId) {
+            districtSelect.innerHTML = '<option value="">{% trans "Select District" %}</option>';
+            districtSelect.disabled = true;
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/districts/?province_id=${provinceId}`);
+            if (!response.ok) throw new Error('Failed to load districts');
+            const data = await response.json();
+            
+            districtSelect.innerHTML = '<option value="">{% trans "Select District" %}</option>';
+            data.forEach(district => {
+                const option = document.createElement('option');
+                option.value = district.id;
+                option.textContent = district.name;
+                districtSelect.appendChild(option);
+            });
+            districtSelect.disabled = false;
+        } catch (error) {
+            console.error('Error loading districts:', error);
+            alert("{% trans 'Failed to load districts. Please try again.' %}");
+        }
+    }
+
+    // Function to load sectors
+    async function loadSectors(districtId) {
+        const sectorSelect = document.getElementById('sector');
+        if (!sectorSelect) return;
+
+        if (!districtId) {
+            sectorSelect.innerHTML = '<option value="">{% trans "Select Sector" %}</option>';
+            sectorSelect.disabled = true;
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/sectors/?district_id=${districtId}`);
+            if (!response.ok) throw new Error('Failed to load sectors');
+            const data = await response.json();
+            
+            sectorSelect.innerHTML = '<option value="">{% trans "Select Sector" %}</option>';
+            data.forEach(sector => {
+                const option = document.createElement('option');
+                option.value = sector.id;
+                option.textContent = sector.name;
+                sectorSelect.appendChild(option);
+            });
+            sectorSelect.disabled = false;
+        } catch (error) {
+            console.error('Error loading sectors:', error);
+            alert("{% trans 'Failed to load sectors. Please try again.' %}");
+        }
+    }
+
+    // Function to load cells
+    async function loadCells(sectorId) {
+        const cellSelect = document.getElementById('cell');
+        if (!cellSelect) return;
+
+        if (!sectorId) {
+            cellSelect.innerHTML = '<option value="">{% trans "Select Cell" %}</option>';
+            cellSelect.disabled = true;
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/cells/?sector_id=${sectorId}`);
+            if (!response.ok) throw new Error('Failed to load cells');
+            const data = await response.json();
+            
+            cellSelect.innerHTML = '<option value="">{% trans "Select Cell" %}</option>';
+            data.forEach(cell => {
+                const option = document.createElement('option');
+                option.value = cell.id;
+                option.textContent = cell.name;
+                cellSelect.appendChild(option);
+            });
+            cellSelect.disabled = false;
+        } catch (error) {
+            console.error('Error loading cells:', error);
+            alert("{% trans 'Failed to load cells. Please try again.' %}");
+        }
+    }
+
+    // Function to load villages
+    async function loadVillages(cellId) {
+        const villageSelect = document.getElementById('village');
+        if (!villageSelect) return;
+
+        if (!cellId) {
+            villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+            villageSelect.disabled = true;
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/villages/?cell_id=${cellId}`);
+            if (!response.ok) throw new Error('Failed to load villages');
+            const data = await response.json();
+            
+            villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+            data.forEach(village => {
+                const option = document.createElement('option');
+                option.value = village.id;
+                option.textContent = village.name;
+                villageSelect.appendChild(option);
+            });
+            villageSelect.disabled = false;
+        } catch (error) {
+            console.error('Error loading villages:', error);
+            alert("{% trans 'Failed to load villages. Please try again.' %}");
+        }
+    }
+
+    // Add event listeners for location fields
+    const roleSelect = document.getElementById('role');
+    const provinceSelect = document.getElementById('province');
+    const districtSelect = document.getElementById('district');
+    const sectorSelect = document.getElementById('sector');
+    const cellSelect = document.getElementById('cell');
+    const villageSelect = document.getElementById('village');
+
+    if (roleSelect) {
+        roleSelect.addEventListener('change', function() {
+            const locationFields = document.getElementById('locationFields');
+            locationFields.style.display = 'block';
+            loadProvinces();
+        });
+    }
+
+    if (provinceSelect) {
+        provinceSelect.addEventListener('change', function() {
+            loadDistricts(this.value);
+            sectorSelect.innerHTML = '<option value="">{% trans "Select Sector" %}</option>';
+            cellSelect.innerHTML = '<option value="">{% trans "Select Cell" %}</option>';
+            villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+            sectorSelect.disabled = true;
+            cellSelect.disabled = true;
+            villageSelect.disabled = true;
+        });
+    }
+
+    if (districtSelect) {
+        districtSelect.addEventListener('change', function() {
+            loadSectors(this.value);
+            cellSelect.innerHTML = '<option value="">{% trans "Select Cell" %}</option>';
+            villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+            cellSelect.disabled = true;
+            villageSelect.disabled = true;
+        });
+    }
+
+    if (sectorSelect) {
+        sectorSelect.addEventListener('change', function() {
+            loadCells(this.value);
+            villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+            villageSelect.disabled = true;
+        });
+    }
+
+    if (cellSelect) {
+        cellSelect.addEventListener('change', function() {
+            loadVillages(this.value);
+        });
+    }
+
+    // Initialize location fields
+    if (roleSelect) {
+        const locationFields = document.getElementById('locationFields');
+        locationFields.style.display = 'block';
+        loadProvinces();
     }
 });
 </script>

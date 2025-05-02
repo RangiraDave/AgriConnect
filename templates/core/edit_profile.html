@@ -1,0 +1,354 @@
+<!-- templates/core/edit_profile.html -->
+{% extends 'core/base.html' %}
+{% load i18n static %}
+
+{% block title %}{% trans "Edit Profile" %} - AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-success text-white text-center py-4">
+                    <h3 class="mb-0"><i class="fas fa-user-edit me-2"></i>{% trans "Edit Profile" %}</h3>
+                </div>
+                <div class="card-body p-4">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Basic Information -->
+                        <div class="mb-4">
+                            <h5 class="text-success mb-3">{% trans "Basic Information" %}</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.username.id_for_label }}" class="form-label">
+                                        <i class="fas fa-user me-2"></i>{% trans "Username" %}
+                                    </label>
+                                    {{ form.username }}
+                                    {% if form.username.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.username.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.name.id_for_label }}" class="form-label">
+                                        <i class="fas fa-user me-2"></i>{% trans "Full Name" %}
+                                    </label>
+                                    {{ form.name }}
+                                    {% if form.name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.name.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label">
+                                    <i class="fas fa-phone me-2"></i>{% trans "Phone Number" %}
+                                </label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.phone.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Location Information -->
+                        <div class="mb-4">
+                            <h5 class="text-success mb-3">{% trans "Location Information" %}</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.province.id_for_label }}" class="form-label">
+                                        <i class="fas fa-map-marker-alt me-2"></i>{% trans "Province" %}
+                                    </label>
+                                    {{ form.province }}
+                                    {% if form.province.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.province.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.district.id_for_label }}" class="form-label">
+                                        <i class="fas fa-map me-2"></i>{% trans "District" %}
+                                    </label>
+                                    {{ form.district }}
+                                    {% if form.district.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.district.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.sector.id_for_label }}" class="form-label">
+                                        <i class="fas fa-map-pin me-2"></i>{% trans "Sector" %}
+                                    </label>
+                                    {{ form.sector }}
+                                    {% if form.sector.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.sector.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.cell.id_for_label }}" class="form-label">
+                                        <i class="fas fa-thumbtack me-2"></i>{% trans "Cell" %}
+                                    </label>
+                                    {{ form.cell }}
+                                    {% if form.cell.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.cell.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.village.id_for_label }}" class="form-label">
+                                        <i class="fas fa-home me-2"></i>{% trans "Village" %}
+                                    </label>
+                                    {{ form.village }}
+                                    {% if form.village.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.village.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.specific_location.id_for_label }}" class="form-label">
+                                        <i class="fas fa-map-marked-alt me-2"></i>{% trans "Specific Location" %}
+                                    </label>
+                                    {{ form.specific_location }}
+                                    {% if form.specific_location.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.specific_location.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-save me-2"></i>{% trans "Save Changes" %}
+                            </button>
+                            <a href="{% url 'user_profile' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>{% trans "Cancel" %}
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 1rem;
+}
+
+.card-header {
+    border-radius: 1rem 1rem 0 0 !important;
+}
+
+.form-control:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+.btn-success {
+    padding: 0.8rem;
+    font-weight: 500;
+}
+
+h4 {
+    color: #198754;
+    font-weight: 600;
+    border-bottom: 2px solid #198754;
+    padding-bottom: 0.5rem;
+    margin-top: 2rem;
+}
+</style>
+
+<script>
+// Form validation
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+
+// Location fields dynamic loading
+document.addEventListener('DOMContentLoaded', function() {
+    const provinceSelect = document.getElementById('id_province');
+    const districtSelect = document.getElementById('id_district');
+    const sectorSelect = document.getElementById('id_sector');
+    const cellSelect = document.getElementById('id_cell');
+    const villageSelect = document.getElementById('id_village');
+
+    // Load initial provinces
+    fetch('/api/provinces/')
+        .then(response => response.json())
+        .then(data => {
+            provinceSelect.innerHTML = '<option value="">{% trans "Select Province" %}</option>';
+            data.forEach(province => {
+                const option = document.createElement('option');
+                option.value = province.id;
+                option.textContent = province.name;
+                if (province.id === parseInt(provinceSelect.dataset.initial)) {
+                    option.selected = true;
+                }
+                provinceSelect.appendChild(option);
+            });
+            if (provinceSelect.dataset.initial) {
+                updateDistricts();
+            }
+        });
+
+    function updateDistricts() {
+        const provinceId = provinceSelect.value;
+        if (provinceId) {
+            fetch(`/api/districts/?province=${provinceId}`)
+                .then(response => response.json())
+                .then(data => {
+                    districtSelect.innerHTML = '<option value="">{% trans "Select District" %}</option>';
+                    data.forEach(district => {
+                        const option = document.createElement('option');
+                        option.value = district.id;
+                        option.textContent = district.name;
+                        if (district.id === parseInt(districtSelect.dataset.initial)) {
+                            option.selected = true;
+                        }
+                        districtSelect.appendChild(option);
+                    });
+                    districtSelect.disabled = false;
+                    if (districtSelect.dataset.initial) {
+                        updateSectors();
+                    }
+                });
+        } else {
+            districtSelect.innerHTML = '<option value="">{% trans "Select District" %}</option>';
+            districtSelect.disabled = true;
+        }
+        sectorSelect.innerHTML = '<option value="">{% trans "Select Sector" %}</option>';
+        sectorSelect.disabled = true;
+        cellSelect.innerHTML = '<option value="">{% trans "Select Cell" %}</option>';
+        cellSelect.disabled = true;
+        villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+        villageSelect.disabled = true;
+    }
+
+    function updateSectors() {
+        const districtId = districtSelect.value;
+        if (districtId) {
+            fetch(`/api/sectors/?district=${districtId}`)
+                .then(response => response.json())
+                .then(data => {
+                    sectorSelect.innerHTML = '<option value="">{% trans "Select Sector" %}</option>';
+                    data.forEach(sector => {
+                        const option = document.createElement('option');
+                        option.value = sector.id;
+                        option.textContent = sector.name;
+                        if (sector.id === parseInt(sectorSelect.dataset.initial)) {
+                            option.selected = true;
+                        }
+                        sectorSelect.appendChild(option);
+                    });
+                    sectorSelect.disabled = false;
+                    if (sectorSelect.dataset.initial) {
+                        updateCells();
+                    }
+                });
+        } else {
+            sectorSelect.innerHTML = '<option value="">{% trans "Select Sector" %}</option>';
+            sectorSelect.disabled = true;
+        }
+        cellSelect.innerHTML = '<option value="">{% trans "Select Cell" %}</option>';
+        cellSelect.disabled = true;
+        villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+        villageSelect.disabled = true;
+    }
+
+    function updateCells() {
+        const sectorId = sectorSelect.value;
+        if (sectorId) {
+            fetch(`/api/cells/?sector=${sectorId}`)
+                .then(response => response.json())
+                .then(data => {
+                    cellSelect.innerHTML = '<option value="">{% trans "Select Cell" %}</option>';
+                    data.forEach(cell => {
+                        const option = document.createElement('option');
+                        option.value = cell.id;
+                        option.textContent = cell.name;
+                        if (cell.id === parseInt(cellSelect.dataset.initial)) {
+                            option.selected = true;
+                        }
+                        cellSelect.appendChild(option);
+                    });
+                    cellSelect.disabled = false;
+                    if (cellSelect.dataset.initial) {
+                        updateVillages();
+                    }
+                });
+        } else {
+            cellSelect.innerHTML = '<option value="">{% trans "Select Cell" %}</option>';
+            cellSelect.disabled = true;
+        }
+        villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+        villageSelect.disabled = true;
+    }
+
+    function updateVillages() {
+        const cellId = cellSelect.value;
+        if (cellId) {
+            fetch(`/api/villages/?cell=${cellId}`)
+                .then(response => response.json())
+                .then(data => {
+                    villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+                    data.forEach(village => {
+                        const option = document.createElement('option');
+                        option.value = village.id;
+                        option.textContent = village.name;
+                        if (village.id === parseInt(villageSelect.dataset.initial)) {
+                            option.selected = true;
+                        }
+                        villageSelect.appendChild(option);
+                    });
+                    villageSelect.disabled = false;
+                });
+        } else {
+            villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+            villageSelect.disabled = true;
+        }
+    }
+
+    provinceSelect.addEventListener('change', updateDistricts);
+    districtSelect.addEventListener('change', updateSectors);
+    sectorSelect.addEventListener('change', updateCells);
+    cellSelect.addEventListener('change', updateVillages);
+});
+</script>
+{% endblock %} 
