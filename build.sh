@@ -2,14 +2,19 @@
 # exit on error
 set -o errexit
 
+# Update pip
+pip install --upgrade pip
+
 # Install Python dependencies
 pip install -r requirements.txt
 
 # Collect static files
 python3 manage.py collectstatic --no-input
 
-# Run migrations
-python3 manage.py migrate
+# Handle migrations
+echo "Running migrations..."
+python3 manage.py makemigrations --merge --noinput
+python3 manage.py migrate --noinput
 
 # Create superuser if it doesn't exist
 python3 manage.py shell << END
