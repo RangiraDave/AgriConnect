@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 from django.utils.translation import gettext_lazy as _
 from decouple import config  # For reading environment variables
+import logging
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -74,16 +75,27 @@ ASGI_APPLICATION = 'AgriConnect.routing.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
+logger = logging.getLogger(__name__)
+
+try:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST', default='localhost'),
+            'PORT': config('DB_PORT', default='5432'),
+            'CONN_MAX_AGE': 60,  # Keep connections alive for 60 seconds
+            'OPTIONS': {
+                'connect_timeout': 10,  # Connection timeout in seconds
+            }
+        }
     }
-}
+    logger.info(f"Database configuration loaded successfully. Host: {config('DB_HOST', default='localhost')}")
+except Exception as e:
+    logger.error(f"Error loading database configuration: {str(e)}")
+    raise
 
 # Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

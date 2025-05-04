@@ -597,3 +597,17 @@ def edit_profile(request):
             pass
     
     return render(request, 'core/edit_profile.html', {'form': form})
+
+def debug_db_config(request):
+    """Temporary view to debug database configuration."""
+    if not settings.DEBUG:
+        return JsonResponse({'error': 'Debug view not available in production'}, status=403)
+    
+    db_config = {
+        'host': settings.DATABASES['default']['HOST'],
+        'port': settings.DATABASES['default']['PORT'],
+        'name': settings.DATABASES['default']['NAME'],
+        'user': settings.DATABASES['default']['USER'],
+        'password': '********' if settings.DATABASES['default']['PASSWORD'] else None,
+    }
+    return JsonResponse(db_config)
