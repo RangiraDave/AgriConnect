@@ -5,6 +5,9 @@ set -o errexit
 # Install Python dependencies
 pip install -r requirements.txt
 
+# Collect static files
+python3 manage.py collectstatic --no-input
+
 # Run migrations
 python3 manage.py migrate
 
