@@ -100,9 +100,10 @@ def signup(request):
         if not all([username, email, password, phone, role, confirm_password]):
             errors['general'] = _('All fields are required.')
 
-        # Validate location data for all roles
-        if not all([province_id, district_id, sector_id, cell_id, village_id]):
-            errors['location'] = _('All location fields are required.')
+        # Validate location data only for farmers and cooperatives
+        if role in ['umuhinzi', 'cooperative']:
+            if not all([province_id, district_id, sector_id, cell_id, village_id]):
+                errors['location'] = _('All location fields are required.')
 
         if password != confirm_password:
             errors['password'] = _('Passwords do not match.')
@@ -145,7 +146,7 @@ def signup(request):
                 # Create profile
                 profile = Profile.objects.create(user=user, phone=phone, role=role)
 
-                # Create role-specific profile with location data
+                # Create role-specific profile with location data only for farmers and cooperatives
                 if role == 'umuhinzi':
                     Farmer.objects.create(
                         profile=profile,
@@ -167,15 +168,7 @@ def signup(request):
                         specific_location=specific_location
                     )
                 elif role == 'umuguzi':
-                    Buyer.objects.create(
-                        profile=profile,
-                        province_id=province_id,
-                        district_id=district_id,
-                        sector_id=sector_id,
-                        cell_id=cell_id,
-                        village_id=village_id,
-                        specific_location=specific_location
-                    )
+                    Buyer.objects.create(profile=profile)
 
                 request.session['verification_email'] = email
                 return redirect('verify_email')

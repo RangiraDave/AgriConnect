@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const response = await fetch(`/api/districts/?province_id=${provinceId}`);
+            const response = await fetch(`/api/districts/?province=${provinceId}`);
             if (!response.ok) throw new Error('Failed to load districts');
             const data = await response.json();
             
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const response = await fetch(`/api/sectors/?district_id=${districtId}`);
+            const response = await fetch(`/api/sectors/?district=${districtId}`);
             if (!response.ok) throw new Error('Failed to load sectors');
             const data = await response.json();
             
@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const response = await fetch(`/api/cells/?sector_id=${sectorId}`);
+            const response = await fetch(`/api/cells/?sector=${sectorId}`);
             if (!response.ok) throw new Error('Failed to load cells');
             const data = await response.json();
             
@@ -381,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const response = await fetch(`/api/villages/?cell_id=${cellId}`);
+            const response = await fetch(`/api/villages/?cell=${cellId}`);
             if (!response.ok) throw new Error('Failed to load villages');
             const data = await response.json();
             
