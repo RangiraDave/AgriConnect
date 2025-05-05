@@ -2,11 +2,11 @@
 # exit on error
 set -o errexit
 
-# Update pip
-pip install --upgrade pip
+ # Ensure any half‑installed Django is removed
+pip uninstall -y Django
 
-# Install other Python dependencies
-pip install -r requirements.txt
+# Install exactly what's in requirements, including Django==5.1.3
+pip install --upgrade --force-reinstall -r requirements.txt
 
 # Collect static files
 python3 manage.py collectstatic --no-input
