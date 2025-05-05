@@ -2,11 +2,11 @@
 # exit on error
 set -o errexit
 
- # Ensure any half‑installed Django is removed
+# Ensure any half‑installed Django is removed
 pip uninstall -y Django
 
 # Install exactly what's in requirements, including Django==5.1.3
-pip install --upgrade --force-reinstall -r requirements.txt
+pip install install -r requirements.txt
 
 # Collect static files
 python3 manage.py collectstatic --no-input
@@ -19,6 +19,7 @@ echo "Running migrations..."
 # find . -path "*/migrations/*.pyc" -delete
 
 # Create fresh migrations
+
 python3 manage.py makemigrations core --noinput
 
 # Apply migrations
