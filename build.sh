@@ -5,9 +5,6 @@ set -o errexit
 # Update pip
 pip install --upgrade pip
 
-# Install Django first with a specific version
-pip install Django==4.2.10
-
 # Install other Python dependencies
 pip install -r requirements.txt
 
