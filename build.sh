@@ -6,7 +6,7 @@ set -o errexit
 # pip uninstall -y Django
 
 # Install exactly what's in requirements, including Django==5.1.3
-pip install install -r requirements.txt
+pip install -r requirements.txt
 
 # Collect static files
 python3 manage.py collectstatic --no-input
@@ -15,12 +15,9 @@ python3 manage.py collectstatic --no-input
 echo "Running migrations..."
 
 # Remove all migration files except __init__.py
-# find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
-# find . -path "*/migrations/*.pyc" -delete
-
-# Create fresh migrations
-
+find core/migrations -type f -not -name "__init__.py" -delete
 python3 manage.py makemigrations core --noinput
+python3 manage.py migrate --noinput
 
 # Apply migrations
 python3 manage.py migrate --noinput
