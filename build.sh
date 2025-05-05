@@ -15,8 +15,8 @@ python3 manage.py collectstatic --no-input
 echo "Running migrations..."
 
 # Remove all migration files except __init__.py
-find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
-find . -path "*/migrations/*.pyc" -delete
+# find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+# find . -path "*/migrations/*.pyc" -delete
 
 # Create fresh migrations
 python3 manage.py makemigrations core --noinput
