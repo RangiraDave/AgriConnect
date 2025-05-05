@@ -13,7 +13,22 @@ python3 manage.py collectstatic --no-input
 
 # Handle migrations
 echo "Running migrations..."
-python3 manage.py makemigrations --merge --noinput
+# Drop all tables and recreate them
+python3 manage.py dbshell << EOF
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO public;
+EOF
+
+# Remove all migration files except __init__.py
+find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+find . -path "*/migrations/*.pyc" -delete
+
+# Create fresh migrations
+python3 manage.py makemigrations --noinput
+
+# Apply migrations
 python3 manage.py migrate --noinput
 
 # Create superuser if it doesn't exist
