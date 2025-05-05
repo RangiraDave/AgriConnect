@@ -3,7 +3,7 @@
 set -o errexit
 
 # Ensure any half‑installed Django is removed
-pip uninstall -y Django
+# pip uninstall -y Django
 
 # Install exactly what's in requirements, including Django==5.1.3
 pip install install -r requirements.txt
