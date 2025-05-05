@@ -5,7 +5,10 @@ set -o errexit
 # Update pip
 pip install --upgrade pip
 
-# Install Python dependencies
+# Install Django first with a specific version
+pip install Django==4.2.10
+
+# Install other Python dependencies
 pip install -r requirements.txt
 
 # Collect static files
@@ -21,8 +24,8 @@ find . -path "*/migrations/*.pyc" -delete
 # Create fresh migrations
 python3 manage.py makemigrations core --noinput
 
-# Apply migrations with fake initial
-python3 manage.py migrate --fake-initial --noinput
+# Apply migrations
+python3 manage.py migrate --noinput
 
 # Create superuser if it doesn't exist
 python3 manage.py shell << END
