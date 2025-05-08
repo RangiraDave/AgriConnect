@@ -16,7 +16,7 @@ class AddProductForm(forms.ModelForm):
     """ Form to add a product """
     class Meta:
         model = Product
-        fields = ['name', 'contact', 'description', 'media', 'price_per_unit', 'quantity_available', 'unit']
+        fields = ['name', 'description', 'media', 'price_per_unit', 'quantity_available', 'unit']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3}),
             'media': forms.FileInput(attrs={'accept': 'image/*,video/mp4'}),
@@ -33,7 +33,7 @@ class EditProductForm(forms.ModelForm):
     """ Form to edit a product """
     class Meta:
         model = Product
-        fields = ['name', 'contact', 'description', 'media', 'price_per_unit', 'quantity_available', 'unit']
+        fields = ['name', 'description', 'media', 'price_per_unit', 'quantity_available', 'unit']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3}),
             'media': forms.FileInput(attrs={'accept': 'image/*,video/mp4'}),

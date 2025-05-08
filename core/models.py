@@ -217,7 +217,6 @@ class Product(models.Model):
     ]
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=25)  # Product name
-    contact = models.CharField(max_length=25)  # Contact details
     description = models.TextField(blank=True, null=True)  # Product description
     media = models.FileField(upload_to='products/', blank=True, null=True, 
                            help_text="Upload an image (jpg, png) or video (mp4)")  # Single media field for both images and videos
