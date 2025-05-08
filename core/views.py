@@ -356,14 +356,21 @@ def add_product(request):
                 with transaction.atomic():
                     instance = form.save(commit=False)
                     instance.owner = request.user
+                    
+                    # Ensure the user has a profile with contact information
+                    if not hasattr(request.user, 'profile') or not request.user.profile.phone:
+                        messages.error(request, _("Please update your profile with contact information before adding a product."))
+                        return redirect('edit_profile')
+                    
                     instance.save()
                     messages.success(request, _("Product added successfully!"))
                     return redirect('product_listings')
             except Exception as e:
-                logger.error(f"Error while saving product: {e}")
-                messages.error(request, _("An error occurred while saving the product."))
+                logger.error(f"Error while saving product: {str(e)}")
+                messages.error(request, _("An error occurred while saving the product. Please try again."))
         else:
-            logger.debug(f"Form validation errors: {form.errors}")
+            logger.error(f"Form validation errors: {form.errors}")
+            messages.error(request, _("Please correct the errors in the form."))
 
     form = AddProductForm()
     return render(request, 'core/add_product.html', {'form': form})

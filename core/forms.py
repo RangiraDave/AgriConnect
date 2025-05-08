@@ -5,6 +5,7 @@ from .models import Product
 from django.contrib.auth import get_user_model
 from .models import Profile
 from .models import Province, District, Sector, Cell, Village, Farmer, Cooperative
+import os
 
 User = get_user_model()
 
@@ -13,20 +14,32 @@ class FarmerForm(forms.Form):
 
 
 class AddProductForm(forms.ModelForm):
-    """ Form to add a product """
+    """Form for adding a new product."""
     class Meta:
         model = Product
         fields = ['name', 'description', 'media', 'price_per_unit', 'quantity_available', 'unit']
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 3}),
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'price_per_unit': forms.NumberInput(attrs={'min': '0', 'step': '0.01'}),
+            'quantity_available': forms.NumberInput(attrs={'min': '0'}),
             'media': forms.FileInput(attrs={'accept': 'image/*,video/mp4'}),
         }
 
-    def clean_quantity_available(self):
-        quantity = self.cleaned_data['quantity_available']
-        if quantity < 0:
-            raise forms.ValidationError("Quantity must be a positive number.")
-        return quantity
+    def clean(self):
+        cleaned_data = super().clean()
+        media = cleaned_data.get('media')
+        
+        if media:
+            # Check file size (5MB limit)
+            if media.size > 5 * 1024 * 1024:  # 5MB in bytes
+                raise forms.ValidationError(_("File size must be no more than 5MB."))
+            
+            # Check file type
+            ext = os.path.splitext(media.name)[1].lower()
+            if ext not in ['.jpg', '.jpeg', '.png', '.mp4']:
+                raise forms.ValidationError(_("Only JPG, PNG, and MP4 files are allowed."))
+        
+        return cleaned_data
 
 
 class EditProductForm(forms.ModelForm):
