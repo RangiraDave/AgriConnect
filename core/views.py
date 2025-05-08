@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import IntegrityError, transaction
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Q
 from django.http import JsonResponse
 from .models import Profile, Farmer, VerificationCode, Product, ProductRating, Province, District, Sector, Cell, Village, Cooperative, Buyer
 from .forms import AddProductForm, EditProductForm, ProfileEditForm
@@ -274,14 +274,71 @@ def resend_verification_code(request):
 
 @login_required
 def product_listings(request):
-    """Display a list of all products."""
-    products = Product.objects.select_related('owner').all()
+    """Display all products with filtering and search capabilities."""
+    # Get filter parameters
+    search_query = request.GET.get('search', '')
+    province_id = request.GET.get('province')
+    district_id = request.GET.get('district')
+    sector_id = request.GET.get('sector')
+    cell_id = request.GET.get('cell')
+    village_id = request.GET.get('village')
+
+    # Start with all products
+    products = Product.objects.all()
+
+    # Apply search filter if provided
+    if search_query:
+        products = products.filter(
+            Q(name__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+
+    # Apply location filters
+    try:
+        if province_id and province_id != 'None':
+            products = products.filter(
+                Q(owner__profile__farmer__province_id=province_id) |
+                Q(owner__profile__cooperative__province_id=province_id)
+            )
+        if district_id and district_id != 'None':
+            products = products.filter(
+                Q(owner__profile__farmer__district_id=district_id) |
+                Q(owner__profile__cooperative__district_id=district_id)
+            )
+        if sector_id and sector_id != 'None':
+            products = products.filter(
+                Q(owner__profile__farmer__sector_id=sector_id) |
+                Q(owner__profile__cooperative__sector_id=sector_id)
+            )
+        if cell_id and cell_id != 'None':
+            products = products.filter(
+                Q(owner__profile__farmer__cell_id=cell_id) |
+                Q(owner__profile__cooperative__cell_id=cell_id)
+            )
+        if village_id and village_id != 'None':
+            products = products.filter(
+                Q(owner__profile__farmer__village_id=village_id) |
+                Q(owner__profile__cooperative__village_id=village_id)
+            )
+    except Exception as e:
+        messages.error(request, f"Error applying location filters: {str(e)}")
+        products = Product.objects.all()  # Reset to all products on error
+
+    # Get all provinces for the filter dropdown
+    provinces = Province.objects.all()
+
     context = {
         'products': products,
-        'welcome_message': _("Murakaza neza kurubuga rwa AgriConnect!"),
-        'user_count': User.objects.count(),
-        'total_products': len(products),
+        'provinces': provinces,
+        'total_products': products.count(),
+        'welcome_message': _('Welcome to AgriConnect Marketplace'),
+        'selected_province': province_id,
+        'selected_district': district_id,
+        'selected_sector': sector_id,
+        'selected_cell': cell_id,
+        'selected_village': village_id,
     }
+
     return render(request, 'core/product_listings.html', context)
 
 
@@ -471,36 +528,52 @@ def get_provinces(request):
     return JsonResponse(list(provinces), safe=False)
 
 def get_districts(request):
-    """AJAX endpoint to get districts for a province"""
+    """Get districts for a given province."""
     province_id = request.GET.get('province')
-    if province_id:
+    if not province_id or province_id == 'None':
+        return JsonResponse([], safe=False)
+    
+    try:
         districts = District.objects.filter(province_id=province_id).values('id', 'name')
         return JsonResponse(list(districts), safe=False)
-    return JsonResponse([], safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 def get_sectors(request):
-    """AJAX endpoint to get sectors for a district"""
+    """Get sectors for a given district."""
     district_id = request.GET.get('district')
-    if district_id:
+    if not district_id or district_id == 'None':
+        return JsonResponse([], safe=False)
+    
+    try:
         sectors = Sector.objects.filter(district_id=district_id).values('id', 'name')
         return JsonResponse(list(sectors), safe=False)
-    return JsonResponse([], safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 def get_cells(request):
-    """AJAX endpoint to get cells for a sector"""
+    """Get cells for a given sector."""
     sector_id = request.GET.get('sector')
-    if sector_id:
+    if not sector_id or sector_id == 'None':
+        return JsonResponse([], safe=False)
+    
+    try:
         cells = Cell.objects.filter(sector_id=sector_id).values('id', 'name')
         return JsonResponse(list(cells), safe=False)
-    return JsonResponse([], safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 def get_villages(request):
-    """AJAX endpoint to get villages for a cell"""
+    """Get villages for a given cell."""
     cell_id = request.GET.get('cell')
-    if cell_id:
+    if not cell_id or cell_id == 'None':
+        return JsonResponse([], safe=False)
+    
+    try:
         villages = Village.objects.filter(cell_id=cell_id).values('id', 'name')
         return JsonResponse(list(villages), safe=False)
-    return JsonResponse([], safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 def product_list(request):
     """View for listing products with location-based filtering"""
