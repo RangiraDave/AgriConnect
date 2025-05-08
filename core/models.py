@@ -4,6 +4,8 @@ from django.db import models
 from django.utils.timezone import now, timedelta
 import uuid
 import random
+import os
+from django.core.validators import FileExtensionValidator
 
 
 class CustomUser(AbstractUser):
@@ -218,8 +220,15 @@ class Product(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=25)  # Product name
     description = models.TextField(blank=True, null=True)  # Product description
-    media = models.FileField(upload_to='products/', blank=True, null=True, 
-                           help_text="Upload an image (jpg, png) or video (mp4)")  # Single media field for both images and videos
+    media = models.FileField(
+        upload_to='products/%Y/%m/%d/',  # Organize files by date
+        blank=True, 
+        null=True,
+        help_text="Upload an image (jpg, png) or video (mp4)",
+        validators=[
+            FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'mp4']),
+        ]
+    )
     price_per_unit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     quantity_available = models.PositiveIntegerField()
     unit = models.CharField(max_length=10, choices=UNIT_CHOICES)
@@ -241,6 +250,33 @@ class Product(models.Model):
         if self.media:
             return self.media.name.lower().endswith('.mp4')
         return False
+
+    def save(self, *args, **kwargs):
+        # Delete old file when updating
+        if self.pk:
+            try:
+                old_instance = Product.objects.get(pk=self.pk)
+                if old_instance.media and old_instance.media != self.media:
+                    if os.path.isfile(old_instance.media.path):
+                        os.remove(old_instance.media.path)
+            except Product.DoesNotExist:
+                pass
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        # Delete the file when the product is deleted
+        if self.media:
+            if os.path.isfile(self.media.path):
+                os.remove(self.media.path)
+        super().delete(*args, **kwargs)
+
+    @property
+    def contact(self):
+        """Get contact information from owner's profile"""
+        try:
+            return self.owner.profile.phone
+        except:
+            return None
 
 
 class ProductRating(models.Model):
