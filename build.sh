@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Exit on any error
-the set -o errexit
+set -o errexit
 
 # Install exact dependencies
 pip install -r requirements.txt
@@ -16,6 +16,9 @@ find core/migrations -type f -not -name "__init__.py" -delete
 # Create new migrations for core app and apply all migrations
 python3 manage.py makemigrations
 python3 manage.py migrate
+
+# Remove contact column if it exists (PostgreSQL command)
+PGPASSWORD=$DATABASE_PASSWORD psql -h $DATABASE_HOST -U $DATABASE_USER -d $DATABASE_NAME -c "ALTER TABLE core_product DROP COLUMN IF EXISTS contact;"
 
 # Create default superuser if not exists
 python3 manage.py shell << 'END'
