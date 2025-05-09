@@ -18,7 +18,12 @@ python3 manage.py makemigrations
 python3 manage.py migrate
 
 # Remove contact column if it exists (PostgreSQL command)
-PGPASSWORD=$DATABASE_PASSWORD psql -h $DATABASE_HOST -U $DATABASE_USER -d $DATABASE_NAME -c "ALTER TABLE core_product DROP COLUMN IF EXISTS contact;"
+if [[ -z "$DB_PASSWORD" || -z "$DB_HOST" || -z "$DB_USER" || -z "$DB_NAME" ]]; then
+    echo "Error: One or more required database environment variables are not set."
+    exit 1
+fi
+
+PGPASSWORD="$DATABASE_PASSWORD" psql -h "$DATABASE_HOST" -U "$DATABASE_USER" -d "$DATABASE_NAME" -c "ALTER TABLE core_product DROP COLUMN IF EXISTS contact;"
 
 # Create default superuser if not exists
 python3 manage.py shell << 'END'
