@@ -31,7 +31,7 @@ DB_USER=$(echo $EXTERNAL_DATABASE_URL | sed -n 's/.*:\/\/\([^:]*\):.*/\1/p')
 DB_PASSWORD=$(echo $EXTERNAL_DATABASE_URL | sed -n 's/.*:\/\/[^:]*:\([^@]*\)@.*/\1/p')
 
 # Remove contact column using extracted connection details
-PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "ALTER TABLE core_product DROP COLUMN IF EXISTS contact;"
+PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -t -c "ALTER TABLE core_product DROP COLUMN IF EXISTS contact;"
 
 # Create default superuser if not exists
 python3 manage.py shell << 'END'
