@@ -232,8 +232,6 @@ class Product(models.Model):
     price_per_unit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     quantity_available = models.PositiveIntegerField()
     unit = models.CharField(max_length=10, choices=UNIT_CHOICES)
-    latitude = models.FloatField(null=True, blank=True)
-    longitude = models.FloatField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

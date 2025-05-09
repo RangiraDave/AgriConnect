@@ -14,8 +14,8 @@ echo "Running migrations..."
 find core/migrations -type f -not -name "__init__.py" -delete
 
 # Create new migrations for core app and apply all migrations
-python3 manage.py makemigrations --noinput
-python3 manage.py migrate --noinput
+python3 manage.py makemigrations
+python3 manage.py migrate
 
 # Create default superuser if not exists
 python3 manage.py shell << 'END'

@@ -120,18 +120,20 @@ def chatbot_response(request):
                         )
                     
                     elif re.search(r'\b(price|cost|how much)\b', message):
-                        response = _("The price is {price} per {unit}.").format(
+                        response = _("The price is {price} per {unit} of {product_name}.").format(
                             price=product.price_per_unit,
-                            unit=product.unit
+                            unit=product.unit,
+                            product_name=product.name
                         )
                     
                     elif re.search(r'\b(quantity|available|stock)\b', message):
-                        response = _("There are {quantity} {unit} available.").format(
+                        response = _("There are {quantity} {unit} of {product_name} available.").format(
                             quantity=product.quantity_available,
-                            unit=product.unit
+                            unit=product.unit,
+                            product_name=product.name
                         )
                     
-                    elif re.search(r'\b(contact|phone|number|reach|seller)\b', message):
+                    elif re.search(r'\b(contact|phone|number|reach|"seller\'s contact"|"seller\'s phone"|"seller\'s number")\b', message):
                         response = _("You can contact the seller at {phone}. The seller is a {role}.").format(
                             phone=owner_profile.phone or _("Contact information not available"),
                             role=owner_profile.role
@@ -146,22 +148,23 @@ def chatbot_response(request):
                         else:
                             response = _("This product hasn't received any ratings yet.")
                     
-                    elif re.search(r'\b(image|photo|picture|see)\b', message):
+                    elif re.search(r'\b(image|photo|picture|"show me")\b', message):
                         if product.media and not product.is_video():
                             response = _("Here is an image of the product: {url}").format(url=product.media.url)
                         else:
                             response = _("No image is available for this product.")
                     
-                    elif re.search(r'\b(video|watch)\b', message):
+                    elif re.search(r'\b(video|watch|"show me video")\b', message):
                         if product.media and product.is_video():
                             response = _("Here is a video of the product: {url}").format(url=product.media.url)
                         else:
                             response = _("No video is available for this product.")
                     
-                    elif re.search(r'\b(seller|owner|producer)\b', message):
-                        response = _("This product is sold by {username}, who is a {role}.").format(
+                    elif re.search(r'\b(seller|owner|producer|"seller\'s name"|who)\b', message):
+                        response = _("This product is sold by {username}, who is a {role}. You can contact them at {phone}.").format(
                             username=owner.username,
-                            role=owner_profile.role
+                            role=owner_profile.role,
+                            phone=owner_profile.phone
                         )
                     
                     elif re.search(r'\b(help|assist|support)\b', message):
@@ -173,9 +176,9 @@ def chatbot_response(request):
                                    "- Images and videos\n"
                                    "- Seller information\n"
                                    "What would you like to know?")
-                    
+
                     else:
-                        response = _("I can help you with information about this product's:\n"
+                        response = _("Please clarify your question. I can help you with information about this product's:\n"
                                    "- Description\n"
                                    "- Price\n"
                                    "- Quantity\n"
