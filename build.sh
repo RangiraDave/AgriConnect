@@ -18,7 +18,7 @@ python3 manage.py makemigrations
 python3 manage.py migrate
 
 # Remove contact column if it exists (PostgreSQL command)
-psql -c "ALTER TABLE core_product DROP COLUMN IF EXISTS contact;"
+# psql -c "ALTER TABLE core_product DROP COLUMN IF EXISTS contact;"
 
 # Create default superuser if not exists
 python3 manage.py shell << 'END'
