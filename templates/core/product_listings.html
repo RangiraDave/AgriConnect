@@ -1,6 +1,7 @@
-<!-- product_listings.html -->
+
 {% extends 'core/base.html' %}
 {% load i18n static %}
+{% load time_ago %}
 
 {% block title %}Product Listings - AgriConnect{% endblock %}
 
@@ -159,8 +160,8 @@
                             <div class="time-info mb-2">
                                 <i class="fas fa-clock text-success me-1"></i>
                                 <small class="text-muted">
-                                    <i class="far fa-clock me-1"></i>
-                                    {% trans "Added" %} {{ product.created_at|timesince }} ago
+                                    <!-- <i class="far fa-clock me-1"></i> -->
+                                    {% trans "Added" %} {{ product.created_at|concise_timesince }}
                                 </small>
                             </div>
                             {% if product.location %}
