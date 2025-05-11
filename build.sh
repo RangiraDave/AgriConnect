@@ -12,8 +12,8 @@ python3 manage.py collectstatic --no-input
 echo "Running migrations..."
 
 # First, ensure core app is installed
-python3 manage.py makemigrations core
-python3 manage.py migrate
+python3 manage.py makemigrations core --no-input
+python3 manage.py migrate --no-input
 
 # Remove contact column if it exists (PostgreSQL command)
 # psql -c "ALTER TABLE core_product DROP COLUMN IF EXISTS contact;"
