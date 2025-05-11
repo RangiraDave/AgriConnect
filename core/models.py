@@ -268,14 +268,6 @@ class Product(models.Model):
                 os.remove(self.media.path)
         super().delete(*args, **kwargs)
 
-    @property
-    def contact(self):
-        """Get contact information from owner's profile"""
-        try:
-            return self.owner.profile.phone
-        except:
-            return None
-
 
 class ProductRating(models.Model):
     """

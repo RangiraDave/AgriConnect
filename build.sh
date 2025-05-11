@@ -10,11 +10,9 @@ python3 manage.py collectstatic --no-input
 
 # Run database migrations
 echo "Running migrations..."
-# Clean out old migration files (except __init__.py)
-find core/migrations -type f -not -name "__init__.py" -delete
 
-# Create new migrations for core app and apply all migrations
-python3 manage.py makemigrations
+# First, ensure core app is installed
+python3 manage.py makemigrations core
 python3 manage.py migrate
 
 # Remove contact column if it exists (PostgreSQL command)
