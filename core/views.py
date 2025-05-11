@@ -14,6 +14,7 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import random
 import logging
+from django.utils.timesince import timesince
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -684,3 +685,9 @@ def debug_db_config(request):
         'password': '********' if settings.DATABASES['default']['PASSWORD'] else None,
     }
     return JsonResponse(db_config)
+
+def product_detail(request, pk):
+    """Display the details for a single product."""
+    product = get_object_or_404(Product, pk=pk)
+    time_since_added = timesince(product.created_at)
+    return render(request, 'core/product_detail.html', {'product': product, 'time_since_added': time_since_added})

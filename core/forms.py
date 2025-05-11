@@ -17,12 +17,15 @@ class AddProductForm(forms.ModelForm):
     """Form for adding a new product."""
     class Meta:
         model = Product
-        fields = ['name', 'description', 'media', 'price_per_unit', 'quantity_available', 'unit']
+        fields = ['name', 'description', 'media', 'price_per_unit', 'quantity_available', 'unit', 'contact']
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 4}),
-            'price_per_unit': forms.NumberInput(attrs={'min': '0', 'step': '0.01'}),
-            'quantity_available': forms.NumberInput(attrs={'min': '0'}),
-            'media': forms.FileInput(attrs={'accept': 'image/*,video/mp4'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter product name'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Enter product description'}),
+            'media': forms.FileInput(attrs={'class': 'form-control'}),
+            'price_per_unit': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter price per unit'}),
+            'quantity_available': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter available quantity'}),
+            'unit': forms.Select(attrs={'class': 'form-control'}),
+            'contact': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter contact number (optional)'}),
         }
 
     def clean(self):
@@ -46,10 +49,15 @@ class EditProductForm(forms.ModelForm):
     """ Form to edit a product """
     class Meta:
         model = Product
-        fields = ['name', 'description', 'media', 'price_per_unit', 'quantity_available', 'unit']
+        fields = ['name', 'description', 'media', 'price_per_unit', 'quantity_available', 'unit', 'contact']
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 3}),
-            'media': forms.FileInput(attrs={'accept': 'image/*,video/mp4'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter product name'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Enter product description'}),
+            'media': forms.FileInput(attrs={'class': 'form-control'}),
+            'price_per_unit': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter price per unit'}),
+            'quantity_available': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter available quantity'}),
+            'unit': forms.Select(attrs={'class': 'form-control'}),
+            'contact': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter contact number (optional)'}),
         }
 
     def clean_quantity_available(self):

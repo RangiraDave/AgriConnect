@@ -232,6 +232,7 @@ class Product(models.Model):
     price_per_unit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     quantity_available = models.PositiveIntegerField()
     unit = models.CharField(max_length=10, choices=UNIT_CHOICES)
+    contact = models.CharField(max_length=15, blank=True, null=True, help_text="Contact number for this product (optional)")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -267,6 +268,16 @@ class Product(models.Model):
             if os.path.isfile(self.media.path):
                 os.remove(self.media.path)
         super().delete(*args, **kwargs)
+
+    @property
+    def contact_number(self):
+        """Get contact information for the product"""
+        if self.contact:
+            return self.contact
+        try:
+            return self.owner.profile.phone
+        except:
+            return None
 
 
 class ProductRating(models.Model):

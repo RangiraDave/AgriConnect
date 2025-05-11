@@ -158,7 +158,10 @@
                             </div>
                             <div class="time-info mb-2">
                                 <i class="fas fa-clock text-success me-1"></i>
-                                <small>{{ product.time_since_added }}</small>
+                                <small class="text-muted">
+                                    <i class="far fa-clock me-1"></i>
+                                    {% trans "Added" %} {{ product.created_at|timesince }} ago
+                                </small>
                             </div>
                             {% if product.location %}
                                 <div class="location-info mb-2">
@@ -194,6 +197,13 @@
                         <button class="btn btn-primary w-100 mt-3 chatbot-button" data-product-id="{{ product.id }}">
                             <i class="fas fa-comments me-2"></i>{% trans "Talk to us" %}
                         </button>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0">RWF {{ product.price }}</span>
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-success">
+                                <i class="fas fa-eye me-1"></i>{% trans "View" %}
+                            </a>
+                        </div>
                     </div>
                 </div>
             {% endfor %}

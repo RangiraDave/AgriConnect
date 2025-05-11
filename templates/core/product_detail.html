@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}Product Detail - AgriConnect{% endblock %}
 
@@ -30,6 +31,12 @@
             <p><strong>Price:</strong> {{ product.price_per_unit }}</p>
             <p><strong>Quantity:</strong> {{ product.quantity_available }} {{ product.unit }}</p>
             <p><strong>Location:</strong> {{ product.location }}</p>
+            <p class="text-muted">
+                <small>
+                    <i class="far fa-clock me-1"></i>
+                    {% trans "Added" %} {{ time_since_added }} ago
+                </small>
+            </p>
 
             <!-- Talk to us button -->
             <button id="talk-to-us" class="btn btn-primary">Talk to us</button>

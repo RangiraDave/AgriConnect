@@ -51,6 +51,7 @@ urlpatterns = [
     path('api/cells/', views.get_cells, name='get_cells'),
     path('api/villages/', views.get_villages, name='get_villages'),
     path('api/provinces/', views.get_provinces, name='get_provinces'),
+    path('product/<int:pk>/', views.product_detail, name='product_detail'),
 ]
 
 if settings.DEBUG:
