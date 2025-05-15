@@ -3,6 +3,7 @@
 <html lang="{{ request.LANGUAGE_CODE }}">
 <head>
     {% load static %}
+    {% load i18n %}
     {% load time_ago %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,29 +32,83 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Ahabanza</a>
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>{% trans "Home" %}</a>
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/products/"><i class="fas fa-shopping-basket me-1"></i>Ibihari</a>
+                            <a class="nav-link" href="/products/"><i class="fas fa-shopping-basket me-1"></i>{% trans "Products" %}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/profile/"><i class="fas fa-user me-1"></i>Konte yawe</a>
+                            <a class="nav-link" href="/profile/"><i class="fas fa-user me-1"></i>{% trans "Profile" %}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/market-insights/"><i class="fas fa-chart-line me-1"></i>Market Insights</a>
+                            <a class="nav-link" href="/market-insights/"><i class="fas fa-chart-line me-1"></i>{% trans "Market Insights" %}</a>
+                        </li>
+                        <!-- Language Switcher -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-globe me-1"></i>
+                                {% if LANGUAGE_CODE == 'en' %}
+                                    English
+                                {% else %}
+                                    Kinyarwanda
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                                <form id="languageForm" action="{% url 'set_language' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <li>
+                                        <button type="submit" name="language" value="en" class="dropdown-item {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
+                                            <i class="fas fa-flag me-2"></i>English
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="submit" name="language" value="rw" class="dropdown-item {% if LANGUAGE_CODE == 'rw' %}active{% endif %}">
+                                            <i class="fas fa-flag me-2"></i>Kinyarwanda
+                                        </button>
+                                    </li>
+                                </form>
+                            </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-danger" href="/logout/"><i class="fas fa-sign-out-alt me-1"></i>Gusohoka</a>
+                            <a class="nav-link text-danger" href="/logout/"><i class="fas fa-sign-out-alt me-1"></i>{% trans "Logout" %}</a>
                         </li>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-success me-2" href="/signup/"><i class="fas fa-user-plus me-1"></i>Kora Konti</a>
+                        <!-- Language Switcher for non-authenticated users -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-globe me-1"></i>
+                                {% if LANGUAGE_CODE == 'en' %}
+                                    English
+                                {% else %}
+                                    Kinyarwanda
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                                <form id="languageForm" action="{% url 'set_language' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <li>
+                                        <button type="submit" name="language" value="en" class="dropdown-item {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
+                                            <i class="fas fa-flag me-2"></i>English
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="submit" name="language" value="rw" class="dropdown-item {% if LANGUAGE_CODE == 'rw' %}active{% endif %}">
+                                            <i class="fas fa-flag me-2"></i>Kinyarwanda
+                                        </button>
+                                    </li>
+                                </form>
+                            </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn btn-success" href="/login/"><i class="fas fa-sign-in-alt me-1"></i>Injira</a>
+                            <a class="nav-link btn btn-outline-success me-2" href="/signup/"><i class="fas fa-user-plus me-1"></i>{% trans "Sign Up" %}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-success" href="/login/"><i class="fas fa-sign-in-alt me-1"></i>{% trans "Login" %}</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -83,18 +138,18 @@
             <div class="row">
                 <div class="col-md-4">
                     <h5 class="text-success">AgriConnect</h5>
-                    <p class="text-muted">Connecting farmers to markets</p>
+                    <p class="text-muted">{% trans "Connecting farmers to markets" %}</p>
                 </div>
                 <div class="col-md-4">
-                    <h6>Quick Links</h6>
+                    <h6>{% trans "Quick Links" %}</h6>
                     <ul class="list-unstyled">
-                        <li><a href="/" class="text-decoration-none text-muted">Home</a></li>
-                        <li><a href="/products/" class="text-decoration-none text-muted">Products</a></li>
-                        <li><a href="/market-insights/" class="text-decoration-none text-muted">Market Insights</a></li>
+                        <li><a href="/" class="text-decoration-none text-muted">{% trans "Home" %}</a></li>
+                        <li><a href="/products/" class="text-decoration-none text-muted">{% trans "Products" %}</a></li>
+                        <li><a href="/market-insights/" class="text-decoration-none text-muted">{% trans "Market Insights" %}</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h6>Contact Us</h6>
+                    <h6>{% trans "Contact Us" %}</h6>
                     <ul class="list-unstyled">
                         <li><i class="fas fa-envelope me-2"></i>support@agriconnect.com</li>
                         <li><i class="fas fa-phone me-2"></i>+250 123 456 789</li>
@@ -103,7 +158,7 @@
             </div>
             <hr>
             <div class="text-center">
-                <p class="mb-0">&copy; 2024 AgriConnect. All rights reserved.</p>
+                <p class="mb-0">&copy; 2024 AgriConnect. {% trans "All rights reserved" %}.</p>
             </div>
         </div>
     </footer>

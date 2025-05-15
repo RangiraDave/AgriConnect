@@ -42,12 +42,12 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',  # Enable CORS middleware
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',  # Add this line for language support
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'AgriConnect.urls'
@@ -131,15 +131,20 @@ LANGUAGES = [
     ('rw', _('Kinyarwanda')),
 ]
 
-LANGUAGE_CODE = 'rw'
-
+LANGUAGE_CODE = 'rw'  # Default language
 TIME_ZONE = 'Africa/Kigali'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
+
+# Locale paths
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
+
+# Session settings for language preference
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 * 2  # 2 weeks
+SESSION_SAVE_EVERY_REQUEST = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
