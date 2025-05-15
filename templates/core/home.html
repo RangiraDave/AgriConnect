@@ -1,34 +1,232 @@
 {% extends 'core/base.html' %}
-{% load static %}
-{% load i18n %}
+{% load i18n static %}
 
-{% block title %}Ahabanza - AgriConnect{% endblock %}
+{% block title %}{% trans "Welcome to AgriConnect" %} - AgriConnect{% endblock %}
 
 {% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 text-lg-start mb-4 mb-lg-0">
+                <h1 class="display-4 mb-4 text-success fw-bold">{% trans "Connect, Trade, Grow" %}</h1>
+                <p class="lead mb-4">{% trans "Rwanda's Premier Agricultural Marketplace - Connecting Farmers, Buyers, and Cooperatives" %}</p>
+                {% if not user.is_authenticated %}
+                    <div class="d-flex gap-3 justify-content-lg-start justify-content-center">
+                        <a href="{% url 'signup' %}" class="btn btn-success btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>{% trans "Join Now" %}
+                        </a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-success btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>{% trans "Login" %}
+                        </a>
+                    </div>
+                {% else %}
+                    <a href="{% url 'product_listings' %}" class="btn btn-success btn-lg">
+                        <i class="fas fa-shopping-basket me-2"></i>{% trans "Browse Products" %}
+                    </a>
+                {% endif %}
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-images">
+                    <div class="image-grid">
+                        <img src="{% static 'img/coffee.png' %}" alt="Coffee" class="grid-img img-1">
+                        <img src="{% static 'img/ibishyimbo.png' %}" alt="Beans" class="grid-img img-2">
+                        <img src="{% static 'img/imyembe.png' %}" alt="Mangoes" class="grid-img img-3">
+                        <img src="{% static 'img/ibigori.jpg' %}" alt="Corn" class="grid-img img-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<div class="jumbotron text-center bg-success text-white p-5">
-    <h1 class="display-4">Murakaza neza kuri AgriConnect!</h1>
-    <p class="lead">Dufasha abahinzi kugera ku isoko rikwiye muburyo bworoshye.</p>
-    <div class="mt-4">
-        {% if user.is_authenticated %}
-            <a class="btn btn-primary btn-lg" href="/products/">Ibihari</a>
-            <a class="btn btn-primary btn-lg" href="/profile/">Konte yawe</a>
+<!-- Features Section -->
+<div class="features-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">{% trans "Why Choose AgriConnect?" %}</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-handshake fa-3x text-success mb-3"></i>
+                    <h3>{% trans "Direct Connections" %}</h3>
+                    <p>{% trans "Connect directly with farmers, buyers, and cooperatives across Rwanda" %}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                    <h3>{% trans "Market Insights" %}</h3>
+                    <p>{% trans "Access real-time market data and trends to make informed decisions" %}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4">
+                    <i class="fas fa-mobile-alt fa-3x text-success mb-3"></i>
+                    <h3>{% trans "Easy to Use" %}</h3>
+                    <p>{% trans "User-friendly platform with support in Kinyarwanda and English" %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Types Section -->
+<div class="user-types-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">{% trans "Who Can Join?" %}</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-tractor fa-3x text-success mb-3"></i>
+                        <h3>{% trans "Farmers" %}</h3>
+                        <p>{% trans "List your products, reach more buyers, and get fair prices for your produce" %}</p>
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'signup' %}" class="btn btn-outline-success">
+                                {% trans "Join as Farmer" %}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-store fa-3x text-success mb-3"></i>
+                        <h3>{% trans "Buyers" %}</h3>
+                        <p>{% trans "Find quality products, compare prices, and connect with verified sellers" %}</p>
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'signup' %}" class="btn btn-outline-success">
+                                {% trans "Join as Buyer" %}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users fa-3x text-success mb-3"></i>
+                        <h3>{% trans "Cooperatives" %}</h3>
+                        <p>{% trans "Manage your cooperative's products and connect with potential buyers" %}</p>
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'signup' %}" class="btn btn-outline-success">
+                                {% trans "Join as Cooperative" %}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action Section -->
+<div class="cta-section py-5 bg-success text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">{% trans "Ready to Get Started?" %}</h2>
+        <p class="lead mb-4">{% trans "Join AgriConnect today and be part of Rwanda's growing agricultural marketplace" %}</p>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'signup' %}" class="btn btn-light btn-lg">
+                <i class="fas fa-user-plus me-2"></i>{% trans "Create Your Account" %}
+            </a>
         {% else %}
-            <a class="btn btn-primary btn-lg" href="/signup/">Kora Konti</a>
-            <a class="btn btn-primary btn-lg" href="/login/">Injira</a>
+            <a href="{% url 'product_listings' %}" class="btn btn-light btn-lg">
+                <i class="fas fa-shopping-basket me-2"></i>{% trans "Explore Products" %}
+            </a>
         {% endif %}
     </div>
 </div>
+{% endblock %}
 
-<div class="container mt-5">
-    <!-- <h2 class="text-center mb-4">Hitamo Icyiciro</h2> -->
-    <div class="row text-center">
-        <div class="col-md-3">
-            <a href="/signup/" class="btn btn-outline-success btn-lg w-98">Kora Konti</a>
-        </div>
-        <div class="col-md-3">
-            <a href="/login/" class="btn btn-outline-primary btn-lg w-99">Injira</a>
-        </div>
-    </div>
-</div>
+{% block extra_css %}
+<style>
+.hero-section {
+    background: #f8f9fa;
+    padding: 6rem 0;
+    margin-top: -2rem;
+    overflow: hidden;
+}
+
+.hero-images {
+    position: relative;
+    height: 400px;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 15px;
+    height: 100%;
+}
+
+.grid-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.grid-img:hover {
+    transform: scale(1.05);
+}
+
+.img-1 { animation: fadeInScale 0.6s ease-out; }
+.img-2 { animation: fadeInScale 0.6s ease-out 0.2s both; }
+.img-3 { animation: fadeInScale 0.6s ease-out 0.4s both; }
+.img-4 { animation: fadeInScale 0.6s ease-out 0.6s both; }
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.feature-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.user-types-section .card {
+    transition: transform 0.3s ease;
+    border-radius: 10px;
+}
+
+.user-types-section .card:hover {
+    transform: translateY(-5px);
+}
+
+.cta-section {
+    background: linear-gradient(45deg, #28a745, #218838);
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 4rem 0;
+    }
+    
+    .hero-images {
+        height: 300px;
+        margin-top: 2rem;
+    }
+    
+    .feature-card {
+        margin-bottom: 1rem;
+    }
+}
+</style>
 {% endblock %}
