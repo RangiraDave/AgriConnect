@@ -32,7 +32,7 @@ def chatbot_response(request):
         response = ""
         
         # Common greetings and farewells
-        greetings = ['hello', 'hi', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening']
+        greetings = [' hello ', ' hi ', ' hey ', ' greetings ', ' good morning ', ' good afternoon ', ' good evening ']
         farewells = ['bye', 'goodbye', 'see you', 'thank you', 'thanks']
         
         # Check for greetings
