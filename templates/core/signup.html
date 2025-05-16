@@ -22,31 +22,53 @@
                         {% endfor %}
                     {% endif %}
 
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <form method="POST" action="{% url 'signup' %}" class="needs-validation" novalidate>
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
                                     <input type="text" id="username" name="username" class="form-control" required 
-                                           placeholder="Username" value="{{ form_data.username|default:'' }}">
+                                           placeholder="Username" value="{{ form.data.username|default:'' }}">
                                     <label for="username"><i class="fas fa-user me-2"></i>{% trans "Username" %}</label>
+                                    {% if form.username.errors %}
+                                        <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
                                     <input type="email" id="email" name="email" class="form-control" required 
-                                           placeholder="name@example.com" value="{{ form_data.email|default:'' }}">
+                                           placeholder="name@example.com" value="{{ form.data.email|default:'' }}">
                                     <label for="email"><i class="fas fa-envelope me-2"></i>{% trans "Email Address" %}</label>
+                                    {% if form.email.errors %}
+                                        <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-floating mb-3">
+                                <div class="form-floating mb-3 position-relative">
                                     <input type="password" id="password" name="password" class="form-control" required 
-                                           placeholder="Password">
+                                           placeholder="Password" autocomplete="new-password">
                                     <label for="password"><i class="fas fa-lock me-2"></i>{% trans "Password" %}</label>
+                                    <!-- Password strength meter -->
+                                    <div id="password-strength-bar" class="progress mt-2" style="height: 5px;">
+                                        <div class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                                    </div>
+                                    <div id="password-strength-feedback" class="form-text mt-1"></div>
+                                    {% if form.password.errors %}
+                                        <div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -54,6 +76,9 @@
                                     <input type="password" id="confirm_password" name="confirm_password" class="form-control" 
                                            required placeholder="Confirm Password">
                                     <label for="confirm_password"><i class="fas fa-lock me-2"></i>{% trans "Confirm Password" %}</label>
+                                    {% if form.confirm_password.errors %}
+                                        <div class="text-danger small mt-1">{{ form.confirm_password.errors.0 }}</div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -62,25 +87,31 @@
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
                                     <input type="tel" id="phone" name="phone" class="form-control" required 
-                                           placeholder="Phone Number" value="{{ form_data.phone|default:'' }}">
+                                           placeholder="Phone Number" value="{{ form.data.phone|default:'' }}">
                                     <label for="phone"><i class="fas fa-phone me-2"></i>{% trans "Phone Number" %}</label>
+                                    {% if form.phone.errors %}
+                                        <div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-4">
                                     <select id="role" name="role" class="form-select" required>
                                         <option value="">{% trans "Select your role" %}</option>
-                                        <option value="umuhinzi" {% if form_data.role == 'umuhinzi' %}selected{% endif %}>
+                                        <option value="umuhinzi" {% if form.data.role == 'umuhinzi' %}selected{% endif %}>
                                             {% trans "Umuhinzi (Farmer)" %}
                                         </option>
-                                        <option value="umuguzi" {% if form_data.role == 'umuguzi' %}selected{% endif %}>
+                                        <option value="umuguzi" {% if form.data.role == 'umuguzi' %}selected{% endif %}>
                                             {% trans "Umuguzi (Buyer)" %}
                                         </option>
-                                        <option value="cooperative" {% if form_data.role == 'cooperative' %}selected{% endif %}>
+                                        <option value="cooperative" {% if form.data.role == 'cooperative' %}selected{% endif %}>
                                             {% trans "Cooperative" %}
                                         </option>
                                     </select>
                                     <label for="role"><i class="fas fa-user-tag me-2"></i>{% trans "Role" %}</label>
+                                    {% if form.role.errors %}
+                                        <div class="text-danger small mt-1">{{ form.role.errors.0 }}</div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -254,6 +285,45 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Password strength meter
+    const passwordInput = document.getElementById('password');
+    const strengthBar = document.getElementById('password-strength-bar').querySelector('.progress-bar');
+    const feedback = document.getElementById('password-strength-feedback');
+    passwordInput.addEventListener('input', function() {
+        const value = passwordInput.value;
+        let score = 0;
+        let feedbackMsg = [];
+        if (value.length >= 6) score++;
+        else feedbackMsg.push('{% trans "At least 6 characters" %}');
+        if (/[A-Z]/.test(value)) score++;
+        else feedbackMsg.push('{% trans "At least one uppercase letter" %}');
+        if (/[a-z]/.test(value)) score++;
+        else feedbackMsg.push('{% trans "At least one lowercase letter" %}');
+        if (/[0-9]/.test(value)) score++;
+        else feedbackMsg.push('{% trans "At least one digit" %}');
+        // Visual feedback
+        let percent = (score / 4) * 100;
+        let barClass = 'bg-danger';
+        let strengthText = '{% trans "Weak" %}';
+        if (score === 4) {
+            barClass = 'bg-success';
+            strengthText = '{% trans "Strong" %}';
+        } else if (score === 3) {
+            barClass = 'bg-warning';
+            strengthText = '{% trans "Medium" %}';
+        }
+        strengthBar.style.width = percent + '%';
+        strengthBar.className = 'progress-bar ' + barClass;
+        if (value.length === 0) {
+            feedback.innerHTML = '';
+            strengthBar.style.width = '0%';
+        } else if (score === 4) {
+            feedback.innerHTML = '<span class="text-success">' + strengthText + '</span>';
+        } else {
+            feedback.innerHTML = '<span class="text-danger">' + feedbackMsg.join(', ') + '</span>';
+        }
+    });
 
     // Function to load provinces
     async function loadProvinces() {

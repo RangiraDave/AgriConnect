@@ -9,7 +9,7 @@ from django.db import IntegrityError, transaction
 from django.db.models import Avg, Count, Q
 from django.http import JsonResponse
 from .models import Profile, Farmer, VerificationCode, Product, ProductRating, Province, District, Sector, Cell, Village, Cooperative, Buyer
-from .forms import AddProductForm, EditProductForm, ProfileEditForm
+from .forms import AddProductForm, EditProductForm, ProfileEditForm, SignupForm
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import random
@@ -81,104 +81,69 @@ def generate_verification_code():
 def signup(request):
     """Handle user signup."""
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        phone = request.POST.get('phone')
-        role = request.POST.get('role')
-        confirm_password = request.POST.get('confirm_password')
-
-        # Get location data
-        province_id = request.POST.get('province')
-        district_id = request.POST.get('district')
-        sector_id = request.POST.get('sector')
-        cell_id = request.POST.get('cell')
-        village_id = request.POST.get('village')
-        specific_location = request.POST.get('specific_location')
-
-        errors = {}
-
-        if not all([username, email, password, phone, role, confirm_password]):
-            errors['general'] = _('All fields are required.')
-
-        # Validate location data only for farmers and cooperatives
-        if role in ['umuhinzi', 'cooperative']:
-            if not all([province_id, district_id, sector_id, cell_id, village_id]):
-                errors['location'] = _('All location fields are required.')
-
-        if password != confirm_password:
-            errors['password'] = _('Passwords do not match.')
-
-        if User.objects.filter(username=username).exists():
-            errors['username'] = _('The username is already taken.')
-        if User.objects.filter(email=email).exists():
-            errors['email'] = _('The email is already in use.')
-        if Profile.objects.filter(phone=phone).exists():
-            errors['phone'] = _('The phone number is already in use.')
-
-        if errors:
-            return render(request, 'core/signup.html', {'errors': errors, 'form_data': request.POST})
-
-        try:
-            with transaction.atomic():
-                user = User.objects.create_user(username=username, email=email, password=password)
-                user.is_active = False
-                user.save()
-
-                # Generate verification code
-                verification_code = generate_verification_code()
-                logger.info(f"Generated verification code for {email}: {verification_code}")
-                
-                # Delete any existing verification codes
-                VerificationCode.objects.filter(user=user).delete()
-                
-                # Create new verification code
-                VerificationCode.objects.create(user=user, code=verification_code)
-
-                # Send verification email
-                send_mail(
-                    _('AgriConnect Email Verification'),
-                    _('Your verification code is: %(code)s') % {'code': verification_code},
-                    settings.EMAIL_HOST_USER,
-                    [email],
-                    fail_silently=False,
-                )
-
-                # Create profile
-                profile = Profile.objects.create(user=user, phone=phone, role=role)
-
-                # Create role-specific profile with location data only for farmers and cooperatives
-                if role == 'umuhinzi':
-                    Farmer.objects.create(
-                        profile=profile,
-                        province_id=province_id,
-                        district_id=district_id,
-                        sector_id=sector_id,
-                        cell_id=cell_id,
-                        village_id=village_id,
-                        specific_location=specific_location
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            phone = form.cleaned_data['phone']
+            role = form.cleaned_data['role']
+            # Get location data
+            province_id = request.POST.get('province')
+            district_id = request.POST.get('district')
+            sector_id = request.POST.get('sector')
+            cell_id = request.POST.get('cell')
+            village_id = request.POST.get('village')
+            specific_location = request.POST.get('specific_location')
+            try:
+                with transaction.atomic():
+                    user = User.objects.create_user(username=username, email=email, password=password)
+                    user.is_active = False
+                    user.save()
+                    # Generate verification code
+                    verification_code = generate_verification_code()
+                    logger.info(f"Generated verification code for {email}: {verification_code}")
+                    VerificationCode.objects.filter(user=user).delete()
+                    VerificationCode.objects.create(user=user, code=verification_code)
+                    send_mail(
+                        _('AgriConnect Email Verification'),
+                        _('Your verification code is: %(code)s') % {'code': verification_code},
+                        settings.EMAIL_HOST_USER,
+                        [email],
+                        fail_silently=False,
                     )
-                elif role == 'cooperative':
-                    Cooperative.objects.create(
-                        profile=profile,
-                        province_id=province_id,
-                        district_id=district_id,
-                        sector_id=sector_id,
-                        cell_id=cell_id,
-                        village_id=village_id,
-                        specific_location=specific_location
-                    )
-                elif role == 'umuguzi':
-                    Buyer.objects.create(profile=profile)
-
-                request.session['verification_email'] = email
-                return redirect('verify_email')
-
-        except Exception as e:
-            logger.error(f"Error during signup: {e}")
-            return render(request, 'core/signup.html', {'error': str(e)})
-
-    return render(request, 'core/signup.html')
+                    profile = Profile.objects.create(user=user, phone=phone, role=role)
+                    if role == 'umuhinzi':
+                        Farmer.objects.create(
+                            profile=profile,
+                            province_id=province_id,
+                            district_id=district_id,
+                            sector_id=sector_id,
+                            cell_id=cell_id,
+                            village_id=village_id,
+                            specific_location=specific_location
+                        )
+                    elif role == 'cooperative':
+                        Cooperative.objects.create(
+                            profile=profile,
+                            province_id=province_id,
+                            district_id=district_id,
+                            sector_id=sector_id,
+                            cell_id=cell_id,
+                            village_id=village_id,
+                            specific_location=specific_location
+                        )
+                    elif role == 'umuguzi':
+                        Buyer.objects.create(profile=profile)
+                    request.session['verification_email'] = email
+                    return redirect('verify_email')
+            except Exception as e:
+                logger.error(f"Error during signup: {e}")
+                form.add_error(None, str(e))
+        # If not valid or error, fall through to render with errors
+    else:
+        form = SignupForm()
+    return render(request, 'core/signup.html', {'form': form})
 
 
 def verify_email(request):

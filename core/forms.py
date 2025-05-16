@@ -117,6 +117,21 @@ class SignupForm(forms.Form):
             raise forms.ValidationError('Passwords do not match.')
         return confirm_password
 
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        errors = []
+        if len(password) < 6:
+            errors.append(_('Password must be at least 6 characters long.'))
+        if not any(c.isupper() for c in password):
+            errors.append(_('Password must contain at least one uppercase letter.'))
+        if not any(c.islower() for c in password):
+            errors.append(_('Password must contain at least one lowercase letter.'))
+        if not any(c.isdigit() for c in password):
+            errors.append(_('Password must contain at least one digit.'))
+        if errors:
+            raise forms.ValidationError(errors)
+        return password
+
 
 class ProfileEditForm(forms.ModelForm):
     """Form for editing user profile."""
