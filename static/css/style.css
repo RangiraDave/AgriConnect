@@ -412,3 +412,268 @@ body {
     color: #666;
     margin-top: 0.5rem;
 }
+
+/* --- Custom Styles from Templates (Unified) --- */
+
+.product-form-card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.image-preview-container {
+    border: 2px dashed #e0e0e0;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+}
+
+.image-preview-container img {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.upload-icon {
+    font-size: 2rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.submit-btn {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.submit-btn:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+.cancel-btn {
+    background: #dc3545;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    transition: var(--transition);
+    margin-left: 1rem;
+}
+
+.cancel-btn:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.help-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+.required-field::after {
+    content: " *";
+    color: #dc3545;
+}
+
+.current-image {
+    margin-bottom: 1rem;
+}
+
+.current-image img {
+    max-width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.verification-inputs input {
+    letter-spacing: 0.5em;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.verification-form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#resendButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.resend-section {
+    text-align: center;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.user-types-section .card {
+    transition: transform 0.3s ease;
+    border-radius: 10px;
+}
+
+.user-types-section .card:hover {
+    transform: translateY(-5px);
+}
+
+.cta-section {
+    background: linear-gradient(45deg, #28a745, #218838);
+}
+
+/* Card header and focus styles for forms */
+.card-header {
+    border-radius: 1rem 1rem 0 0 !important;
+}
+
+.form-floating > .form-control,
+.form-floating > .form-select {
+    height: calc(3.5rem + 2px);
+    line-height: 1.25;
+}
+
+.form-floating > label {
+    padding: 1rem 0.75rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+.btn-success {
+    padding: 0.8rem;
+    font-weight: 500;
+}
+
+/* Verification page */
+.verification-inputs input {
+    letter-spacing: 0.5em;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.verification-form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#resendButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Add any other unique classes as needed from the templates */
+
+/* Home Page Hero Section Styles */
+.hero-section {
+    background: #f8f9fa;
+    padding: 6rem 0;
+    margin-top: -2rem;
+    overflow: hidden;
+}
+
+.hero-images {
+    position: relative;
+    height: 400px;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 15px;
+    height: 100%;
+}
+
+.grid-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.grid-img:hover {
+    transform: scale(1.05);
+}
+
+.img-1 { animation: fadeInScale 0.6s ease-out; }
+.img-2 { animation: fadeInScale 0.6s ease-out 0.2s both; }
+.img-3 { animation: fadeInScale 0.6s ease-out 0.4s both; }
+.img-4 { animation: fadeInScale 0.6s ease-out 0.6s both; }
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* CTA Section Correction */
+.cta-section {
+    background: linear-gradient(45deg, #28a745, #218838);
+    padding: 5rem 0;
+    color: #fff;
+}
+
+/* Responsive Tweaks for Home Page */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 4rem 0;
+    }
+    .hero-images {
+        height: 300px;
+        margin-top: 2rem;
+    }
+    .feature-card {
+        margin-bottom: 1rem;
+    }
+}

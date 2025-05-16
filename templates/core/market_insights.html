@@ -7,11 +7,11 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Market Insights</h2>
-    <div class="btn-group">
+    <!-- <div class="btn-group">
       <button class="btn btn-outline-primary active" data-period="week">Week</button>
       <button class="btn btn-outline-primary" data-period="month">Month</button>
       <button class="btn btn-outline-primary" data-period="year">Year</button>
-    </div>
+    </div> -->
   </div>
 
   <div class="stats-grid">
@@ -81,8 +81,8 @@
 
 <!-- JSON data for charts -->
 <script>
-  const topProductsData = {{ top_products_json|safe }};
-  const topFarmersData = {{ top_farmers_json|safe }};
+  const topProductsData = JSON.parse("{{ top_products_json|escapejs }}");
+  const topFarmersData = JSON.parse("{{ top_farmers_json|escapejs }}");
 
 document.addEventListener('DOMContentLoaded', function() {
   // Products Chart
@@ -161,4 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+{% endblock %}
+
+{% block extra_css %}
 {% endblock %}

@@ -157,34 +157,6 @@
     </div>
 </div>
 
-<style>
-.card {
-    border-radius: 1rem;
-}
-
-.card-header {
-    border-radius: 1rem 1rem 0 0 !important;
-}
-
-.form-control:focus {
-    border-color: #198754;
-    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
-}
-
-.btn-success {
-    padding: 0.8rem;
-    font-weight: 500;
-}
-
-h4 {
-    color: #198754;
-    font-weight: 600;
-    border-bottom: 2px solid #198754;
-    padding-bottom: 0.5rem;
-    margin-top: 2rem;
-}
-</style>
-
 <script>
 // Form validation
 (function () {
@@ -351,4 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
     cellSelect.addEventListener('change', updateVillages);
 });
 </script>
+{% endblock %}
+
+{% block extra_css %}
 {% endblock %} 
