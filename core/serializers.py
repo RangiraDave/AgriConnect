@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from .models import Province, District, Sector, Cell, Village
 
+class RateSerializer(serializers.Serializer):
+    rating = serializers.IntegerField(min_value=1, max_value=5)
+
 class VillageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Village

@@ -9,8 +9,9 @@ from rest_framework.views import exception_handler
 from .serializers import (
     MarketInsightsSerializer, SignupSerializer, UserSerializer, ProfileSerializer, FarmerSerializer,
     BuyerSerializer, CooperativeSerializer, ProductSerializer,
-    ProductRatingSerializer, VerificationCodeSerializer, VerifyEmailSerializer
+    ProductRatingSerializer, VerificationCodeSerializer, VerifyEmailSerializer, RateSerializer
 )
+from ..permissions import IsOwnerOrAdmin, IsProfileOwnerOrAdmin, IsRatingOwnerOrAdmin
 
 User = get_user_model()
 
@@ -35,12 +36,13 @@ def verify_email(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
-    # use SimpleJWT’s TokenObtainPairView or manual authenticate + RefreshToken
+    # use SimpleJWT's TokenObtainPairView or manual authenticate + RefreshToken
     from rest_framework_simplejwt.views import TokenObtainPairView
     return TokenObtainPairView.as_view()(request._request)
 
 # Profile
 @api_view(['GET','PUT'])
+@permission_classes([IsProfileOwnerOrAdmin])
 def profile(request):
     prof = request.user.profile
     if request.method=='GET':
@@ -54,6 +56,7 @@ def profile(request):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.select_related('owner').all()
     serializer_class = ProductSerializer
+    permission_classes = [IsOwnerOrAdmin]
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -90,53 +93,63 @@ def custom_exception_handler(exc, context):
         response.data['status_code'] = response.status_code
     return response
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return obj.owner == request.user
-
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.select_related('user').all()
     serializer_class = ProfileSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsProfileOwnerOrAdmin]
 
 class FarmerViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.filter(role='umuhinzi')
     serializer_class = ProfileSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsProfileOwnerOrAdmin]
 
 class BuyerViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.filter(role='umuguzi')
     serializer_class = ProfileSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsProfileOwnerOrAdmin]
 
 class CooperativeViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.filter(role='cooperative')
     serializer_class = ProfileSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsProfileOwnerOrAdmin]
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.select_related('owner').all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrAdmin]
+
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    @action(detail=True, methods=['POST'])
+    def rate(self, request, pk=None):
+        product = self.get_object()
+        ser = RateSerializer(data=request.data)
+        ser.is_valid(raise_exception=True)
+        rating, _ = ProductRating.objects.update_or_create(
+            product=product, user=request.user,
+            defaults={'rating': ser.validated_data['rating']}
+        )
+        # notify owner via Channels…
+        return Response({'detail':'Rated.'})
 
 class ProductRatingViewSet(viewsets.ModelViewSet):
     queryset = ProductRating.objects.select_related('user','product').all()
     serializer_class = ProductRatingSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsRatingOwnerOrAdmin]
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
 class VerificationCodeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = VerificationCode.objects.select_related('user').all()
     serializer_class = VerificationCodeSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsProfileOwnerOrAdmin]
+
     def get_queryset(self):
         return self.queryset.filter(user=self.request.user)
