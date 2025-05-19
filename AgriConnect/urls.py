@@ -18,6 +18,7 @@ urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('api/', include('core.api.urls')),
+    path('api/locations/', include('core.api_urls')),  # Add location API endpoints
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('debug/db-config/', debug_db_config, name='debug_db_config'),
