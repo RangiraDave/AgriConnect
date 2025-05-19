@@ -51,24 +51,24 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-globe me-1"></i>
-                                {% if LANGUAGE_CODE == 'en' %}
-                                    English
+                                {% if request.LANGUAGE_CODE == 'en' %}
+                                    Ikinyarwanda
                                 {% else %}
-                                    Kinyarwanda
+                                    English
                                 {% endif %}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
                                 <form id="languageForm" action="{% url 'set_language' %}" method="post">
                                     {% csrf_token %}
-                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <input type="hidden" name="next" value="{{ request.path|slice:'3:' }}">
                                     <li>
-                                        <button type="submit" name="language" value="en" class="dropdown-item {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
-                                            <i class="fas fa-flag me-2"></i>English
+                                        <button type="submit" name="language" value="en" class="dropdown-item {% if request.LANGUAGE_CODE == 'en' %}active{% endif %}">
+                                            <img src="https://cdn.jsdelivr.net/gh/hjnilsson/country-flags/svg/us.svg" alt="USA Flag" width="20" class="me-2" style="vertical-align:middle;">English
                                         </button>
                                     </li>
                                     <li>
-                                        <button type="submit" name="language" value="rw" class="dropdown-item {% if LANGUAGE_CODE == 'rw' %}active{% endif %}">
-                                            <i class="fas fa-flag me-2"></i>Kinyarwanda
+                                        <button type="submit" name="language" value="rw" class="dropdown-item {% if request.LANGUAGE_CODE == 'rw' %}active{% endif %}">
+                                            <img src="https://cdn.jsdelivr.net/gh/hjnilsson/country-flags/svg/rw.svg" alt="Rwanda Flag" width="20" class="me-2" style="vertical-align:middle;">Ikinyarwanda
                                         </button>
                                     </li>
                                 </form>
@@ -82,24 +82,24 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-globe me-1"></i>
-                                {% if LANGUAGE_CODE == 'en' %}
-                                    English
+                                {% if request.LANGUAGE_CODE == 'en' %}
+                                    Ikinyarwanda
                                 {% else %}
-                                    Kinyarwanda
+                                    English
                                 {% endif %}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
                                 <form id="languageForm" action="{% url 'set_language' %}" method="post">
                                     {% csrf_token %}
-                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <input type="hidden" name="next" value="{{ request.path|slice:'3:' }}">
                                     <li>
-                                        <button type="submit" name="language" value="en" class="dropdown-item {% if LANGUAGE_CODE == 'en' %}active{% endif %}">
-                                            <i class="fas fa-flag me-2"></i>English
+                                        <button type="submit" name="language" value="en" class="dropdown-item {% if request.LANGUAGE_CODE == 'en' %}active{% endif %}">
+                                            <img src="https://cdn.jsdelivr.net/gh/hjnilsson/country-flags/svg/us.svg" alt="USA Flag" width="20" class="me-2" style="vertical-align:middle;">English
                                         </button>
                                     </li>
                                     <li>
-                                        <button type="submit" name="language" value="rw" class="dropdown-item {% if LANGUAGE_CODE == 'rw' %}active{% endif %}">
-                                            <i class="fas fa-flag me-2"></i>Kinyarwanda
+                                        <button type="submit" name="language" value="rw" class="dropdown-item {% if request.LANGUAGE_CODE == 'rw' %}active{% endif %}">
+                                            <img src="https://cdn.jsdelivr.net/gh/hjnilsson/country-flags/svg/rw.svg" alt="Rwanda Flag" width="20" class="me-2" style="vertical-align:middle;">Ikinyarwanda
                                         </button>
                                     </li>
                                 </form>

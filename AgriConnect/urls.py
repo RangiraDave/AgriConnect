@@ -21,7 +21,7 @@ urlpatterns += i18n_patterns(
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('debug/db-config/', debug_db_config, name='debug_db_config'),
-    prefix_default_language=False,  # Don't prefix URLs with default language code
+    prefix_default_language=True,  # Always prefix URLs with language code
 )
 
 if settings.DEBUG:

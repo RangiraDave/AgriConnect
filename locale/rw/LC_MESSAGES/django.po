@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-16 18:40+0200\n"
+"POT-Creation-Date: 2025-05-19 09:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: rw <rw@li.org>\n"
@@ -368,7 +368,7 @@ msgid "Profile updated successfully."
 msgstr "Igicuruzwa cyamaze guhindurwa neza!"
 
 #: templates/auth/login.html:5 templates/auth/login.html:13
-#: templates/auth/login.html:51 templates/core/base.html:111
+#: templates/auth/login.html:51 templates/core/base.html:112
 #: templates/core/home.html:20
 msgid "Login"
 msgstr "Injira"
@@ -409,11 +409,11 @@ msgstr "Nta konti ufite?"
 msgid "Sign up now!"
 msgstr "Kora konti nonaha!"
 
-#: templates/core/add_product.html:100
+#: templates/core/add_product.html:16
 msgid "Add Your Produce"
 msgstr "Ongeraho umusaruro"
 
-#: templates/core/add_product.html:121 templates/core/edit_product.html:172
+#: templates/core/add_product.html:37 templates/core/edit_product.html:56
 msgid ""
 "If you don't provide a contact number, your profile's phone number will be "
 "used as the default contact for this product."
@@ -421,67 +421,68 @@ msgstr ""
 "Nudatanga nimero ya telefone, kuri ikigicuruzwa hazakoreshwa iyo usanganwe "
 "kuri konti yawe."
 
-#: templates/core/add_product.html:123 templates/core/user_profile.html:31
+#: templates/core/add_product.html:39 templates/core/user_profile.html:31
 msgid "Add Product"
 msgstr "Ongeraho Igicuruzwa"
 
-#: templates/core/add_product.html:149 templates/core/add_product.html:204
+#: templates/core/add_product.html:65 templates/core/add_product.html:120
 msgid "Drag and drop your image here or click to browse"
 msgstr "Kurura ifoto ushyire hano cyangwa ukandeho uyishake"
 
-#: templates/core/add_product.html:150 templates/core/add_product.html:205
-#: templates/core/edit_product.html:167 templates/core/edit_product.html:208
-#: templates/core/edit_product.html:263
+#: templates/core/add_product.html:66 templates/core/add_product.html:121
+#: templates/core/edit_product.html:51 templates/core/edit_product.html:92
+#: templates/core/edit_product.html:147
 msgid "Supported formats: JPG, PNG, GIF (Max 5MB)"
 msgstr "Amaforume yemewe ni: JPG, PNG, GIF (zitarengeje ingano ya 5MB)"
 
-#: templates/core/add_product.html:155 templates/core/edit_product.html:213
+#: templates/core/add_product.html:71 templates/core/edit_product.html:97
 msgid "File size should not exceed 5MB"
 msgstr "Ubunini bw'ifoto cyangwa videwo ntibugomba kurenga ingano ya 5MB"
 
-#: templates/core/add_product.html:165 templates/core/edit_product.html:223
+#: templates/core/add_product.html:81 templates/core/edit_product.html:107
 msgid "Remove"
 msgstr "Kuraho"
 
-#: templates/core/base.html:37 templates/core/base.html:146
+#: templates/core/base.html:38 templates/core/base.html:147
 msgid "Home"
 msgstr "Ahabanza"
 
-#: templates/core/base.html:41 templates/core/base.html:147
+#: templates/core/base.html:42 templates/core/base.html:148
 #: templates/core/product_list.html:4
 msgid "Products"
 msgstr "Ibicuruzwa"
 
-#: templates/core/base.html:44
+#: templates/core/base.html:45
 msgid "Profile"
 msgstr "Konti Yanjye"
 
-#: templates/core/base.html:47 templates/core/base.html:148
-#: templates/core/home.html:58
+#: templates/core/base.html:48 templates/core/base.html:149
+#: templates/core/home.html:58 templates/core/market_insights.html:5
+#: templates/core/market_insights.html:10
 msgid "Market Insights"
-msgstr "Amakuru y'Isoko"
+msgstr "Amakuru k'Isoko"
 
-#: templates/core/base.html:77
+#: templates/core/base.html:78
 msgid "Logout"
 msgstr "Gusohoka"
 
-#: templates/core/base.html:108 templates/core/signup.html:5
+#: templates/core/base.html:109 templates/core/signup.html:5
 msgid "Sign Up"
 msgstr "Iyandikishe"
 
-#: templates/core/base.html:141
+#: templates/core/base.html:142
 msgid "Connecting farmers to markets"
 msgstr "Guhuza abahinzi n'amasoko"
 
-#: templates/core/base.html:144
+#: templates/core/base.html:145
 msgid "Quick Links"
 msgstr "Inzira zihuse"
 
-#: templates/core/base.html:152
+#: templates/core/base.html:153
 msgid "Contact Us"
 msgstr "Tuvugishe"
 
-#: templates/core/base.html:161
+#: templates/core/base.html:162
 msgid "All rights reserved"
 msgstr "Uburenganzira bwose burafitwe"
 
@@ -495,35 +496,35 @@ msgid ""
 "Are you sure you want to delete your account? This action cannot be undone."
 msgstr "Urashaka koko gusiba konti yawe? Iki gikorwa ntikizagarurwa."
 
-#: templates/core/delete_account.html:13 templates/core/edit_product.html:180
+#: templates/core/delete_account.html:13 templates/core/edit_product.html:64
 #: templates/core/edit_profile.html:150
 msgid "Cancel"
 msgstr "Hagarika"
 
-#: templates/core/edit_product.html:131
+#: templates/core/edit_product.html:15
 msgid "Edit Product"
 msgstr "Hindura Igicuruzwa"
 
-#: templates/core/edit_product.html:132
+#: templates/core/edit_product.html:16
 msgid "Update your product information"
 msgstr "Hindura amakuru y'igicuruzwa cyawe"
 
-#: templates/core/edit_product.html:152
+#: templates/core/edit_product.html:36
 msgid "Current Media"
 msgstr "Isanzweho"
 
-#: templates/core/edit_product.html:156
+#: templates/core/edit_product.html:40
 msgid "Your browser does not support the video tag."
 msgstr ""
 "Iyi videwo ntibashije kuboneka kubera ikibazo cya mudasobwa cyangwa telefone "
 "yanya"
 
-#: templates/core/edit_product.html:166 templates/core/edit_product.html:207
-#: templates/core/edit_product.html:262
+#: templates/core/edit_product.html:50 templates/core/edit_product.html:91
+#: templates/core/edit_product.html:146
 msgid "Drag and drop your new image here or click to browse"
 msgstr "Kurura ifoto nshyashya uyishyire hano cyangwa ukandeho uyishake"
 
-#: templates/core/edit_product.html:177 templates/core/edit_profile.html:147
+#: templates/core/edit_product.html:61 templates/core/edit_profile.html:147
 msgid "Save Changes"
 msgstr "Bika Impinduka"
 
@@ -580,51 +581,51 @@ msgstr "Umudugudu"
 msgid "Specific Location"
 msgstr "Aho uherereye neza"
 
-#: templates/core/edit_profile.html:216 templates/core/product_list.html:21
+#: templates/core/edit_profile.html:188 templates/core/product_list.html:21
 #: templates/core/product_listings.html:60 templates/core/signup.html:125
-#: templates/core/signup.html:338
+#: templates/core/signup.html:303
 msgid "Select Province"
 msgstr "Hitamo Intara"
 
-#: templates/core/edit_profile.html:237 templates/core/edit_profile.html:253
+#: templates/core/edit_profile.html:209 templates/core/edit_profile.html:225
 #: templates/core/product_list.html:34 templates/core/product_list.html:168
 #: templates/core/product_listings.html:74
 #: templates/core/product_listings.html:339 templates/core/signup.html:133
-#: templates/core/signup.html:358 templates/core/signup.html:368
+#: templates/core/signup.html:323 templates/core/signup.html:333
 msgid "Select District"
 msgstr "Hitamo Akarere"
 
-#: templates/core/edit_profile.html:256 templates/core/edit_profile.html:270
-#: templates/core/edit_profile.html:286 templates/core/product_list.html:42
+#: templates/core/edit_profile.html:228 templates/core/edit_profile.html:242
+#: templates/core/edit_profile.html:258 templates/core/product_list.html:42
 #: templates/core/product_list.html:174 templates/core/product_list.html:186
 #: templates/core/product_listings.html:83
 #: templates/core/product_listings.html:366 templates/core/signup.html:143
-#: templates/core/signup.html:388 templates/core/signup.html:398
-#: templates/core/signup.html:491
+#: templates/core/signup.html:353 templates/core/signup.html:363
+#: templates/core/signup.html:456
 msgid "Select Sector"
 msgstr "Hitamo Umurenge"
 
-#: templates/core/edit_profile.html:258 templates/core/edit_profile.html:289
-#: templates/core/edit_profile.html:301 templates/core/edit_profile.html:317
+#: templates/core/edit_profile.html:230 templates/core/edit_profile.html:261
+#: templates/core/edit_profile.html:273 templates/core/edit_profile.html:289
 #: templates/core/product_list.html:50 templates/core/product_list.html:175
 #: templates/core/product_list.html:191 templates/core/product_list.html:202
 #: templates/core/product_listings.html:92
 #: templates/core/product_listings.html:393 templates/core/signup.html:151
-#: templates/core/signup.html:418 templates/core/signup.html:428
-#: templates/core/signup.html:492 templates/core/signup.html:503
+#: templates/core/signup.html:383 templates/core/signup.html:393
+#: templates/core/signup.html:457 templates/core/signup.html:468
 msgid "Select Cell"
 msgstr "Hitamo Akagari"
 
-#: templates/core/edit_profile.html:260 templates/core/edit_profile.html:291
-#: templates/core/edit_profile.html:320 templates/core/edit_profile.html:330
-#: templates/core/edit_profile.html:343 templates/core/product_list.html:58
+#: templates/core/edit_profile.html:232 templates/core/edit_profile.html:263
+#: templates/core/edit_profile.html:292 templates/core/edit_profile.html:302
+#: templates/core/edit_profile.html:315 templates/core/product_list.html:58
 #: templates/core/product_list.html:176 templates/core/product_list.html:192
 #: templates/core/product_list.html:206 templates/core/product_list.html:216
 #: templates/core/product_listings.html:101
 #: templates/core/product_listings.html:420 templates/core/signup.html:161
-#: templates/core/signup.html:448 templates/core/signup.html:458
-#: templates/core/signup.html:493 templates/core/signup.html:504
-#: templates/core/signup.html:513
+#: templates/core/signup.html:413 templates/core/signup.html:423
+#: templates/core/signup.html:458 templates/core/signup.html:469
+#: templates/core/signup.html:478
 msgid "Select Village"
 msgstr "Hitamo Umudugudu"
 
@@ -743,6 +744,41 @@ msgstr "Kora Konti Yawe"
 msgid "Explore Products"
 msgstr "Reba Ibicuruzwa"
 
+#: templates/core/market_insights.html:16
+#: templates/core/product_listings.html:21
+msgid "Total Products"
+msgstr "Byose hamwe"
+
+#: templates/core/market_insights.html:20
+msgid "Active Farmers"
+msgstr "Abahinzi Bari Kurubuga"
+
+#: templates/core/market_insights.html:24
+msgid "Average Rating"
+msgstr "Impuzandengo y'amanota"
+
+#: templates/core/market_insights.html:31
+msgid "Top Rated Products"
+msgstr "Ibicuruzwa Byahize ibindi mu manota"
+
+#: templates/core/market_insights.html:43
+#, python-format
+msgid "%(product.num_ratings)s ratings"
+msgstr "%(product.num_ratings)s Amanota"
+
+#: templates/core/market_insights.html:52
+msgid "Top Performing Farmers"
+msgstr "Abahinzi Bahize Abandi"
+
+#: templates/core/market_insights.html:64
+#, python-format
+msgid "%(farmer.num_ratings)s ratings"
+msgstr "%(farmer.num_ratings)s Amanota"
+
+#: templates/core/market_insights.html:73
+msgid "Market Trends"
+msgstr "Ibigezweho k'isoko"
+
 #: templates/core/product_detail.html:38 templates/core/product_list.html:110
 #: templates/core/product_listings.html:164
 msgid "Added"
@@ -774,10 +810,6 @@ msgid ""
 "Ngibi ibicuruzwa bikeneye abaguzi byashyizweho n'abahinzi bo mu Rwanda "
 "bagera kuri"
 msgstr "????"
-
-#: templates/core/product_listings.html:21
-msgid "Total Products"
-msgstr "Byose hamwe"
 
 #: templates/core/product_listings.html:32
 msgid "Filters"
@@ -831,63 +863,63 @@ msgstr "Usanzwe ufite konti?"
 msgid "Login here!"
 msgstr "Injirira hano"
 
-#: templates/core/signup.html:260
+#: templates/core/signup.html:225
 msgid "This field is required"
 msgstr "Aha hagomba kuzuzwa"
 
-#: templates/core/signup.html:271
+#: templates/core/signup.html:236
 msgid "Creating Account..."
 msgstr "Ikorwa rya konti..."
 
-#: templates/core/signup.html:282
+#: templates/core/signup.html:247
 msgid "Passwords do not match"
 msgstr "Ijambobanga ntabwo rihuye"
 
-#: templates/core/signup.html:298
+#: templates/core/signup.html:263
 msgid "At least 6 characters"
 msgstr "Byibuze inyuguti 6"
 
-#: templates/core/signup.html:300
+#: templates/core/signup.html:265
 msgid "At least one uppercase letter"
 msgstr "Byibuze Inyukuti nkuru imwe"
 
-#: templates/core/signup.html:302
+#: templates/core/signup.html:267
 msgid "At least one lowercase letter"
 msgstr "Byibuze inyuguti ntoya imwe"
 
-#: templates/core/signup.html:304
+#: templates/core/signup.html:269
 msgid "At least one digit"
 msgstr "Byibuze umubare umwe"
 
-#: templates/core/signup.html:308
+#: templates/core/signup.html:273
 msgid "Weak"
 msgstr "Iroroshye"
 
-#: templates/core/signup.html:311
+#: templates/core/signup.html:276
 msgid "Strong"
 msgstr "Irakomeye"
 
-#: templates/core/signup.html:314
+#: templates/core/signup.html:279
 msgid "Medium"
 msgstr "Iri murugero"
 
-#: templates/core/signup.html:348
+#: templates/core/signup.html:313
 msgid "Failed to load provinces. Please try again."
 msgstr "Intara mwahisemo siyo. Mwongere mugerageze."
 
-#: templates/core/signup.html:378
+#: templates/core/signup.html:343
 msgid "Failed to load districts. Please try again."
 msgstr "Akarere mwahisemo siko. Mwongere mugerageze."
 
-#: templates/core/signup.html:408
+#: templates/core/signup.html:373
 msgid "Failed to load sectors. Please try again."
 msgstr "Umurenge mwahisemo siwo. Mwongere mugerageze."
 
-#: templates/core/signup.html:438
+#: templates/core/signup.html:403
 msgid "Failed to load cells. Please try again."
 msgstr "Akagari mwahisemo siko. Mwongere mugerageze."
 
-#: templates/core/signup.html:468
+#: templates/core/signup.html:433
 msgid "Failed to load villages. Please try again."
 msgstr "Umudugudu mwahisemo siwo. Mwongere mugerageze."
 
@@ -942,3 +974,10 @@ msgstr "Ongera wohereze"
 #: templates/products.html:5
 msgid "Product Listings"
 msgstr "Ibicuruzwa"
+
+# For chart labels in JS (optional, if you want to translate them)
+#~ msgid "Average Product Rating"
+#~ msgstr "Amanota Y'Ibicuruzwa"
+
+#~ msgid "Average Ratings"
+#~ msgstr "Impuzandengo y'amanota"
