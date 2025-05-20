@@ -34,6 +34,10 @@ def logout_view(request):
 
 def login_view(request):
     """Render the login page and handle user authentication."""
+    # Show a message if redirected due to login required
+    if 'next' in request.GET and not request.user.is_authenticated:
+        messages.info(request, _("Login required to access this page."))
+
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -54,6 +58,10 @@ def login_view(request):
                         login(request, user)
                         if user_role == 'cooperative':
                             return redirect('product_listings')
+                        # Redirect to 'next' if present
+                        next_url = request.GET.get('next') or request.POST.get('next')
+                        if next_url:
+                            return redirect(next_url)
                         return redirect('user_profile')
                     else:
                         messages.error(request, _("Invalid role selected for this account."))
