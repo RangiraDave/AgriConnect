@@ -3,7 +3,7 @@
 set -o errexit
 
 # Install exact dependencies
-# pip install -r requirements.txt
+pip install -r requirements.txt
 
 # Collect static assets
 python3 manage.py collectstatic --no-input
