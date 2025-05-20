@@ -6,7 +6,7 @@
 {% block content %}
 {% if not user.is_authenticated %}
 <!-- Hero Section -->
-<section class="hero-section text-center py-5" style="background: linear-gradient(90deg, #e8f5e9 60%, #fff 100%);">
+<section class="hero-section hero-section-bg text-center py-5">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 text-lg-start mb-4 mb-lg-0">
@@ -32,10 +32,10 @@
             </div>
             <div class="col-lg-6">
                 <div class="hero-images position-relative">
-                    <img src="{% static 'img/coffee.png' %}" alt="Coffee" class="grid-img img-1 shadow-lg" style="width: 48%; position: absolute; top: 0; left: 0; border-radius: 20px;">
-                    <img src="{% static 'img/ibishyimbo.png' %}" alt="Beans" class="grid-img img-2 shadow-lg" style="width: 48%; position: absolute; top: 0; right: 0; border-radius: 20px;">
-                    <img src="{% static 'img/imyembe.png' %}" alt="Mangoes" class="grid-img img-3 shadow-lg" style="width: 48%; position: absolute; bottom: 0; left: 0; border-radius: 20px;">
-                    <img src="{% static 'img/ibigori.jpg' %}" alt="Corn" class="grid-img img-4 shadow-lg" style="width: 48%; position: absolute; bottom: 0; right: 0; border-radius: 20px;">
+                    <img src="{% static 'img/coffee.png' %}" alt="Coffee" class="grid-img img-1 shadow-lg">
+                    <img src="{% static 'img/ibishyimbo.png' %}" alt="Beans" class="grid-img img-2 shadow-lg">
+                    <img src="{% static 'img/imyembe.png' %}" alt="Mangoes" class="grid-img img-3 shadow-lg">
+                    <img src="{% static 'img/ibigori.jpg' %}" alt="Corn" class="grid-img img-4 shadow-lg">
                 </div>
             </div>
         </div>
@@ -270,18 +270,4 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-<style>
-.hero-images {
-    min-height: 320px;
-    position: relative;
-}
-.grid-img {
-    box-shadow: 0 4px 16px rgba(40,167,69,0.08);
-    transition: transform 0.2s;
-}
-.grid-img:hover {
-    transform: scale(1.05);
-    z-index: 2;
-}
-</style>
 {% endblock %}

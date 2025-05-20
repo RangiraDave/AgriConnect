@@ -1,65 +1,78 @@
-<!-- templates/core/user_profile.html -->
 {% extends 'core/base.html' %}
 {% load i18n static %}
 
-{% block title %}User Profile - AgriConnect{% endblock %}
+{% block title %}{% trans "My Profile" %} - AgriConnect{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-  <h2>Welcome, {{ request.user.username }}!</h2>
-  
-  <div class="row">
-    <div class="col-md-4">
-      <!-- Basic user info card -->
-      <div class="card mb-3">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="card-title mb-0">{{ request.user.username }}</h5>
-            <a href="{% url 'edit_profile' %}" class="btn btn-outline-success btn-sm">
-              <i class="fas fa-edit"></i>
-            </a>
+  <div class="row g-4">
+    <!-- Sidebar / Profile Card -->
+    <div class="col-lg-4">
+      <div class="profile-card shadow-sm p-4 text-center bg-white rounded animate__animated animate__fadeInLeft">
+        <div class="profile-avatar mx-auto mb-3">
+          <img src="{% static 'img/avatar_default.png' %}" alt="Avatar" class="rounded-circle profile-avatar-img">
+        </div>
+        <h4 class="mb-1">{{ request.user.username }}</h4>
+        <span class="badge profile-role-badge mb-2 {{ profile.role|lower }}">
+          <i class="fas fa-user-tag me-1"></i>{{ profile.role|title }}
+        </span>
+        <div class="profile-contact mb-3">
+          <div>
+            <i class="fas fa-phone-alt me-1 text-success"></i>
+            <span>{{ profile.phone|default:"Not Provided" }}</span>
           </div>
-          <p><strong>Role:</strong> {{ profile.role|title }}</p>
-          <p><strong>Phone:</strong> {{ profile.phone|default:"Not Provided" }}</p>
           {% if profile.bio %}
-            <p><strong>Bio:</strong> {{ profile.bio }}</p>
+            <div class="profile-bio mt-2">
+              <i class="fas fa-info-circle me-1 text-success"></i>
+              <span>{{ profile.bio }}</span>
+            </div>
           {% endif %}
         </div>
-        {% if request.user.profile.role|lower in "umuhinzi,cooperative" %}
-            <div class="card-footer">
-                <a href="{% url 'add_product' %}" class="btn btn-primary w-100 mb-2">
-                    <i class="fas fa-plus me-2"></i>{% trans "Add Product" %}
-                </a>
-                <a href="{% url 'market_insights' %}" class="btn btn-info w-100">
-                    <i class="fas fa-chart-line me-2"></i>{% trans "View Market Insights" %}
-                </a>
-            </div>
-        {% endif %}
+        <div class="d-grid gap-2 mb-3">
+          <a href="{% url 'edit_profile' %}" class="btn btn-outline-success btn-sm w-100">
+            <i class="fas fa-edit me-1"></i>{% trans "Edit Profile" %}
+          </a>
+          {% if request.user.profile.role|lower in "umuhinzi,cooperative" %}
+            <a href="{% url 'add_product' %}" class="btn btn-success btn-sm w-100">
+              <i class="fas fa-plus me-1"></i>{% trans "Add Product" %}
+            </a>
+            <a href="{% url 'market_insights' %}" class="btn btn-info btn-sm w-100">
+              <i class="fas fa-chart-line me-1"></i>{% trans "Market Insights" %}
+            </a>
+          {% endif %}
+        </div>
+        <form method="post" action="{% url 'delete_account' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-sm w-100">
+            <i class="fas fa-user-times me-1"></i>{% trans "Delete Account" %}
+          </button>
+        </form>
       </div>
     </div>
-    
-    <div class="col-md-8">
+
+    <!-- Main Content: Products -->
+    <div class="col-lg-8">
       {% if request.user.profile.role|lower in "umuhinzi,cooperative" %}
+        <h4 class="mb-3">{% trans "Your Products" %}</h4>
         {% if product_count == 0 %}
-          <div class="alert alert-info">
+          <div class="alert alert-info animate__animated animate__fadeIn">
             <i class="fas fa-info-circle me-2"></i>{% trans "You haven't added any products yet!" %}
           </div>
         {% else %}
-          <h4>{% trans "Your Products" %}</h4>
-          <div class="row">
+          <div class="row row-cols-1 row-cols-md-2 g-4">
             {% for product in products %}
-              <div class="col-md-6 mb-3">
-                <div class="card h-100">
+              <div class="col">
+                <div class="card product-card h-100 shadow-sm animate__animated animate__fadeInUp">
                   {% if product.media %}
                     {% with ext=product.media.url|lower|slice:"-4:" %}
-                        {% if ext == ".mp4" %}
-                            <video controls class="card-img-top">
-                                <source src="{{ product.media.url }}" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        {% else %}
-                            <img src="{{ product.media.url }}" class="card-img-top" alt="{{ product.name }}">
-                        {% endif %}
+                      {% if ext == ".mp4" %}
+                        <video controls class="card-img-top">
+                          <source src="{{ product.media.url }}" type="video/mp4">
+                          Your browser does not support the video tag.
+                        </video>
+                      {% else %}
+                        <img src="{{ product.media.url }}" class="card-img-top" alt="{{ product.name }}">
+                      {% endif %}
                     {% endwith %}
                   {% elif product.image %}
                     <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
@@ -68,20 +81,26 @@
                   {% endif %}
                   <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="card-text">
-                      <strong>{% trans "Price" %}:</strong> {{ product.price_per_unit }} RWF<br>
-                      <strong>{% trans "Quantity" %}:</strong> {{ product.quantity_available }} {{ product.unit }}
-                    </p>
+                    <div class="mb-2">
+                      <span class="badge bg-success">{% trans "RWF" %} {{ product.price_per_unit }}</span>
+                      <span class="badge bg-secondary">{{ product.quantity_available }} {{ product.unit }}</span>
+                    </div>
                     {% if product.description %}
-                      <p class="card-text">{{ product.description|truncatewords:20 }}...</p>
+                      <p class="card-text">{{ product.description|truncatewords:20 }}</p>
                     {% endif %}
+                    <div class="product-meta mt-2">
+                      <small class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        {% trans "Added" %} {{ product.created_at|timesince }} {% trans "ago" %}
+                      </small>
+                    </div>
                   </div>
-                  <div class="card-footer bg-transparent">
+                  <div class="card-footer bg-transparent border-0">
                     <div class="btn-group w-100">
-                      <a href="{% url 'edit_product' pk=product.id %}" class="btn btn-outline-primary">
+                      <a href="{% url 'edit_product' pk=product.id %}" class="btn btn-outline-primary btn-sm">
                         <i class="fas fa-edit me-1"></i>{% trans "Edit" %}
                       </a>
-                      <a href="{% url 'delete_product' pk=product.id %}" class="btn btn-outline-danger">
+                      <a href="{% url 'delete_product' pk=product.id %}" class="btn btn-outline-danger btn-sm">
                         <i class="fas fa-trash me-1"></i>{% trans "Delete" %}
                       </a>
                     </div>
@@ -91,38 +110,16 @@
             {% endfor %}
           </div>
         {% endif %}
+      {% else %}
+        <div class="alert alert-info animate__animated animate__fadeIn">
+          <i class="fas fa-info-circle me-2"></i>{% trans "You are registered as a buyer. Browse products and rate them!" %}
+        </div>
       {% endif %}
     </div>
   </div>
-  
-  <div class="mt-4">
-    <form method="post" action="{% url 'delete_account' %}" style="display:inline;">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-danger">
-        <i class="fas fa-user-times me-2"></i>{% trans "Delete Account" %}
-      </button>
-    </form>
-  </div>
 </div>
+{% endblock %}
 
-<script>
-const socket = new WebSocket("ws://" + window.location.host + "/ws/notifications/");
-
-socket.onmessage = function(event) {
-    const data = JSON.parse(event.data);
-    showToastNotification(data.message);
-};
-
-function showToastNotification(message) {
-    const notificationBox = document.getElementById("notifications");
-    const newNotification = document.createElement("div");
-    newNotification.classList.add("alert", "alert-success");
-    newNotification.innerHTML = message;
-    notificationBox.appendChild(newNotification);
-
-    setTimeout(() => {
-        newNotification.remove();
-    }, 5000);
-}
-</script>
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 {% endblock %}

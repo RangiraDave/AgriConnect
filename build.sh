@@ -6,7 +6,7 @@ set -o errexit
 pip install -r requirements.txt
 
 # Collect static assets
-# python3 manage.py collectstatic --no-input
+python3 manage.py collectstatic --no-input
 
 # # Run database migrations
 # echo "Running migrations..."

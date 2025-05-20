@@ -275,6 +275,93 @@ body {
     color: var(--primary-color);
 }
 
+/* Profile Page Styles */
+.profile-card {
+    border-radius: 1.5rem;
+    background: #fff;
+    box-shadow: 0 4px 24px rgba(40,167,69,0.08);
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    transition: box-shadow 0.2s;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1rem;
+}
+
+.profile-avatar-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #28a745;
+    background: #f8f9fa;
+}
+
+.profile-role-badge {
+    font-size: 0.95em;
+    padding: 0.4em 1em;
+    border-radius: 1em;
+    font-weight: 500;
+    background: #e9f7ef;
+    color: #28a745;
+    border: 1px solid #28a745;
+    display: inline-block;
+}
+
+.profile-role-badge.umuhinzi { background: #e9f7ef; color: #28a745; }
+.profile-role-badge.cooperative { background: #e3e6fc; color: #3f51b5; border-color: #3f51b5; }
+.profile-role-badge.umuguzi { background: #f8f9fa; color: #888; border-color: #bbb; }
+
+.profile-contact {
+    font-size: 1em;
+    color: #555;
+}
+
+.profile-bio {
+    font-size: 0.95em;
+    color: #666;
+}
+
+.product-card .card-img-top {
+    height: 180px;
+    object-fit: cover;
+    border-radius: 1rem 1rem 0 0;
+}
+
+.product-card .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.product-card .card-footer {
+    background: none;
+    border: none;
+}
+
+.product-card .btn-group .btn {
+    font-size: 0.95em;
+    padding: 0.4em 1em;
+}
+
+@media (max-width: 991px) {
+    .profile-card {
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-card {
+        padding: 1.5rem 0.5rem 1rem 0.5rem;
+    }
+    .product-card .card-img-top {
+        height: 140px;
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     body {
@@ -303,6 +390,17 @@ body {
 
     .container {
         padding: 0 0.5rem;
+    }
+
+    /* Market Insights Hero Section */
+    .market-hero-section {
+        background: linear-gradient(90deg, #28a745 60%, #fff 100%);
+        border-radius: 0 0 1rem 1rem;
+        box-shadow: 0 4px 24px rgba(40,167,69,0.08);
+        padding: 2rem 0 1rem 0;
+    }
+    .fa-lg-icon {
+        font-size: 1.5rem;
     }
 }
 
@@ -400,6 +498,7 @@ body {
     border-radius: var(--border-radius);
     text-align: center;
     box-shadow: var(--box-shadow);
+    margin-bottom: 1rem;
 }
 
 .stat-value {
@@ -676,4 +775,56 @@ body {
     .feature-card {
         margin-bottom: 1rem;
     }
+}
+
+/* --- Extracted from templates/core/market_insights.html --- */
+.market-hero-section {
+  background: linear-gradient(90deg, #28a745 60%, #fff 100%);
+  border-radius: 0 0 2rem 2rem;
+  box-shadow: 0 4px 24px rgba(40,167,69,0.08);
+}
+.stat-card {
+  border-radius: 1rem;
+  transition: transform 0.2s;
+  background: #fff;
+}
+.stat-card:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 6px 24px rgba(40,167,69,0.12);
+}
+.insights-card {
+  border-radius: 1rem;
+  background: #fff;
+  transition: box-shadow 0.2s;
+}
+.rating-stars i {
+  font-size: 1em;
+}
+@media (max-width: 768px) {
+  .market-hero-section {
+    padding: 2rem 0;
+    border-radius: 0 0 1rem 1rem;
+  }
+  .stat-card {
+    margin-bottom: 1rem;
+  }
+}
+
+/* --- Extracted from templates/core/home.html --- */
+.hero-section-bg {
+  background: linear-gradient(90deg, #e8f5e9 60%, #fff 100%);
+}
+.hero-images.position-relative img.grid-img {
+  width: 48%;
+  position: absolute;
+  border-radius: 20px;
+}
+.hero-images.position-relative .img-1 { top: 0; left: 0; }
+.hero-images.position-relative .img-2 { top: 0; right: 0; }
+.hero-images.position-relative .img-3 { bottom: 0; left: 0; }
+.hero-images.position-relative .img-4 { bottom: 0; right: 0; }
+
+/* Remove inline style for .market-hero-section font-size */
+.market-hero-section .text-muted {
+  font-size: 0.95em;
 }
