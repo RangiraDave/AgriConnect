@@ -4,88 +4,88 @@
 {% block title %}{% trans "Welcome to AgriConnect" %} - AgriConnect{% endblock %}
 
 {% block content %}
+{% if not user.is_authenticated %}
 <!-- Hero Section -->
-<div class="hero-section text-center py-5">
+<section class="hero-section text-center py-5" style="background: linear-gradient(90deg, #e8f5e9 60%, #fff 100%);">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6 text-lg-start mb-4 mb-lg-0">
-                <h1 class="display-4 mb-4 text-success fw-bold">{% trans "Connect, Trade, Grow" %}</h1>
-                <p class="lead mb-4">{% trans "Rwanda's Premier Agricultural Marketplace - Connecting Farmers, Buyers, and Cooperatives" %}</p>
-                {% if not user.is_authenticated %}
-                    <div class="d-flex gap-3 justify-content-lg-start justify-content-center">
-                        <a href="{% url 'signup' %}" class="btn btn-success btn-lg">
-                            <i class="fas fa-user-plus me-2"></i>{% trans "Join Now" %}
-                        </a>
-                        <a href="{% url 'login' %}" class="btn btn-outline-success btn-lg">
-                            <i class="fas fa-sign-in-alt me-2"></i>{% trans "Login" %}
-                        </a>
-                    </div>
-                {% else %}
-                    <a href="{% url 'product_listings' %}" class="btn btn-success btn-lg">
-                        <i class="fas fa-shopping-basket me-2"></i>{% trans "Browse Products" %}
+                <h1 class="display-3 mb-3 text-success fw-bold animate__animated animate__fadeInDown">
+                    {% trans "Connect, Trade, Grow" %}
+                </h1>
+                <p class="lead mb-4 animate__animated animate__fadeInLeft">
+                    {% trans "Rwanda's #1 digital marketplace for agriculture. Buy, sell, and discover fresh produce directly from local farmers and cooperatives." %}
+                </p>
+                <div class="d-flex gap-3 justify-content-lg-start justify-content-center">
+                    <a href="{% url 'signup' %}" class="btn btn-success btn-lg px-4 animate__animated animate__pulse animate__infinite">
+                        <i class="fas fa-user-plus me-2"></i>{% trans "Get Started Free" %}
                     </a>
-                {% endif %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-success btn-lg px-4">
+                        <i class="fas fa-sign-in-alt me-2"></i>{% trans "Login" %}
+                    </a>
+                </div>
+                <div class="mt-4">
+                    <span class="badge bg-success fs-6 animate__animated animate__fadeInUp">
+                        {% trans "No fees. No hassle. 100% local." %}
+                    </span>
+                </div>
             </div>
             <div class="col-lg-6">
-                <div class="hero-images">
-                    <div class="image-grid">
-                        <img src="{% static 'img/coffee.png' %}" alt="Coffee" class="grid-img img-1">
-                        <img src="{% static 'img/ibishyimbo.png' %}" alt="Beans" class="grid-img img-2">
-                        <img src="{% static 'img/imyembe.png' %}" alt="Mangoes" class="grid-img img-3">
-                        <img src="{% static 'img/ibigori.jpg' %}" alt="Corn" class="grid-img img-4">
-                    </div>
+                <div class="hero-images position-relative">
+                    <img src="{% static 'img/coffee.png' %}" alt="Coffee" class="grid-img img-1 shadow-lg" style="width: 48%; position: absolute; top: 0; left: 0; border-radius: 20px;">
+                    <img src="{% static 'img/ibishyimbo.png' %}" alt="Beans" class="grid-img img-2 shadow-lg" style="width: 48%; position: absolute; top: 0; right: 0; border-radius: 20px;">
+                    <img src="{% static 'img/imyembe.png' %}" alt="Mangoes" class="grid-img img-3 shadow-lg" style="width: 48%; position: absolute; bottom: 0; left: 0; border-radius: 20px;">
+                    <img src="{% static 'img/ibigori.jpg' %}" alt="Corn" class="grid-img img-4 shadow-lg" style="width: 48%; position: absolute; bottom: 0; right: 0; border-radius: 20px;">
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Features Section -->
-<div class="features-section py-5 bg-light">
+<section class="features-section py-5 bg-light">
     <div class="container">
-        <h2 class="text-center mb-5">{% trans "Why Choose AgriConnect?" %}</h2>
+        <h2 class="text-center mb-5 fw-bold">{% trans "Why AgriConnect?" %}</h2>
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="feature-card text-center p-4">
+                <div class="feature-card text-center p-4 h-100 shadow-sm">
                     <i class="fas fa-handshake fa-3x text-success mb-3"></i>
-                    <h3>{% trans "Direct Connections" %}</h3>
-                    <p>{% trans "Connect directly with farmers, buyers, and cooperatives across Rwanda" %}</p>
+                    <h4>{% trans "Direct Connections" %}</h4>
+                    <p>{% trans "No middlemen. Chat and trade directly with farmers, buyers, and cooperatives." %}</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="feature-card text-center p-4">
+                <div class="feature-card text-center p-4 h-100 shadow-sm">
                     <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
-                    <h3>{% trans "Market Insights" %}</h3>
-                    <p>{% trans "Access real-time market data and trends to make informed decisions" %}</p>
+                    <h4>{% trans "Market Insights" %}</h4>
+                    <p>{% trans "See real-time prices, trends, and top products to make smart decisions." %}</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="feature-card text-center p-4">
+                <div class="feature-card text-center p-4 h-100 shadow-sm">
                     <i class="fas fa-mobile-alt fa-3x text-success mb-3"></i>
-                    <h3>{% trans "Easy to Use" %}</h3>
-                    <p>{% trans "User-friendly platform with support in Kinyarwanda and English" %}</p>
+                    <h4>{% trans "Easy & Secure" %}</h4>
+                    <p>{% trans "Simple to use, mobile-friendly, and safe for everyone." %}</p>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- User Types Section -->
-<div class="user-types-section py-5">
+<section class="user-types-section py-5">
     <div class="container">
-        <h2 class="text-center mb-5">{% trans "Who Can Join?" %}</h2>
+        <h2 class="text-center mb-5 fw-bold">{% trans "Who Can Join?" %}</h2>
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body text-center">
                         <i class="fas fa-tractor fa-3x text-success mb-3"></i>
-                        <h3>{% trans "Farmers" %}</h3>
-                        <p>{% trans "List your products, reach more buyers, and get fair prices for your produce" %}</p>
-                        {% if not user.is_authenticated %}
-                            <a href="{% url 'signup' %}" class="btn btn-outline-success">
-                                {% trans "Join as Farmer" %}
-                            </a>
-                        {% endif %}
+                        <h5>{% trans "Farmers" %}</h5>
+                        <p>{% trans "List your harvest, reach more buyers, and get fair prices." %}</p>
+                        <a href="{% url 'signup' %}" class="btn btn-outline-success btn-sm mt-2">
+                            {% trans "Join as Farmer" %}
+                        </a>
                     </div>
                 </div>
             </div>
@@ -93,13 +93,11 @@
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body text-center">
                         <i class="fas fa-store fa-3x text-success mb-3"></i>
-                        <h3>{% trans "Buyers" %}</h3>
-                        <p>{% trans "Find quality products, compare prices, and connect with verified sellers" %}</p>
-                        {% if not user.is_authenticated %}
-                            <a href="{% url 'signup' %}" class="btn btn-outline-success">
-                                {% trans "Join as Buyer" %}
-                            </a>
-                        {% endif %}
+                        <h5>{% trans "Buyers" %}</h5>
+                        <p>{% trans "Find quality products, compare prices, and connect with trusted sellers." %}</p>
+                        <a href="{% url 'signup' %}" class="btn btn-outline-success btn-sm mt-2">
+                            {% trans "Join as Buyer" %}
+                        </a>
                     </div>
                 </div>
             </div>
@@ -107,37 +105,183 @@
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body text-center">
                         <i class="fas fa-users fa-3x text-success mb-3"></i>
-                        <h3>{% trans "Cooperatives" %}</h3>
-                        <p>{% trans "Manage your cooperative's products and connect with potential buyers" %}</p>
-                        {% if not user.is_authenticated %}
-                            <a href="{% url 'signup' %}" class="btn btn-outline-success">
-                                {% trans "Join as Cooperative" %}
-                            </a>
-                        {% endif %}
+                        <h5>{% trans "Cooperatives" %}</h5>
+                        <p>{% trans "Manage your group's products and connect with more customers." %}</p>
+                        <a href="{% url 'signup' %}" class="btn btn-outline-success btn-sm mt-2">
+                            {% trans "Join as Cooperative" %}
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Call to Action Section -->
-<div class="cta-section py-5 bg-success text-white">
+<section class="cta-section py-5 bg-success text-white">
     <div class="container text-center">
-        <h2 class="mb-4">{% trans "Ready to Get Started?" %}</h2>
-        <p class="lead mb-4">{% trans "Join AgriConnect today and be part of Rwanda's growing agricultural marketplace" %}</p>
-        {% if not user.is_authenticated %}
-            <a href="{% url 'signup' %}" class="btn btn-light btn-lg">
-                <i class="fas fa-user-plus me-2"></i>{% trans "Create Your Account" %}
-            </a>
-        {% else %}
-            <a href="{% url 'product_listings' %}" class="btn btn-light btn-lg">
-                <i class="fas fa-shopping-basket me-2"></i>{% trans "Explore Products" %}
-            </a>
-        {% endif %}
+        <h2 class="mb-3">{% trans "Ready to Get Started?" %}</h2>
+        <p class="lead mb-4">{% trans "Sign up now and be part of Rwanda's growing agricultural community." %}</p>
+        <a href="{% url 'signup' %}" class="btn btn-light btn-lg px-5">
+            <i class="fas fa-user-plus me-2"></i>{% trans "Create Your Account" %}
+        </a>
     </div>
-</div>
+</section>
+{% else %}
+<!-- Authenticated User Dashboard -->
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5 text-center">
+                    <h2 class="mb-4 text-success">
+                        <i class="fas fa-leaf me-2"></i>{% trans "Welcome back," %} {{ user.username }}!
+                    </h2>
+                    <div class="row g-4 justify-content-center mb-4">
+                        <div class="col-md-4">
+                            <a href="{% url 'product_listings' %}" class="btn btn-success btn-lg w-100">
+                                <i class="fas fa-shopping-basket me-2"></i>{% trans "Browse Products" %}
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{% url 'user_profile' %}" class="btn btn-outline-success btn-lg w-100">
+                                <i class="fas fa-user me-2"></i>{% trans "My Profile" %}
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{% url 'market_insights' %}" class="btn btn-info btn-lg w-100">
+                                <i class="fas fa-chart-line me-2"></i>{% trans "Market Insights" %}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row g-3 justify-content-center">
+                        <div class="col-md-4">
+                            <div class="bg-light rounded p-3 shadow-sm">
+                                <i class="fas fa-box-open fa-2x text-success mb-2"></i>
+                                <div class="fw-bold">{% trans "Your Products" %}</div>
+                                <div class="text-muted small">
+                                    <a href="{% url 'user_profile' %}" class="text-success">{% trans "Manage" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bg-light rounded p-3 shadow-sm">
+                                <i class="fas fa-bell fa-2x text-success mb-2"></i>
+                                <div class="fw-bold">{% trans "Notifications" %}</div>
+                                <div class="text-muted small">
+                                    <a href="#" class="text-success disabled" tabindex="-1" aria-disabled="true">{% trans "View" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bg-light rounded p-3 shadow-sm">
+                                <i class="fas fa-cog fa-2x text-success mb-2"></i>
+                                <div class="fw-bold">{% trans "Settings" %}</div>
+                                <div class="text-muted small">
+                                    <a href="{% url 'edit_profile' %}" class="text-success">{% trans "Edit Profile" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <p class="text-muted">{% trans "Use the navigation above or shortcuts to explore AgriConnect." %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section (also for authenticated users) -->
+<section class="features-section py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5 fw-bold">{% trans "Why AgriConnect?" %}</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4 h-100 shadow-sm">
+                    <i class="fas fa-handshake fa-3x text-success mb-3"></i>
+                    <h4>{% trans "Direct Connections" %}</h4>
+                    <p>{% trans "No middlemen. Chat and trade directly with farmers, buyers, and cooperatives." %}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4 h-100 shadow-sm">
+                    <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                    <h4>{% trans "Market Insights" %}</h4>
+                    <p>{% trans "See real-time prices, trends, and top products to make smart decisions." %}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center p-4 h-100 shadow-sm">
+                    <i class="fas fa-mobile-alt fa-3x text-success mb-3"></i>
+                    <h4>{% trans "Easy & Secure" %}</h4>
+                    <p>{% trans "Simple to use, mobile-friendly, and safe for everyone." %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- User Types Section (also for authenticated users) -->
+<section class="user-types-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 fw-bold">{% trans "Who Can Join?" %}</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-tractor fa-3x text-success mb-3"></i>
+                        <h5>{% trans "Farmers" %}</h5>
+                        <p>{% trans "List your harvest, reach more buyers, and get fair prices." %}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-store fa-3x text-success mb-3"></i>
+                        <h5>{% trans "Buyers" %}</h5>
+                        <p>{% trans "Find quality products, compare prices, and connect with trusted sellers." %}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users fa-3x text-success mb-3"></i>
+                        <h5>{% trans "Cooperatives" %}</h5>
+                        <p>{% trans "Manage your group's products and connect with more customers." %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section (for authenticated users, no signup/login button) -->
+<section class="cta-section py-5 bg-success text-white">
+    <div class="container text-center">
+        <h2 class="mb-3">{% trans "AgriConnect: Your Gateway to Rwanda's Agricultural Market" %}</h2>
+        <p class="lead mb-4">{% trans "Explore, connect, and grow your business with AgriConnect. Use the navigation or dashboard above to get started." %}</p>
+    </div>
+</section>
+{% endif %}
 {% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+.hero-images {
+    min-height: 320px;
+    position: relative;
+}
+.grid-img {
+    box-shadow: 0 4px 16px rgba(40,167,69,0.08);
+    transition: transform 0.2s;
+}
+.grid-img:hover {
+    transform: scale(1.05);
+    z-index: 2;
+}
+</style>
 {% endblock %}
