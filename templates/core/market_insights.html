@@ -5,159 +5,268 @@
 {% block title %}{% trans "Market Insights" %}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>{% trans "Market Insights" %}</h2>
+<!-- Hero Section -->
+<section class="market-hero-section py-5 text-center bg-success text-white mb-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-2 d-none d-lg-block">
+        <i class="fas fa-chart-line fa-5x"></i>
+      </div>
+      <div class="col-lg-8">
+        <h1 class="display-5 fw-bold mb-3 animate__animated animate__fadeInDown">
+          {% trans "Market Insights" %}
+        </h1>
+        <p class="lead animate__animated animate__fadeInUp">
+          {% trans "Discover real-time trends, top products, and leading farmers on AgriConnect. Make informed decisions with our up-to-date analytics and market data." %}
+        </p>
+      </div>
+      <div class="col-lg-2 d-none d-lg-block">
+        <i class="fas fa-seedling fa-5x"></i>
+      </div>
+    </div>
   </div>
+</section>
 
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-value">{{ total_products }}</div>
-      <div class="stat-label">{% trans "Total Products" %}</div>
+<!-- Stats Grid -->
+<div class="container mb-5">
+  <div class="row g-4 justify-content-center">
+    <div class="col-md-4">
+      <div class="stat-card text-center shadow-sm p-4 bg-white rounded animate__animated animate__fadeInLeft">
+        <i class="fas fa-box-open fa-3x text-success mb-2"></i>
+        <div class="stat-value fs-2 fw-bold">{{ total_products }}</div>
+        <div class="stat-label text-muted">{% trans "Total Products" %}</div>
+      </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-value">{{ active_farmers }}</div>
-      <div class="stat-label">{% trans "Active Farmers" %}</div>
+    <div class="col-md-4">
+      <div class="stat-card text-center shadow-sm p-4 bg-white rounded animate__animated animate__fadeInUp">
+        <i class="fas fa-user-friends fa-3x text-success mb-2"></i>
+        <div class="stat-value fs-2 fw-bold">{{ active_farmers }}</div>
+        <div class="stat-label text-muted">{% trans "Active Farmers" %}</div>
+      </div>
     </div>
-    <div class="stat-card">
-      <div class="stat-value">{{ avg_rating|floatformat:1 }}</div>
-      <div class="stat-label">{% trans "Average Rating" %}</div>
+    <div class="col-md-4">
+      <div class="stat-card text-center shadow-sm p-4 bg-white rounded animate__animated animate__fadeInRight">
+        <i class="fas fa-star fa-3x text-warning mb-2"></i>
+        <div class="stat-value fs-2 fw-bold">{{ avg_rating|floatformat:1 }}</div>
+        <div class="stat-label text-muted">{% trans "Average Rating" %}</div>
+      </div>
     </div>
   </div>
+</div>
 
-  <div class="row">
+<!-- Insights Section -->
+<div class="container">
+  <div class="row g-4">
     <div class="col-md-6">
-      <div class="insights-card">
-        <h4 class="mb-3">{% trans "Top Rated Products" %}</h4>
-        <canvas id="productsChart" height="200"></canvas>
-        <div class="mt-3">
+      <div class="insights-card shadow-sm p-4 bg-white rounded">
+        <h4 class="mb-3 text-success"><i class="fas fa-crown me-2"></i>{% trans "Top Rated Products" %}</h4>
+        <canvas id="productsChart" height="180"></canvas>
+        <div class="mt-4">
           {% for product in top_products %}
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <strong>{{ product.name }}</strong>
-                <div class="rating-stars">
-                  {% for _ in ""|center:product.avg_rating|make_list %}★{% endfor %}
+                <span class="ms-2 rating-stars" data-bs-toggle="tooltip" title="{% trans 'Average Rating' %}">
+                  {% for _ in ""|center:product.avg_rating|make_list %}<i class="fas fa-star text-warning"></i>{% endfor %}
                   <span class="text-muted">({{ product.avg_rating|floatformat:1 }})</span>
-                </div>
+                </span>
               </div>
               <span class="badge bg-success">{% blocktrans %}{{ product.num_ratings }} ratings{% endblocktrans %}</span>
             </div>
+          {% empty %}
+            <div class="text-muted">{% trans "No product ratings yet." %}</div>
           {% endfor %}
         </div>
       </div>
     </div>
-
     <div class="col-md-6">
-      <div class="insights-card">
-        <h4 class="mb-3">{% trans "Top Performing Farmers" %}</h4>
-        <canvas id="farmersChart" height="200"></canvas>
-        <div class="mt-3">
+      <div class="insights-card shadow-sm p-4 bg-white rounded">
+        <h4 class="mb-3 text-success"><i class="fas fa-user-tie me-2"></i>{% trans "Top Performing Farmers" %}</h4>
+        <canvas id="farmersChart" height="180"></canvas>
+        <div class="mt-4">
           {% for farmer in top_farmers %}
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <strong>{{ farmer.username }}</strong>
-                <div class="rating-stars">
-                  {% for _ in ""|center:farmer.avg_product_rating|make_list %}★{% endfor %}
+                <span class="ms-2 rating-stars" data-bs-toggle="tooltip" title="{% trans 'Average Product Rating' %}">
+                  {% for _ in ""|center:farmer.avg_product_rating|make_list %}<i class="fas fa-star text-warning"></i>{% endfor %}
                   <span class="text-muted">({{ farmer.avg_product_rating|floatformat:1 }})</span>
-                </div>
+                </span>
               </div>
               <span class="badge bg-primary">{% blocktrans %}{{ farmer.num_ratings }} ratings{% endblocktrans %}</span>
             </div>
+          {% empty %}
+            <div class="text-muted">{% trans "No farmer ratings yet." %}</div>
           {% endfor %}
         </div>
       </div>
     </div>
   </div>
-
-  <div class="insights-card mt-4">
-    <h4 class="mb-3">{% trans "Market Trends" %}</h4>
-    <canvas id="trendsChart" height="100"></canvas>
-  </div>
 </div>
 
-<!-- JSON data for charts -->
+<!-- Market Trends Section -->
+<div class="container mt-5">
+  <div class="insights-card shadow-sm p-4 bg-white rounded">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="mb-0 text-success"><i class="fas fa-chart-area me-2"></i>{% trans "Market Trends" %}</h4>
+      <div>
+        <button class="btn btn-outline-success btn-sm me-2 active" data-period="6m">{% trans "6 Months" %}</button>
+        <button class="btn btn-outline-success btn-sm" data-period="12m">{% trans "1 Year" %}</button>
+      </div>
+    </div>
+    <canvas id="trendsChart" height="100"></canvas>
+    <div class="text-muted mt-2" style="font-size: 0.95em;">
+      {% trans "Track how product listings and ratings have changed over time." %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+.market-hero-section {
+  background: linear-gradient(90deg, #28a745 60%, #fff 100%);
+  border-radius: 0 0 2rem 2rem;
+  box-shadow: 0 4px 24px rgba(40,167,69,0.08);
+}
+.stat-card {
+  border-radius: 1rem;
+  transition: transform 0.2s;
+  background: #fff;
+}
+.stat-card:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 6px 24px rgba(40,167,69,0.12);
+}
+.insights-card {
+  border-radius: 1rem;
+  background: #fff;
+  transition: box-shadow 0.2s;
+}
+.rating-stars i {
+  font-size: 1em;
+}
+@media (max-width: 768px) {
+  .market-hero-section {
+    padding: 2rem 0;
+    border-radius: 0 0 1rem 1rem;
+  }
+  .stat-card {
+    margin-bottom: 1rem;
+  }
+}
+</style>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   const topProductsData = JSON.parse("{{ top_products_json|escapejs }}");
   const topFarmersData = JSON.parse("{{ top_farmers_json|escapejs }}");
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Products Chart
-  new Chart(document.getElementById('productsChart'), {
-    type: 'bar',
-    data: {
-      labels: topProductsData.map(product => product.name),
-      datasets: [{
-        label: 'Average Rating',
-        data: topProductsData.map(product => product.avg_rating),
-        backgroundColor: '#28a745',
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-          max: 5
+  document.addEventListener('DOMContentLoaded', function() {
+    // Products Chart
+    new Chart(document.getElementById('productsChart'), {
+      type: 'bar',
+      data: {
+        labels: topProductsData.map(product => product.name),
+        datasets: [{
+          label: '{% trans "Average Rating" %}',
+          data: topProductsData.map(product => product.avg_rating),
+          backgroundColor: '#28a745',
+          borderRadius: 8,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 5,
+            ticks: { stepSize: 1 }
+          }
         }
       }
-    }
-  });
+    });
 
-  // Farmers Chart
-  new Chart(document.getElementById('farmersChart'), {
-    type: 'bar',
-    data: {
-      labels: topFarmersData.map(farmer => farmer.username),
-      datasets: [{
-        label: 'Average Product Rating',
-        data: topFarmersData.map(farmer => farmer.avg_product_rating),
-        backgroundColor: '#007bff',
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-          max: 5
+    // Farmers Chart
+    new Chart(document.getElementById('farmersChart'), {
+      type: 'bar',
+      data: {
+        labels: topFarmersData.map(farmer => farmer.username),
+        datasets: [{
+          label: '{% trans "Average Product Rating" %}',
+          data: topFarmersData.map(farmer => farmer.avg_product_rating),
+          backgroundColor: '#007bff',
+          borderRadius: 8,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 5,
+            ticks: { stepSize: 1 }
+          }
         }
       }
-    }
-  });
+    });
 
-  // Market Trends Chart
-  new Chart(document.getElementById('trendsChart'), {
-    type: 'line',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-      datasets: [{
-        label: 'Product Listings',
-        data: [65, 78, 90, 85, 95, 100],
-        borderColor: '#28a745',
-        tension: 0.3
-      }, {
-        label: 'Average Ratings',
-        data: [4.2, 4.3, 4.1, 4.4, 4.3, 4.5],
-        borderColor: '#007bff',
-        tension: 0.3
-      }]
-    },
-    options: {
-      responsive: true
-    }
-  });
+    // Market Trends Chart
+    new Chart(document.getElementById('trendsChart'), {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: '{% trans "Product Listings" %}',
+          data: [65, 78, 90, 85, 95, 100],
+          borderColor: '#28a745',
+          backgroundColor: 'rgba(40,167,69,0.1)',
+          tension: 0.3,
+          fill: true,
+          pointRadius: 4,
+          pointBackgroundColor: '#28a745'
+        }, {
+          label: '{% trans "Average Ratings" %}',
+          data: [4.2, 4.3, 4.1, 4.4, 4.3, 4.5],
+          borderColor: '#007bff',
+          backgroundColor: 'rgba(0,123,255,0.1)',
+          tension: 0.3,
+          fill: true,
+          pointRadius: 4,
+          pointBackgroundColor: '#007bff'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' }
+        }
+      }
+    });
 
-  // Period buttons functionality
-  document.querySelectorAll('[data-period]').forEach(button => {
-    button.addEventListener('click', function() {
-      document.querySelectorAll('[data-period]').forEach(btn => btn.classList.remove('active'));
-      this.classList.add('active');
-      // Here you would typically fetch and update data based on the selected period
+    // Tooltips for stars
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Period buttons functionality (demo only)
+    document.querySelectorAll('[data-period]').forEach(button => {
+      button.addEventListener('click', function() {
+        document.querySelectorAll('[data-period]').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        // Here you would typically fetch and update data based on the selected period
+      });
     });
   });
-});
 </script>
-{% endblock %}
-
-{% block extra_css %}
 {% endblock %}
