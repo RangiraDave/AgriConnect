@@ -115,6 +115,63 @@
             </div>
         </div>
     </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterCard = document.querySelector('.filter-card');
+        const filterCollapse = document.getElementById('filterCollapse');
+        const filterHeader = document.getElementById('filterHeader');
+        let isMobile = window.innerWidth <= 768;
+        let hoverTimeout;
+
+        // Function to handle filter visibility
+        function handleFilterVisibility(show) {
+            const bsCollapse = bootstrap.Collapse.getInstance(filterCollapse) || 
+                              new bootstrap.Collapse(filterCollapse, { toggle: false });
+            
+            if (show) {
+                bsCollapse.show();
+            } else {
+                bsCollapse.hide();
+            }
+        }
+
+        // Handle hover events for desktop
+        if (!isMobile) {
+            filterCard.addEventListener('mouseenter', () => {
+                clearTimeout(hoverTimeout);
+                handleFilterVisibility(true);
+            });
+
+            filterCard.addEventListener('mouseleave', () => {
+                hoverTimeout = setTimeout(() => {
+                    handleFilterVisibility(false);
+                }, 300); // Small delay to prevent flickering
+            });
+        }
+
+        // Handle click events for mobile
+        filterHeader.addEventListener('click', (e) => {
+            if (isMobile) {
+                e.preventDefault();
+                const isCollapsed = !filterCollapse.classList.contains('show');
+                handleFilterVisibility(isCollapsed);
+            }
+        });
+
+        // Update mobile detection on window resize
+        window.addEventListener('resize', () => {
+            isMobile = window.innerWidth <= 768;
+        });
+
+        // Prevent form submission from closing the filter on mobile
+        const filterForm = document.getElementById('filter-form');
+        filterForm.addEventListener('click', (e) => {
+            if (isMobile) {
+                e.stopPropagation();
+            }
+        });
+    });
+    </script>
 
     <!-- Products Grid -->
     <div class="product-grid">
@@ -638,6 +695,8 @@ document.getElementById('chatbot-input').addEventListener('keypress', function(e
     border: none;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: all 0.3s ease;
+    border-radius: 1rem;
+    overflow: hidden;
 }
 
 .filter-card:hover {
@@ -649,6 +708,7 @@ document.getElementById('chatbot-input').addEventListener('keypress', function(e
     border-bottom: 1px solid #e9ecef;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    padding: 1rem;
 }
 
 .filter-header:hover {
@@ -660,6 +720,7 @@ document.getElementById('chatbot-input').addEventListener('keypress', function(e
     border-radius: 25px;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid #dee2e6;
 }
 
 .search-input {
@@ -669,6 +730,7 @@ document.getElementById('chatbot-input').addEventListener('keypress', function(e
 
 .search-input:focus {
     box-shadow: none;
+    border-color: #28a745;
 }
 
 /* Select Styles */
@@ -677,6 +739,7 @@ document.getElementById('chatbot-input').addEventListener('keypress', function(e
     padding: 10px;
     border: 1px solid #dee2e6;
     transition: all 0.3s ease;
+    background-color: #fff;
 }
 
 .form-select:hover {
@@ -733,6 +796,10 @@ document.getElementById('chatbot-input').addEventListener('keypress', function(e
     .btn-lg {
         padding: 8px 16px;
         font-size: 1rem;
+    }
+
+    .filter-header {
+        padding: 0.75rem;
     }
 }
 </style>

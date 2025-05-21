@@ -67,8 +67,10 @@
               <div>
                 <strong>{{ product.name }}</strong>
                 <span class="ms-2 rating-stars" data-bs-toggle="tooltip" title="{% trans 'Average Rating' %}">
-                  {% for _ in ""|center:product.avg_rating|make_list %}<i class="fas fa-star text-warning"></i>{% endfor %}
-                  <span class="text-muted">({{ product.avg_rating|floatformat:1 }})</span>
+                  {% with rating=product.avg_rating|default:0 %}
+                    {% for _ in ""|center:rating|make_list %}<i class="fas fa-star text-warning"></i>{% endfor %}
+                    <span class="text-muted">({{ rating|floatformat:1 }})</span>
+                  {% endwith %}
                 </span>
               </div>
               <span class="badge bg-success">{% blocktrans %}{{ product.num_ratings }} ratings{% endblocktrans %}</span>
@@ -88,12 +90,17 @@
             <div class="d-flex justify-content-between align-items-center mb-2">
               <div>
                 <strong>{{ farmer.username }}</strong>
-                <span class="ms-2 rating-stars" data-bs-toggle="tooltip" title="{% trans 'Average Product Rating' %}">
-                  {% for _ in ""|center:farmer.avg_product_rating|make_list %}<i class="fas fa-star text-warning"></i>{% endfor %}
-                  <span class="text-muted">({{ farmer.avg_product_rating|floatformat:1 }})</span>
+                <span class="ms-2 rating-stars" data-bs-toggle="tooltip" title="{% trans 'Average Rating Across All Products' %}">
+                  {% with rating=farmer.avg_rating|default:0 %}
+                    {% for _ in ""|center:rating|make_list %}<i class="fas fa-star text-warning"></i>{% endfor %}
+                    <span class="text-muted">({{ rating|floatformat:1 }})</span>
+                  {% endwith %}
                 </span>
               </div>
-              <span class="badge bg-primary">{% blocktrans %}{{ farmer.num_ratings }} ratings{% endblocktrans %}</span>
+              <div class="text-end">
+                <span class="badge bg-primary">{% blocktrans %}{{ farmer.total_products }} products{% endblocktrans %}</span>
+                <span class="badge bg-success ms-1">{% blocktrans %}{{ farmer.total_ratings }} ratings{% endblocktrans %}</span>
+              </div>
             </div>
           {% empty %}
             <div class="text-muted">{% trans "No farmer ratings yet." %}</div>
@@ -166,8 +173,8 @@
       data: {
         labels: topFarmersData.map(farmer => farmer.username),
         datasets: [{
-          label: '{% trans "Average Product Rating" %}',
-          data: topFarmersData.map(farmer => farmer.avg_product_rating),
+          label: '{% trans "Average Rating Across All Products" %}',
+          data: topFarmersData.map(farmer => farmer.avg_rating),
           backgroundColor: '#007bff',
           borderRadius: 8,
         }]

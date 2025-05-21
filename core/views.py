@@ -460,21 +460,23 @@ def market_insights(request):
         for product in top_products
     ]
 
-    # Get top-performing farmers
+    # Get top-performing farmers with correct average rating calculation
     top_farmers = User.objects.filter(
-        profile__role='umuhinzi'
+        profile__role='umuhinzi',
+        product__isnull=False
     ).annotate(
-        avg_product_rating=Avg('product__ratings__rating'),
-        num_products=Count('product', distinct=True),
-        num_ratings=Count('product__ratings', distinct=True)
-    ).filter(num_products__gt=0).order_by('-avg_product_rating', '-num_ratings')[:5]
+        total_products=Count('product', distinct=True),
+        total_ratings=Count('product__ratings', distinct=True),
+        avg_rating=Avg('product__ratings__rating')
+    ).filter(total_ratings__gt=0).order_by('-avg_rating', '-total_ratings')[:5]
 
     # Serialize top farmers for JSON
     top_farmers_data = [
         {
             "username": farmer.username,
-            "avg_product_rating": float(farmer.avg_product_rating) if farmer.avg_product_rating else 0,
-            "num_ratings": farmer.num_ratings,
+            "avg_rating": float(farmer.avg_rating) if farmer.avg_rating else 0,
+            "total_products": farmer.total_products,
+            "total_ratings": farmer.total_ratings,
         }
         for farmer in top_farmers
     ]
@@ -485,9 +487,9 @@ def market_insights(request):
         'active_farmers': active_farmers,
         'avg_rating': avg_rating,
         'top_products': top_products,
-        'top_products_json': json.dumps(top_products_data),  # Convert to JSON string
+        'top_products_json': json.dumps(top_products_data),
         'top_farmers': top_farmers,
-        'top_farmers_json': json.dumps(top_farmers_data),  # Convert to JSON string
+        'top_farmers_json': json.dumps(top_farmers_data),
     }
     return render(request, 'core/market_insights.html', context)
 
