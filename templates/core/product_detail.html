@@ -32,6 +32,7 @@
             <p><strong>Price:</strong> {{ product.price_per_unit }}</p>
             <p><strong>Quantity:</strong> {{ product.quantity_available }} {{ product.unit }}</p>
             <p><strong>Location:</strong> {{ product.location }}</p>
+            <p><strong>Contact:</strong> {% if product.contact_number %}{{ product.contact_number }}{% else %}{% trans "Not Provided" %}{% endif %}</p>
             <p class="text-muted">
                 <small>
                     <i class="far fa-clock me-1"></i>

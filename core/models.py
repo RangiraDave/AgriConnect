@@ -229,7 +229,7 @@ class Product(models.Model):
             FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'mp4']),
         ]
     )
-    price_per_unit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    price_per_unit = models.DecimalField(max_digits=10, decimal_places=0, default=0)
     quantity_available = models.PositiveIntegerField()
     unit = models.CharField(max_length=10, choices=UNIT_CHOICES)
     contact = models.CharField(max_length=15, blank=True, null=True, help_text="Contact number for this product (optional)")
