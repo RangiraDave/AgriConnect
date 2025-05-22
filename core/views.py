@@ -15,6 +15,7 @@ from asgiref.sync import async_to_sync
 import random
 import logging
 from django.utils.timesince import timesince
+from django.core.exceptions import ObjectDoesNotExist
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -353,7 +354,11 @@ def add_product(request):
 @login_required(login_url='/login/')
 def user_profile(request):
     """Display the user profile."""
-    profile = Profile.objects.get(user=request.user)
+    try:
+        profile = Profile.objects.get(user=request.user)
+    except ObjectDoesNotExist:
+        messages.error(request, _("Your profile is not configured. Please contact support or log in again."))
+        return redirect('login')
     products = Product.objects.filter(owner=request.user)
     context = {
         'profile': profile,
