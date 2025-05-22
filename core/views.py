@@ -306,7 +306,6 @@ def product_listings(request):
         'products': products,
         'provinces': provinces,
         'total_products': products.count(),
-        'welcome_message': _('Welcome to AgriConnect Marketplace'),
         'selected_province': province_id,
         'selected_district': district_id,
         'selected_sector': sector_id,
