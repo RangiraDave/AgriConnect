@@ -605,47 +605,54 @@ def product_list(request):
 def edit_profile(request):
     """View for editing user profile."""
     profile = request.user.profile
-    
+
     if request.method == 'POST':
-        form = ProfileEditForm(request.POST, instance=profile)
+        form = ProfileEditForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            form.save()
+            # Save the profile first
+            profile = form.save()
+            
+            # Handle location data for farmers and cooperatives
+            if profile.role in ['umuhinzi', 'cooperative']:
+                try:
+                    location = profile.farmer
+                    if location:
+                        # Update location data
+                        location.province_id = form.cleaned_data.get('province')
+                        location.district_id = form.cleaned_data.get('district')
+                        location.sector_id = form.cleaned_data.get('sector')
+                        location.cell_id = form.cleaned_data.get('cell')
+                        location.village_id = form.cleaned_data.get('village')
+                        location.specific_location = form.cleaned_data.get('specific_location')
+                        location.save()
+                except Exception as e:
+                    messages.error(request, _('Error updating location information. Please try again.'))
+                    return redirect('edit_profile')
+            
             messages.success(request, _('Profile updated successfully.'))
             return redirect('user_profile')
     else:
         form = ProfileEditForm(instance=profile)
         
-        # Set initial values for location fields
-        try:
-            if profile.role == 'umuhinzi':
+        # Set initial values for location fields if user is a farmer or cooperative
+        if profile.role in ['umuhinzi', 'cooperative', 'umuguzi']:
+            try:
                 location = profile.farmer
-            elif profile.role == 'cooperative':
-                location = profile.cooperative
-            else:  # umuguzi
-                location = profile.buyer
-                
-            if location:
-                # Set initial values and data attributes for location fields
-                if location.province:
-                    form.fields['province'].initial = location.province.id
-                    form.fields['province'].widget.attrs['data-initial'] = location.province.id
-                if location.district:
-                    form.fields['district'].initial = location.district.id
-                    form.fields['district'].widget.attrs['data-initial'] = location.district.id
-                if location.sector:
-                    form.fields['sector'].initial = location.sector.id
-                    form.fields['sector'].widget.attrs['data-initial'] = location.sector.id
-                if location.cell:
-                    form.fields['cell'].initial = location.cell.id
-                    form.fields['cell'].widget.attrs['data-initial'] = location.cell.id
-                if location.village:
-                    form.fields['village'].initial = location.village.id
-                    form.fields['village'].widget.attrs['data-initial'] = location.village.id
-                form.fields['specific_location'].initial = location.specific_location
-        except (Farmer.DoesNotExist, Cooperative.DoesNotExist, Buyer.DoesNotExist):
-            pass
-    
-    return render(request, 'core/edit_profile.html', {'form': form})
+                if location:
+                    form.fields['province'].initial = location.province_id
+                    form.fields['district'].initial = location.district_id
+                    form.fields['sector'].initial = location.sector_id
+                    form.fields['cell'].initial = location.cell_id
+                    form.fields['village'].initial = location.village_id
+                    form.fields['specific_location'].initial = location.specific_location
+            except Exception as e:
+                messages.error(request, _('Error loading location information. Please try again.'))
+                return redirect('user_profile')
+
+    return render(request, 'core/edit_profile.html', {
+        'form': form,
+        'profile': profile
+    })
 
 def debug_db_config(request):
     """Temporary view to debug database configuration."""

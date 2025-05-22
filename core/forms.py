@@ -140,102 +140,168 @@ class ProfileEditForm(forms.ModelForm):
         required=True,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
+    name = forms.CharField(
+        max_length=150,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        label=_('Full Name')
+    )
     phone = forms.CharField(
         max_length=15,
         required=True,
         widget=forms.TextInput(attrs={'class': 'form-control'})
     )
-    
+    avatar = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={'class': 'form-control'}),
+        label=_('Profile Picture')
+    )
+    bio = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        label=_('Bio')
+    )
+    province = forms.ModelChoiceField(
+        queryset=Province.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label=_('Province')
+    )
+    district = forms.ModelChoiceField(
+        queryset=District.objects.none(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label=_('District')
+    )
+    sector = forms.ModelChoiceField(
+        queryset=Sector.objects.none(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label=_('Sector')
+    )
+    cell = forms.ModelChoiceField(
+        queryset=Cell.objects.none(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label=_('Cell')
+    )
+    village = forms.ModelChoiceField(
+        queryset=Village.objects.none(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label=_('Village')
+    )
+    specific_location = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        label=_('Specific Location')
+    )
+    role = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+        label=_('Role')
+    )
     class Meta:
         model = Profile
-        fields = ['username', 'phone', 'role']
+        fields = ['username', 'name', 'phone', 'role', 'avatar', 'bio']
         widgets = {
-            'role': forms.Select(attrs={'class': 'form-select', 'disabled': 'disabled'})
+            'role': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'})
         }
-    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].initial = self.instance.user.username
-        
-        # Add location fields if user is farmer or cooperative
-        if self.instance.role in ['umuhinzi', 'cooperative']:
-            try:
-                if self.instance.role == 'umuhinzi':
-                    location = self.instance.farmer
-                else:
-                    location = self.instance.cooperative
-            except (Farmer.DoesNotExist, Cooperative.DoesNotExist):
-                location = None
-            
-            # Province field
-            self.fields['province'] = forms.ModelChoiceField(
-                queryset=Province.objects.all(),
-                initial=location.province_id if location and location.province else None,
-                required=True,
-                widget=forms.Select(attrs={'class': 'form-select'})
-            )
-            
-            # District field
-            self.fields['district'] = forms.ModelChoiceField(
-                queryset=District.objects.filter(province=location.province) if location and location.province else District.objects.none(),
-                initial=location.district_id if location and location.district else None,
-                required=True,
-                widget=forms.Select(attrs={'class': 'form-select'})
-            )
-            
-            # Sector field
-            self.fields['sector'] = forms.ModelChoiceField(
-                queryset=Sector.objects.filter(district=location.district) if location and location.district else Sector.objects.none(),
-                initial=location.sector_id if location and location.sector else None,
-                required=True,
-                widget=forms.Select(attrs={'class': 'form-select'})
-            )
-            
-            # Cell field
-            self.fields['cell'] = forms.ModelChoiceField(
-                queryset=Cell.objects.filter(sector=location.sector) if location and location.sector else Cell.objects.none(),
-                initial=location.cell_id if location and location.cell else None,
-                required=True,
-                widget=forms.Select(attrs={'class': 'form-select'})
-            )
-            
-            # Village field
-            self.fields['village'] = forms.ModelChoiceField(
-                queryset=Village.objects.filter(cell=location.cell) if location and location.cell else Village.objects.none(),
-                initial=location.village_id if location and location.village else None,
-                required=True,
-                widget=forms.Select(attrs={'class': 'form-select'})
-            )
-            
-            # Specific location field
-            self.fields['specific_location'] = forms.CharField(
-                max_length=255,
-                required=False,
-                initial=location.specific_location if location else '',
-                widget=forms.TextInput(attrs={'class': 'form-control'})
-            )
-    
+        self.fields['name'].initial = self.instance.name
+        self.fields['phone'].initial = self.instance.phone
+        self.fields['bio'].initial = self.instance.bio
+        self.fields['role'].initial = self.instance.role
+        # Always set up location field querysets and initial values from Farmer, Cooperative, or Buyer location if present
+        location = getattr(self.instance, 'farmer', None) or getattr(self.instance, 'cooperative', None)
+        province_id = None
+        district_id = None
+        sector_id = None
+        cell_id = None
+        village_id = None
+        specific_location = None
+        if self.is_bound:
+            province_id = self.data.get('province') or None
+            district_id = self.data.get('district') or None
+            sector_id = self.data.get('sector') or None
+            cell_id = self.data.get('cell') or None
+            village_id = self.data.get('village') or None
+            specific_location = self.data.get('specific_location') or None
+        elif location:
+            province_id = location.province_id
+            district_id = location.district_id
+            sector_id = location.sector_id
+            cell_id = location.cell_id
+            village_id = location.village_id
+            specific_location = location.specific_location
+            self.fields['province'].initial = province_id
+            self.fields['district'].initial = district_id
+            self.fields['sector'].initial = sector_id
+            self.fields['cell'].initial = cell_id
+            self.fields['village'].initial = village_id
+            self.fields['specific_location'].initial = specific_location
+        self.fields['district'].queryset = District.objects.filter(province_id=province_id) if province_id else District.objects.none()
+        self.fields['sector'].queryset = Sector.objects.filter(district_id=district_id) if district_id else Sector.objects.none()
+        self.fields['cell'].queryset = Cell.objects.filter(sector_id=sector_id) if sector_id else Cell.objects.none()
+        self.fields['village'].queryset = Village.objects.filter(cell_id=cell_id) if cell_id else Village.objects.none()
     def clean(self):
         cleaned_data = super().clean()
-        role = self.instance.role
-        
-        # Validate required fields for farmers and cooperatives
-        if role in ['umuhinzi', 'cooperative']:
-            required_fields = ['province', 'district', 'sector', 'cell', 'village']
-            for field in required_fields:
-                if not cleaned_data.get(field):
-                    self.add_error(field, _('This field is required for farmers and cooperatives.'))
-        
+        # If any location field is filled, validate the hierarchy
+        province = cleaned_data.get('province')
+        district = cleaned_data.get('district')
+        sector = cleaned_data.get('sector')
+        cell = cleaned_data.get('cell')
+        village = cleaned_data.get('village')
+        any_location = any([province, district, sector, cell, village])
+        if any_location:
+            # All must be filled
+            if not all([province, district, sector, cell, village]):
+                raise forms.ValidationError(_('If you provide location, all location fields are required.'))
+            # Validate hierarchy
+            if district and district.province != province:
+                raise forms.ValidationError(_('Selected district does not belong to the selected province.'))
+            if sector and sector.district != district:
+                raise forms.ValidationError(_('Selected sector does not belong to the selected district.'))
+            if cell and cell.sector != sector:
+                raise forms.ValidationError(_('Selected cell does not belong to the selected sector.'))
+            if village and village.cell != cell:
+                raise forms.ValidationError(_('Selected village does not belong to the selected cell.'))
         return cleaned_data
-    
-    def clean_username(self):
-        username = self.cleaned_data['username']
-        if User.objects.filter(username=username).exclude(id=self.instance.user.id).exists():
-            raise forms.ValidationError(_('This username is already taken.'))
-        return username
-    
-    def clean_phone(self):
-        phone = self.cleaned_data['phone']
-        if Profile.objects.filter(phone=phone).exclude(id=self.instance.id).exists():
-            raise forms.ValidationError(_('This phone number is already registered.'))
-        return phone
+    def save(self, commit=True):
+        profile = super().save(commit=False)
+        user = profile.user
+        user.username = self.cleaned_data['username']
+        profile.name = self.cleaned_data.get('name', '')
+        user.save()
+        if commit:
+            profile.save()
+            # Save location fields to Farmer or Cooperative if they exist, else create Farmer
+            province = self.cleaned_data.get('province')
+            district = self.cleaned_data.get('district')
+            sector = self.cleaned_data.get('sector')
+            cell = self.cleaned_data.get('cell')
+            village = self.cleaned_data.get('village')
+            specific_location = self.cleaned_data.get('specific_location')
+            if any([province, district, sector, cell, village, specific_location]):
+                location = getattr(profile, 'farmer', None) or getattr(profile, 'cooperative', None)
+                if location:
+                    location.province = province
+                    location.district = district
+                    location.sector = sector
+                    location.cell = cell
+                    location.village = village
+                    location.specific_location = specific_location
+                    location.save()
+                else:
+                    Farmer.objects.create(
+                        profile=profile,
+                        province=province,
+                        district=district,
+                        sector=sector,
+                        cell=cell,
+                        village=village,
+                        specific_location=specific_location
+                    )
+        return profile

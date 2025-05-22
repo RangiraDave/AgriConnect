@@ -4,13 +4,120 @@
 {% block title %}{% trans "My Profile" %} - AgriConnect{% endblock %}
 
 {% block content %}
+{% if request.user.profile.role|lower == "umuguzi" %}
+  <div class="container mt-4">
+    <div class="row g-4">
+      <!-- Sidebar / Profile Card -->
+      <div class="col-lg-4">
+        <div class="profile-card shadow-sm p-4 text-center bg-white rounded animate__animated animate__fadeInLeft">
+          <div class="profile-avatar mx-auto mb-3">
+            {% if profile.avatar %}
+                <img src="{{ profile.avatar.url }}" alt="Avatar" class="rounded-circle profile-avatar-img">
+            {% else %}
+                <img src="{% static 'img/avatar_default.png' %}" alt="Avatar" class="rounded-circle profile-avatar-img">
+            {% endif %}
+          </div>
+          <h4 class="mb-1">{{ request.user.username }}</h4>
+          <span class="badge profile-role-badge mb-2 {{ profile.role|lower }}">
+            <i class="fas fa-user-tag me-1"></i>{{ profile.role|title }}
+          </span>
+          <div class="profile-contact mb-3">
+            <div>
+              <i class="fas fa-phone-alt me-1 text-success"></i>
+              <span>{{ profile.phone|default:"Not Provided" }}</span>
+            </div>
+            {% if profile.bio %}
+              <div class="profile-bio mt-2">
+                <i class="fas fa-info-circle me-1 text-success"></i>
+                <span>{{ profile.bio }}</span>
+              </div>
+            {% endif %}
+          </div>
+          <div class="d-grid gap-2 mb-3">
+            <a href="{% url 'edit_profile' %}" class="btn btn-outline-success btn-sm w-100">
+              <i class="fas fa-edit me-1"></i>{% trans "Edit Profile" %}
+            </a>
+            <a href="{% url 'market_insights' %}" class="btn btn-info btn-sm w-100">
+              <i class="fas fa-chart-line me-1"></i>{% trans "Market Insights" %}
+            </a>
+          </div>
+          <form method="post" action="{% url 'delete_account' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm w-100">
+              <i class="fas fa-user-times me-1"></i>{% trans "Delete Account" %}
+            </button>
+          </form>
+        </div>
+      </div>
+      <!-- Rated Products Section -->
+      <div class="col-lg-8">
+        <h4 class="mb-3">{% trans "Products You've Rated" %}</h4>
+        {% with rated_products=request.user.ratings.all %}
+          {% if rated_products %}
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+              {% for rating in rated_products %}
+                <div class="col">
+                  <div class="card h-100 shadow-sm animate__animated animate__fadeInUp">
+                    {% if rating.product.media %}
+                      {% with ext=rating.product.media.url|lower|slice:"-4:" %}
+                        {% if ext == ".mp4" %}
+                          <video controls class="card-img-top">
+                            <source src="{{ rating.product.media.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                          </video>
+                        {% else %}
+                          <img src="{{ rating.product.media.url }}" class="card-img-top" alt="{{ rating.product.name }}">
+                        {% endif %}
+                      {% endwith %}
+                    {% else %}
+                      <img src="{% static 'img/no_image.png' %}" class="card-img-top" alt="No Image">
+                    {% endif %}
+                    <div class="card-body">
+                      <h5 class="card-title">{{ rating.product.name }}</h5>
+                      <div class="mb-2">
+                        <span class="badge bg-success">{% trans "RWF" %} {{ rating.product.price_per_unit }}</span>
+                        <span class="badge bg-secondary">{{ rating.product.quantity_available }} {{ rating.product.unit }}</span>
+                      </div>
+                      <p class="card-text">{{ rating.product.description|truncatewords:20 }}</p>
+                      <div class="product-meta mt-2">
+                        <small class="text-muted">
+                          <i class="fas fa-star text-warning me-1"></i>
+                          {% trans "Your Rating:" %} {{ rating.rating }}
+                        </small><br>
+                        <small class="text-muted">
+                          <i class="fas fa-clock me-1"></i>
+                          {% trans "Added" %} {{ rating.product.created_at|timesince }} {% trans "ago" %}
+                        </small>
+                      </div>
+                      <a href="{% url 'product_detail' rating.product.id %}" class="btn btn-outline-success btn-sm mt-2">
+                        <i class="fas fa-eye me-1"></i>{% trans "View Product" %}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="alert alert-info animate__animated animate__fadeIn">
+              <i class="fas fa-info-circle me-2"></i>{% trans "The products you rated will appear here." %}
+            </div>
+          {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+  </div>
+{% else %}
 <div class="container mt-4">
   <div class="row g-4">
     <!-- Sidebar / Profile Card -->
     <div class="col-lg-4">
       <div class="profile-card shadow-sm p-4 text-center bg-white rounded animate__animated animate__fadeInLeft">
         <div class="profile-avatar mx-auto mb-3">
-          <img src="{% static 'img/avatar_default.png' %}" alt="Avatar" class="rounded-circle profile-avatar-img">
+          {% if profile.avatar %}
+              <img src="{{ profile.avatar.url }}" alt="Avatar" class="rounded-circle profile-avatar-img">
+          {% else %}
+              <img src="{% static 'img/avatar_default.png' %}" alt="Avatar" class="rounded-circle profile-avatar-img">
+          {% endif %}
         </div>
         <h4 class="mb-1">{{ request.user.username }}</h4>
         <span class="badge profile-role-badge mb-2 {{ profile.role|lower }}">
@@ -118,6 +225,7 @@
     </div>
   </div>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block extra_css %}

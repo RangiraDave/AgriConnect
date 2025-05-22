@@ -22,9 +22,26 @@
                         {% endfor %}
                     {% endif %}
 
-                    <form method="POST" class="needs-validation" novalidate>
+                    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                         {% csrf_token %}
                         
+                        <!-- Avatar Upload -->
+                        <div class="mb-4 text-center">
+                            <label for="id_avatar" class="form-label d-block">
+                                <i class="fas fa-user-circle fa-2x text-success mb-2"></i><br>
+                                {% trans "Profile Picture" %}
+                            </label>
+                            {% if form.instance.avatar %}
+                                <img src="{{ form.instance.avatar.url }}" alt="Current Avatar" class="rounded-circle mb-2" style="width: 100px; height: 100px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'img/avatar_default.png' %}" alt="Default Avatar" class="rounded-circle mb-2" style="width: 100px; height: 100px; object-fit: cover;">
+                            {% endif %}
+                            {{ form.avatar }}
+                            {% if form.avatar.errors %}
+                                <div class="invalid-feedback d-block">{{ form.avatar.errors }}</div>
+                            {% endif %}
+                        </div>
+
                         <!-- Basic Information -->
                         <div class="mb-4">
                             <h5 class="text-success mb-3">{% trans "Basic Information" %}</h5>
@@ -142,6 +159,17 @@
                             </div>
                         </div>
 
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-user-tag me-2"></i>{% trans "Role" %}
+                            </label>
+                            <span class="badge bg-info text-dark fs-6 px-3 py-2" style="font-size:1rem;">
+                                <!-- <i class="fas fa-user me-1"></i> -->
+                                {{ form.role.value|title }}
+                            </span>
+                            <input type="hidden" name="role" value="{{ form.role.value|default:profile.role }}">
+                        </div>
+
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-success btn-lg">
                                 <i class="fas fa-save me-2"></i>{% trans "Save Changes" %}
@@ -181,6 +209,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const cellSelect = document.getElementById('id_cell');
     const villageSelect = document.getElementById('id_village');
 
+    // Store initial values
+    const initialProvince = provinceSelect.value;
+    const initialDistrict = districtSelect.value;
+    const initialSector = sectorSelect.value;
+    const initialCell = cellSelect.value;
+    const initialVillage = villageSelect.value;
+
     // Load initial provinces
     fetch('/api/provinces/')
         .then(response => response.json())
@@ -190,12 +225,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const option = document.createElement('option');
                 option.value = province.id;
                 option.textContent = province.name;
-                if (province.id === parseInt(provinceSelect.dataset.initial)) {
+                if (province.id === parseInt(initialProvince)) {
                     option.selected = true;
                 }
                 provinceSelect.appendChild(option);
             });
-            if (provinceSelect.dataset.initial) {
+            if (initialProvince) {
                 updateDistricts();
             }
         });
@@ -211,13 +246,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         const option = document.createElement('option');
                         option.value = district.id;
                         option.textContent = district.name;
-                        if (district.id === parseInt(districtSelect.dataset.initial)) {
+                        if (district.id === parseInt(initialDistrict)) {
                             option.selected = true;
                         }
                         districtSelect.appendChild(option);
                     });
                     districtSelect.disabled = false;
-                    if (districtSelect.dataset.initial) {
+                    if (initialDistrict) {
                         updateSectors();
                     }
                 });
@@ -244,13 +279,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         const option = document.createElement('option');
                         option.value = sector.id;
                         option.textContent = sector.name;
-                        if (sector.id === parseInt(sectorSelect.dataset.initial)) {
+                        if (sector.id === parseInt(initialSector)) {
                             option.selected = true;
                         }
                         sectorSelect.appendChild(option);
                     });
                     sectorSelect.disabled = false;
-                    if (sectorSelect.dataset.initial) {
+                    if (initialSector) {
                         updateCells();
                     }
                 });
@@ -275,13 +310,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         const option = document.createElement('option');
                         option.value = cell.id;
                         option.textContent = cell.name;
-                        if (cell.id === parseInt(cellSelect.dataset.initial)) {
+                        if (cell.id === parseInt(initialCell)) {
                             option.selected = true;
                         }
                         cellSelect.appendChild(option);
                     });
                     cellSelect.disabled = false;
-                    if (cellSelect.dataset.initial) {
+                    if (initialCell) {
                         updateVillages();
                     }
                 });
@@ -304,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const option = document.createElement('option');
                         option.value = village.id;
                         option.textContent = village.name;
-                        if (village.id === parseInt(villageSelect.dataset.initial)) {
+                        if (village.id === parseInt(initialVillage)) {
                             option.selected = true;
                         }
                         villageSelect.appendChild(option);
@@ -317,6 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Add event listeners
     provinceSelect.addEventListener('change', updateDistricts);
     districtSelect.addEventListener('change', updateSectors);
     sectorSelect.addEventListener('change', updateCells);
@@ -326,4 +362,4 @@ document.addEventListener('DOMContentLoaded', function() {
 {% endblock %}
 
 {% block extra_css %}
-{% endblock %} 
+{% endblock %}

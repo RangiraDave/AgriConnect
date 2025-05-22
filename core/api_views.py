@@ -12,7 +12,7 @@ from .permissions import IsLocationAdmin
 class ProvinceViewSet(viewsets.ModelViewSet):
     queryset = Province.objects.all()
     serializer_class = ProvinceSerializer
-    permission_classes = [IsLocationAdmin]
+    permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=True, methods=['get'])
     def districts(self, request, pk=None):
@@ -24,7 +24,7 @@ class ProvinceViewSet(viewsets.ModelViewSet):
 class DistrictViewSet(viewsets.ModelViewSet):
     queryset = District.objects.all()
     serializer_class = DistrictSerializer
-    permission_classes = [IsLocationAdmin]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         queryset = District.objects.all()
@@ -43,7 +43,7 @@ class DistrictViewSet(viewsets.ModelViewSet):
 class SectorViewSet(viewsets.ModelViewSet):
     queryset = Sector.objects.all()
     serializer_class = SectorSerializer
-    permission_classes = [IsLocationAdmin]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         queryset = Sector.objects.all()
@@ -62,7 +62,7 @@ class SectorViewSet(viewsets.ModelViewSet):
 class CellViewSet(viewsets.ModelViewSet):
     queryset = Cell.objects.all()
     serializer_class = CellSerializer
-    permission_classes = [IsLocationAdmin]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         queryset = Cell.objects.all()
@@ -81,7 +81,7 @@ class CellViewSet(viewsets.ModelViewSet):
 class VillageViewSet(viewsets.ModelViewSet):
     queryset = Village.objects.all()
     serializer_class = VillageSerializer
-    permission_classes = [IsLocationAdmin]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         queryset = Village.objects.all()

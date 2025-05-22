@@ -78,6 +78,7 @@ class Profile(models.Model):
     phone = models.CharField(max_length=15, blank=True, null=True, unique=True)
     role = models.CharField(max_length=15, choices=ROLE_CHOICES, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, default='', help_text='Profile picture (optional)')
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
