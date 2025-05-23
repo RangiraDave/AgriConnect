@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-19 09:42+0200\n"
+"POT-Creation-Date: 2025-05-23 11:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: rw <rw@li.org>\n"
@@ -224,152 +224,222 @@ msgstr "Ijambobanga rigomba kugira byibuze inyuguti imwe ntoya."
 msgid "Password must contain at least one digit."
 msgstr "Ijambobanga rigomba kugira byibuze umubare umwe."
 
-#: core/forms.py:227
-msgid "This field is required for farmers and cooperatives."
-msgstr "Aha hacyenewe kwuzuzwa n'umuhinzi cyangwa koperative."
+#: core/forms.py:147 templates/core/edit_profile.html:62
+msgid "Full Name"
+msgstr "Amazina yombi"
 
-#: core/forms.py:234
-msgid "This username is already taken."
-msgstr "Irizina ryamaze gufatwa."
+#: core/forms.py:157 templates/core/edit_profile.html:32
+msgid "Profile Picture"
+msgstr "Konti Yanjye"
 
-#: core/forms.py:240
-msgid "This phone number is already registered."
-msgstr "Iyimero ya telefoni yarakoreshejwe."
+#: core/forms.py:162
+msgid "Bio"
+msgstr "Ibyerekeye nyiri konti"
 
-#: core/views.py:45
+#: core/forms.py:168 templates/core/edit_profile.html:91
+#: templates/core/product_listings.html:70 templates/core/signup.html:127
+msgid "Province"
+msgstr "Intara"
+
+#: core/forms.py:174 templates/core/edit_profile.html:102
+#: templates/core/product_listings.html:84 templates/core/signup.html:135
+msgid "District"
+msgstr "Akarere"
+
+#: core/forms.py:180 templates/core/edit_profile.html:115
+#: templates/core/product_listings.html:93 templates/core/signup.html:145
+msgid "Sector"
+msgstr "Umurenge"
+
+#: core/forms.py:186 templates/core/edit_profile.html:126
+#: templates/core/product_listings.html:102 templates/core/signup.html:153
+msgid "Cell"
+msgstr "Akagari"
+
+#: core/forms.py:192 templates/core/edit_profile.html:139
+#: templates/core/product_listings.html:111 templates/core/signup.html:163
+msgid "Village"
+msgstr "Umudugudu"
+
+#: core/forms.py:197 templates/core/edit_profile.html:150
+#: templates/core/signup.html:170
+msgid "Specific Location"
+msgstr "Aho uherereye neza"
+
+#: core/forms.py:202 templates/auth/login.html:46
+#: templates/core/edit_profile.html:164 templates/core/signup.html:111
+msgid "Role"
+msgstr "Icyiciro"
+
+#: core/forms.py:261
+msgid "If you provide location, all location fields are required."
+msgstr "Aho muherereye harakenewe, mwuhuzuze hose neza."
+
+#: core/forms.py:264
+msgid "Selected district does not belong to the selected province."
+msgstr "Akarere muhisemmo ntikabarizwa mu ntara mwahisemo."
+
+#: core/forms.py:266
+msgid "Selected sector does not belong to the selected district."
+msgstr "Umurenge muhisemmo ntubarizwa mu karere mwahisemmo."
+
+#: core/forms.py:268
+msgid "Selected cell does not belong to the selected sector."
+msgstr "Akagari muhisemo ntikaarizwa mu mu renge mwahisemo."
+
+#: core/forms.py:270
+msgid "Selected village does not belong to the selected cell."
+msgstr "Umudugudu muhisemmo ntuherereye mu kagari mwahisemo."
+
+#: core/views.py:40
+msgid "Login required to access this page."
+msgstr "Mugomba kwinjira murinti kugirango mubashe kubona iyi paje."
+
+#: core/views.py:50
 msgid "Email not verified. Please check your email for the verification link."
 msgstr ""
 "Imeyili ntiyemejwe. Nyamuneka reba ubutumwa bwo kwemeza muri imeyili yawe."
 
-#: core/views.py:59
+#: core/views.py:68
 msgid "Invalid role selected for this account."
 msgstr "Icyiciro cyahiswemo ntikiaho."
 
-#: core/views.py:61 core/views.py:63
+#: core/views.py:70 core/views.py:72
 msgid "User profile not properly configured. Please contact support."
 msgstr "Konti yawe ntirandikwa neza. Murebe ahatangirwa ubufasha."
 
-#: core/views.py:65
+#: core/views.py:74
 msgid "Invalid username or password!"
 msgstr "Izina cyangwa ijambobanga ntabwo ari byo!"
 
-#: core/views.py:109
+#: core/views.py:118
 msgid "AgriConnect Email Verification"
 msgstr "Kwemeza Imeyili ya AgriConnect"
 
-#: core/views.py:110
+#: core/views.py:119
 #, python-format
 msgid "Your verification code is: %(code)s"
 msgstr "Kode yo kwemeza ni: %(code)s"
 
-#: core/views.py:158
+#: core/views.py:167
 msgid ""
 "No email found for this session. Please try resending the verification code."
 msgstr ""
 "Nta imeyili yabashije kuboneka. Nyamuneka gerageza kongera kohereza kode yo "
 "kwemeza."
 
-#: core/views.py:168
+#: core/views.py:177
 msgid "No verification code found. Please request a new one."
 msgstr "Nta kode yo kwemeza yaonetse. Mwongere musabe indi."
 
-#: core/views.py:177
+#: core/views.py:186
 msgid "Email verified successfully! You can now log in."
 msgstr "Kwemeza imeyili byakunze! Ubu mushobora kwinjira."
 
-#: core/views.py:181
+#: core/views.py:190
 msgid "Verification code has expired. Please request a new one."
 msgstr "Kode yo kwemeza yashaje. Musabe indi kode."
 
-#: core/views.py:184
+#: core/views.py:193
 msgid "Invalid verification code. Please try again."
 msgstr "Kode yo kwemeza siyo. Mwongere mugerageze."
 
-#: core/views.py:187
+#: core/views.py:196
 msgid "Invalid verification process. Please try again."
 msgstr "Uburyo bwo kwemeza ntabwo ari bwo. Mwongere mugerageze."
 
-#: core/views.py:201
+#: core/views.py:210
 msgid "No email provided for verification."
 msgstr "Nta imeyili yatanzwe yo kwemeza."
 
-#: core/views.py:207
+#: core/views.py:216
 msgid "Your email is already verified."
 msgstr "Imeyili yawe yarangije kwemezwa."
 
-#: core/views.py:222
+#: core/views.py:231
 msgid "AgriConnect Email Verification - Resend"
 msgstr "Kwemeza Imeyili ya AgriConnect - Ongera wohereze"
 
-#: core/views.py:223
+#: core/views.py:232
 #, python-format
 msgid "Your new verification code is: %(code)s"
 msgstr "Kode nshya yo kwemeza ni: %(code)s"
 
-#: core/views.py:232
+#: core/views.py:241
 msgid "A new verification code has been sent to your email."
 msgstr "Kode nshya yo kwemeza yoherejwe kuri imeyili yawe."
 
-#: core/views.py:237
+#: core/views.py:246
 msgid "Email not found."
 msgstr "Imeyili ntabwo yabonetse."
 
-#: core/views.py:300
-msgid "Welcome to AgriConnect Marketplace"
-msgstr "Murakaza neza kutubuga rwa AgriConnect"
-
-#: core/views.py:315
+#: core/views.py:323
 msgid "You are not authorized to add a product."
 msgstr "Nta burenganzira ufite bwo kwongeraho igicuruzwa."
 
-#: core/views.py:328
+#: core/views.py:336
 msgid ""
 "Please update your profile with contact information before adding a product."
 msgstr ""
 "Nyamuneka nimwongere nimero za telefoni kuri konti yanyu mubone kwongeraho "
 "igicuruzwa."
 
-#: core/views.py:332
+#: core/views.py:340
 msgid "Product added successfully!"
 msgstr "Igicuruzwa Cyamazekwongerwaho neza!"
 
-#: core/views.py:336
+#: core/views.py:344
 msgid "An error occurred while saving the product. Please try again."
 msgstr ""
 "Habayeho ikibazo tekinike mukubika igicuruzwa. Nyamuneka ongera ugerageze "
 "mukanya."
 
-#: core/views.py:339
+#: core/views.py:347
 msgid "Please correct the errors in the form."
 msgstr "Nyabuneka nimukosore amakosa mubyo mwanditse."
 
-#: core/views.py:363
+#: core/views.py:359
+#, fuzzy
+#| msgid "User profile not properly configured. Please contact support."
+msgid "Your profile is not configured. Please contact support or log in again."
+msgstr "Konti yawe ntirandikwa neza. Murebe ahatangirwa ubufasha."
+
+#: core/views.py:375
 msgid "You are not authorized to edit this product."
 msgstr "Nta burenganzira ufite bwo guhindura iki gicuruzwa."
 
-#: core/views.py:370
+#: core/views.py:382
 msgid "Product updated successfully!"
 msgstr "Igicuruzwa cyahinduwe neza!"
 
-#: core/views.py:382
+#: core/views.py:394
 msgid "You are not authorized to delete this product."
 msgstr "Nta burenganzira ufite bwo gusiba iki gicuruzwa."
 
-#: core/views.py:387
+#: core/views.py:399
 msgid "Product deleted successfully!"
 msgstr "Igicuruzwa Cyamazekwongerwaho neza!"
 
-#: core/views.py:400
+#: core/views.py:412
 msgid "Please provide a valid rating between 1 and 5."
 msgstr "Nyamuneka tanga amanota ari hagati ya 1 na 5."
 
-#: core/views.py:603
+#: core/views.py:633
+msgid "Error updating location information. Please try again."
+msgstr "Habayeho ikosa kuguhindura amakuru y'aho mutuye. Mwongere mugerageze."
+
+#: core/views.py:636
 msgid "Profile updated successfully."
 msgstr "Igicuruzwa cyamaze guhindurwa neza!"
 
+#: core/views.py:653
+msgid "Error loading location information. Please try again."
+msgstr ""
+"Habayeho ikosa mugushaka amakuru y'aho muherereye. Mwongere mugerageze."
+
 #: templates/auth/login.html:5 templates/auth/login.html:13
-#: templates/auth/login.html:51 templates/core/base.html:112
-#: templates/core/home.html:20
+#: templates/auth/login.html:51 templates/core/base.html:106
+#: templates/core/home.html:24
 msgid "Login"
 msgstr "Injira"
 
@@ -397,10 +467,6 @@ msgstr "Umuguzi"
 msgid "Cooperative"
 msgstr "Koperative"
 
-#: templates/auth/login.html:46 templates/core/signup.html:111
-msgid "Role"
-msgstr "Icyiciro"
-
 #: templates/auth/login.html:58
 msgid "Don't have an account?"
 msgstr "Nta konti ufite?"
@@ -421,7 +487,7 @@ msgstr ""
 "Nudatanga nimero ya telefone, kuri ikigicuruzwa hazakoreshwa iyo usanganwe "
 "kuri konti yawe."
 
-#: templates/core/add_product.html:39 templates/core/user_profile.html:31
+#: templates/core/add_product.html:39 templates/core/user_profile.html:144
 msgid "Add Product"
 msgstr "Ongeraho Igicuruzwa"
 
@@ -443,30 +509,31 @@ msgstr "Ubunini bw'ifoto cyangwa videwo ntibugomba kurenga ingano ya 5MB"
 msgid "Remove"
 msgstr "Kuraho"
 
-#: templates/core/base.html:38 templates/core/base.html:147
+#: templates/core/base.html:40 templates/core/base.html:147
 msgid "Home"
 msgstr "Ahabanza"
 
-#: templates/core/base.html:42 templates/core/base.html:148
-#: templates/core/product_list.html:4
+#: templates/core/base.html:44 templates/core/base.html:148
 msgid "Products"
 msgstr "Ibicuruzwa"
 
-#: templates/core/base.html:45
+#: templates/core/base.html:47
 msgid "Profile"
 msgstr "Konti Yanjye"
 
-#: templates/core/base.html:48 templates/core/base.html:149
-#: templates/core/home.html:58 templates/core/market_insights.html:5
-#: templates/core/market_insights.html:10
+#: templates/core/base.html:50 templates/core/base.html:149
+#: templates/core/home.html:60 templates/core/home.html:150
+#: templates/core/home.html:194 templates/core/home.html:251
+#: templates/core/market_insights.html:5 templates/core/market_insights.html:17
+#: templates/core/user_profile.html:41 templates/core/user_profile.html:147
 msgid "Market Insights"
 msgstr "Amakuru k'Isoko"
 
-#: templates/core/base.html:78
+#: templates/core/base.html:76
 msgid "Logout"
-msgstr "Gusohoka"
+msgstr "Sohoka"
 
-#: templates/core/base.html:109 templates/core/signup.html:5
+#: templates/core/base.html:103 templates/core/signup.html:5
 msgid "Sign Up"
 msgstr "Iyandikishe"
 
@@ -487,7 +554,7 @@ msgid "All rights reserved"
 msgstr "Uburenganzira bwose burafitwe"
 
 #: templates/core/delete_account.html:8 templates/core/delete_account.html:12
-#: templates/core/user_profile.html:102
+#: templates/core/user_profile.html:47 templates/core/user_profile.html:154
 msgid "Delete Account"
 msgstr "Siba konti"
 
@@ -497,7 +564,7 @@ msgid ""
 msgstr "Urashaka koko gusiba konti yawe? Iki gikorwa ntikizagarurwa."
 
 #: templates/core/delete_account.html:13 templates/core/edit_product.html:64
-#: templates/core/edit_profile.html:150
+#: templates/core/edit_profile.html:178
 msgid "Cancel"
 msgstr "Hagarika"
 
@@ -524,105 +591,66 @@ msgstr ""
 msgid "Drag and drop your new image here or click to browse"
 msgstr "Kurura ifoto nshyashya uyishyire hano cyangwa ukandeho uyishake"
 
-#: templates/core/edit_product.html:61 templates/core/edit_profile.html:147
+#: templates/core/edit_product.html:61 templates/core/edit_profile.html:175
 msgid "Save Changes"
 msgstr "Bika Impinduka"
 
 #: templates/core/edit_profile.html:5 templates/core/edit_profile.html:13
+#: templates/core/home.html:222 templates/core/user_profile.html:38
+#: templates/core/user_profile.html:140
 msgid "Edit Profile"
 msgstr "Hindura amakuru kuri konti"
 
-#: templates/core/edit_profile.html:30
+#: templates/core/edit_profile.html:47
 msgid "Basic Information"
 msgstr "Amakuru y'ibanze"
 
-#: templates/core/edit_profile.html:34 templates/core/signup.html:40
+#: templates/core/edit_profile.html:51 templates/core/signup.html:40
 msgid "Username"
 msgstr "Izina ukoresha"
 
-#: templates/core/edit_profile.html:45
-msgid "Full Name"
-msgstr "Amazina"
-
-#: templates/core/edit_profile.html:57 templates/core/signup.html:91
+#: templates/core/edit_profile.html:74 templates/core/signup.html:91
 msgid "Phone Number"
 msgstr "Nimero ya telefone"
 
-#: templates/core/edit_profile.html:70
+#: templates/core/edit_profile.html:87
 msgid "Location Information"
 msgstr "Amakuru y'aho uherereye"
 
-#: templates/core/edit_profile.html:74 templates/core/product_list.html:19
-#: templates/core/product_listings.html:57 templates/core/signup.html:127
-msgid "Province"
-msgstr "Intara"
-
-#: templates/core/edit_profile.html:85 templates/core/product_list.html:32
-#: templates/core/product_listings.html:71 templates/core/signup.html:135
-msgid "District"
-msgstr "Akarere"
-
-#: templates/core/edit_profile.html:98 templates/core/product_list.html:40
-#: templates/core/product_listings.html:80 templates/core/signup.html:145
-msgid "Sector"
-msgstr "Umurenge"
-
-#: templates/core/edit_profile.html:109 templates/core/product_list.html:48
-#: templates/core/product_listings.html:89 templates/core/signup.html:153
-msgid "Cell"
-msgstr "Akagari"
-
-#: templates/core/edit_profile.html:122 templates/core/product_list.html:56
-#: templates/core/product_listings.html:98 templates/core/signup.html:163
-msgid "Village"
-msgstr "Umudugudu"
-
-#: templates/core/edit_profile.html:133 templates/core/signup.html:170
-msgid "Specific Location"
-msgstr "Aho uherereye neza"
-
-#: templates/core/edit_profile.html:188 templates/core/product_list.html:21
-#: templates/core/product_listings.html:60 templates/core/signup.html:125
-#: templates/core/signup.html:303
+#: templates/core/edit_profile.html:223 templates/core/product_listings.html:73
+#: templates/core/signup.html:125 templates/core/signup.html:303
 msgid "Select Province"
 msgstr "Hitamo Intara"
 
-#: templates/core/edit_profile.html:209 templates/core/edit_profile.html:225
-#: templates/core/product_list.html:34 templates/core/product_list.html:168
-#: templates/core/product_listings.html:74
-#: templates/core/product_listings.html:339 templates/core/signup.html:133
+#: templates/core/edit_profile.html:244 templates/core/edit_profile.html:260
+#: templates/core/product_listings.html:87
+#: templates/core/product_listings.html:410 templates/core/signup.html:133
 #: templates/core/signup.html:323 templates/core/signup.html:333
 msgid "Select District"
 msgstr "Hitamo Akarere"
 
-#: templates/core/edit_profile.html:228 templates/core/edit_profile.html:242
-#: templates/core/edit_profile.html:258 templates/core/product_list.html:42
-#: templates/core/product_list.html:174 templates/core/product_list.html:186
-#: templates/core/product_listings.html:83
-#: templates/core/product_listings.html:366 templates/core/signup.html:143
+#: templates/core/edit_profile.html:263 templates/core/edit_profile.html:277
+#: templates/core/edit_profile.html:293 templates/core/product_listings.html:96
+#: templates/core/product_listings.html:437 templates/core/signup.html:143
 #: templates/core/signup.html:353 templates/core/signup.html:363
 #: templates/core/signup.html:456
 msgid "Select Sector"
 msgstr "Hitamo Umurenge"
 
-#: templates/core/edit_profile.html:230 templates/core/edit_profile.html:261
-#: templates/core/edit_profile.html:273 templates/core/edit_profile.html:289
-#: templates/core/product_list.html:50 templates/core/product_list.html:175
-#: templates/core/product_list.html:191 templates/core/product_list.html:202
-#: templates/core/product_listings.html:92
-#: templates/core/product_listings.html:393 templates/core/signup.html:151
+#: templates/core/edit_profile.html:265 templates/core/edit_profile.html:296
+#: templates/core/edit_profile.html:308 templates/core/edit_profile.html:324
+#: templates/core/product_listings.html:105
+#: templates/core/product_listings.html:464 templates/core/signup.html:151
 #: templates/core/signup.html:383 templates/core/signup.html:393
 #: templates/core/signup.html:457 templates/core/signup.html:468
 msgid "Select Cell"
 msgstr "Hitamo Akagari"
 
-#: templates/core/edit_profile.html:232 templates/core/edit_profile.html:263
-#: templates/core/edit_profile.html:292 templates/core/edit_profile.html:302
-#: templates/core/edit_profile.html:315 templates/core/product_list.html:58
-#: templates/core/product_list.html:176 templates/core/product_list.html:192
-#: templates/core/product_list.html:206 templates/core/product_list.html:216
-#: templates/core/product_listings.html:101
-#: templates/core/product_listings.html:420 templates/core/signup.html:161
+#: templates/core/edit_profile.html:267 templates/core/edit_profile.html:298
+#: templates/core/edit_profile.html:327 templates/core/edit_profile.html:337
+#: templates/core/edit_profile.html:350
+#: templates/core/product_listings.html:114
+#: templates/core/product_listings.html:491 templates/core/signup.html:161
 #: templates/core/signup.html:413 templates/core/signup.html:423
 #: templates/core/signup.html:458 templates/core/signup.html:469
 #: templates/core/signup.html:478
@@ -633,217 +661,302 @@ msgstr "Hitamo Umudugudu"
 msgid "Welcome to AgriConnect"
 msgstr "Murakaza neza kuri AgriConnect"
 
-#: templates/core/home.html:12
+#: templates/core/home.html:14 templates/core/home.html:137
 msgid "Connect, Trade, Grow"
 msgstr "Huza, Curuza, Agura"
 
-#: templates/core/home.html:13
+#: templates/core/home.html:17 templates/core/home.html:140
 msgid ""
-"Rwanda's Premier Agricultural Marketplace - Connecting Farmers, Buyers, and "
-"Cooperatives"
+"Rwanda's #1 digital marketplace for agriculture. Buy, sell, and discover "
+"fresh produce directly from local farmers and cooperatives."
 msgstr ""
-"Isoko Rikuru ry'Ubuhinzi mu Rwanda - Guhuza Abahinzi, Abaguzi, "
-"n'amakoperative"
+"Iguriro ry'iyakure ryambere mu Rwanda ry'ibihingwa. Gura, Gurisha ndetse "
+"unamenye umusaruro ugifite umwimerere kuva kubahinzi ndetse n'ama koperative."
 
-#: templates/core/home.html:17
-msgid "Join Now"
-msgstr "Iyandikishe Nonaha"
+#: templates/core/home.html:21
+msgid "Get Started Free"
+msgstr "Tangira kubuntu"
 
-#: templates/core/home.html:25
-msgid "Browse Products"
-msgstr "Reba Ibicuruzwa"
+#: templates/core/home.html:29 templates/core/home.html:155
+#, python-format
+msgid "No fees. No hassle. 100%% local."
+msgstr "Ntakiguzi. Ntakuvunika. Umwimerere 100%%"
 
-#: templates/core/home.html:46
-msgid "Why Choose AgriConnect?"
-msgstr "Kuki Wahitamo AgriConnect"
+#: templates/core/home.html:48 templates/core/home.html:239
+msgid "Why AgriConnect?"
+msgstr "Kuki AgriConnect?"
 
-#: templates/core/home.html:51
+#: templates/core/home.html:53 templates/core/home.html:244
 msgid "Direct Connections"
 msgstr "Guhuza ku Buryo Butaziguye"
 
-#: templates/core/home.html:52
-msgid "Connect directly with farmers, buyers, and cooperatives across Rwanda"
+#: templates/core/home.html:54 templates/core/home.html:245
+msgid ""
+"No middlemen. Chat and trade directly with farmers, buyers, and cooperatives."
+msgstr "NTABAMAMYI. Vugana n'abahinzi, abaguzi n'amakoperative Nyirizina."
+
+#: templates/core/home.html:61 templates/core/home.html:252
+msgid "See real-time prices, trends, and top products to make smart decisions."
 msgstr ""
-"Huza ku buryo butaziguye n'abahinzi, abaguzi n'amakoperative mu Rwanda hose"
+"Reba ibiciro byanyabyo, ibigezweho ndetse ni ibicuruzwa ihiga ibindi ufate "
+"umwanzuro uboneye."
 
-#: templates/core/home.html:59
-msgid "Access real-time market data and trends to make informed decisions"
+#: templates/core/home.html:67 templates/core/home.html:258
+msgid "Easy & Secure"
+msgstr "Biroroshye kandi Birizewe"
+
+#: templates/core/home.html:68 templates/core/home.html:259
+msgid "Simple to use, mobile-friendly, and safe for everyone."
 msgstr ""
-"Kubona amakuru y'isoko n'ibipimo by'igihe kugira ngo ufate ibyemezo byiza"
+"Ururubuga rworoshye gukoresha, rukorana neza n'amatelefone ndetse rwizewe "
+"kuri buri umwe."
 
-#: templates/core/home.html:65
-msgid "Easy to Use"
-msgstr "Biroroshye Kuyikoresha"
-
-#: templates/core/home.html:66
-msgid "User-friendly platform with support in Kinyarwanda and English"
-msgstr "Urubuga rukoreshwa mu buryo bworoshye mu Kinyarwanda n'Icyongereza"
-
-#: templates/core/home.html:76
+#: templates/core/home.html:78 templates/core/home.html:269
 msgid "Who Can Join?"
 msgstr "Abo rugenewe?"
 
-#: templates/core/home.html:82
+#: templates/core/home.html:84 templates/core/home.html:275
 msgid "Farmers"
 msgstr "Abahinzi"
 
-#: templates/core/home.html:83
-msgid ""
-"List your products, reach more buyers, and get fair prices for your produce"
+#: templates/core/home.html:85 templates/core/home.html:276
+msgid "List your harvest, reach more buyers, and get fair prices."
 msgstr ""
-"Garagaza ibicuruzwa byawe, ugere ku baguzi benshi, kandi ubone ibiciro "
-"bikwiye ku musaruro wawe"
+"Garagaza umusaruro wawe, ugere ku baguzi benshi, kandi ubone ibiciro ukwiye."
 
-#: templates/core/home.html:86
+#: templates/core/home.html:87
 msgid "Join as Farmer"
 msgstr "Injira nk'Umuhinzi"
 
-#: templates/core/home.html:96
+#: templates/core/home.html:96 templates/core/home.html:284
 msgid "Buyers"
 msgstr "Abaguzi"
 
-#: templates/core/home.html:97
+#: templates/core/home.html:97 templates/core/home.html:285
 msgid ""
-"Find quality products, compare prices, and connect with verified sellers"
+"Find quality products, compare prices, and connect with trusted sellers."
 msgstr ""
-"Bona ibicuruzwa by'ibyiza, gereranya ibiciro, kandi uhuze n'abacuruzi bemewe"
+"Bona ibicuruzwa bifite ubuziranenge, gereranya ibiciro kandi uhuze "
+"n'abacuruzi bizewe."
 
-#: templates/core/home.html:100
+#: templates/core/home.html:99
 msgid "Join as Buyer"
 msgstr "Injira nk'Umuguzi"
 
-#: templates/core/home.html:110
+#: templates/core/home.html:108 templates/core/home.html:293
 msgid "Cooperatives"
 msgstr "Koperative"
 
-#: templates/core/home.html:111
-msgid "Manage your cooperative's products and connect with potential buyers"
-msgstr "Cungira koperative yawe ibicuruzwa kandi uhuze n'abaguzi bashoboka"
+#: templates/core/home.html:109 templates/core/home.html:294
+msgid "Manage your group's products and connect with more customers."
+msgstr "Cungira koperative yawe ibicuruzwa kandi uhuze n'abaguzi benshi."
 
-#: templates/core/home.html:114
+#: templates/core/home.html:111
 msgid "Join as Cooperative"
 msgstr "Injira nka Koperative"
 
-#: templates/core/home.html:127
+#: templates/core/home.html:123
 msgid "Ready to Get Started?"
 msgstr "Witeguye Gutangira?"
 
-#: templates/core/home.html:128
-msgid ""
-"Join AgriConnect today and be part of Rwanda's growing agricultural "
-"marketplace"
+#: templates/core/home.html:124
+msgid "Sign up now and be part of Rwanda's growing agricultural community."
 msgstr ""
 "Iyandikishe kuri AgriConnect uyu munsi ubundi ube umwe mubari k'isoko "
-"ry'ubuhinzi rikura ukwo bwije n'ukwo bucyeye mu Rwanda"
+"ry'ubuhinzi rikura ukwo bwije n'ukwo bucyeye mu Rwanda."
 
-#: templates/core/home.html:131
+#: templates/core/home.html:126
 msgid "Create Your Account"
 msgstr "Kora Konti Yawe"
 
-#: templates/core/home.html:135
-msgid "Explore Products"
+#: templates/core/home.html:144 templates/core/home.html:184
+msgid "Browse Products"
 msgstr "Reba Ibicuruzwa"
 
-#: templates/core/market_insights.html:16
-#: templates/core/product_listings.html:21
+#: templates/core/home.html:147 templates/core/home.html:189
+#: templates/core/user_profile.html:4
+msgid "My Profile"
+msgstr "Konti Yanjye"
+
+#: templates/core/home.html:179
+msgid "Welcome back,"
+msgstr "Murakaza neza,"
+
+#: templates/core/home.html:202 templates/core/user_profile.html:163
+msgid "Your Products"
+msgstr "Ibicuruzwa Byawe"
+
+#: templates/core/home.html:204
+msgid "Manage"
+msgstr "Cunga"
+
+#: templates/core/home.html:211
+msgid "Notifications"
+msgstr "Ubutumwa"
+
+#: templates/core/home.html:213 templates/core/product_listings.html:276
+msgid "View"
+msgstr "Reba"
+
+#: templates/core/home.html:220
+msgid "Settings"
+msgstr "Igenamiterere"
+
+#: templates/core/home.html:228
+msgid "Use the navigation above or shortcuts to explore AgriConnect."
+msgstr "Koresha inzira zahafi ubona hejuru ubundi ukoreshe AgriConnect."
+
+#: templates/core/home.html:305
+msgid "AgriConnect: Your Gateway to Rwanda's Agricultural Market"
+msgstr "AgriConnect: Inzira igana k'isoko ry'abahinzi bo mu Rwanda"
+
+#: templates/core/home.html:306
+msgid ""
+"Explore, connect, and grow your business with AgriConnect. Use the "
+"navigation or dashboard above to get started."
+msgstr ""
+"Shakisha, uhuze ndetse wagure bizinesi yawe kuri AgriConnect. Tangira "
+"uyikoreshe uciye munzira zahafi ubona hejuru."
+
+#: templates/core/market_insights.html:20
+msgid ""
+"Discover real-time trends, top products, and leading farmers on AgriConnect. "
+"Make informed decisions with our up-to-date analytics and market data."
+msgstr ""
+"Menya ibihe nyabyo, ibicuruzwa byo hejuru, hamwe nabahinzi bayoboye kuri "
+"AgriConnect. Fata ibyemezo byuzuye, isesengura rigezweho ndetse n'amakuru "
+"yisoko."
+
+#: templates/core/market_insights.html:37
+#: templates/core/product_listings.html:35
 msgid "Total Products"
 msgstr "Byose hamwe"
 
-#: templates/core/market_insights.html:20
+#: templates/core/market_insights.html:44
 msgid "Active Farmers"
 msgstr "Abahinzi Bari Kurubuga"
 
-#: templates/core/market_insights.html:24
+#: templates/core/market_insights.html:51
+#: templates/core/market_insights.html:69
+#: templates/core/market_insights.html:149
 msgid "Average Rating"
 msgstr "Impuzandengo y'amanota"
 
-#: templates/core/market_insights.html:31
+#: templates/core/market_insights.html:62
 msgid "Top Rated Products"
 msgstr "Ibicuruzwa Byahize ibindi mu manota"
 
-#: templates/core/market_insights.html:43
+#: templates/core/market_insights.html:76
 #, python-format
 msgid "%(product.num_ratings)s ratings"
 msgstr "%(product.num_ratings)s Amanota"
 
-#: templates/core/market_insights.html:52
+#: templates/core/market_insights.html:79
+msgid "No product ratings yet."
+msgstr "Ntamanota aratangwa kugicuruzwa."
+
+#: templates/core/market_insights.html:86
 msgid "Top Performing Farmers"
 msgstr "Abahinzi Bahize Abandi"
 
-#: templates/core/market_insights.html:64
-#, python-format
-msgid "%(farmer.num_ratings)s ratings"
-msgstr "%(farmer.num_ratings)s Amanota"
+#: templates/core/market_insights.html:93
+#: templates/core/market_insights.html:176
+msgid "Average Rating Across All Products"
+msgstr "Impuzandengo y'amanota kubicuruzwa byose."
 
-#: templates/core/market_insights.html:73
+#: templates/core/market_insights.html:101
+#, python-format
+msgid "%(farmer.total_products)s products"
+msgstr "Ibicuruzwa %(farmer.total_products)s"
+
+#: templates/core/market_insights.html:102
+#, fuzzy, python-format
+#| msgid "%(farmer.total_ratings)s ratings"
+msgid "%(farmer.total_ratings)s ratings"
+msgstr "Amanota %(farmer.num_ratings)s"
+
+#: templates/core/market_insights.html:106
+msgid "No farmer ratings yet."
+msgstr "Ntamanota aratangwa."
+
+#: templates/core/market_insights.html:118
 msgid "Market Trends"
 msgstr "Ibigezweho k'isoko"
 
-#: templates/core/product_detail.html:38 templates/core/product_list.html:110
-#: templates/core/product_listings.html:164
+#: templates/core/market_insights.html:120
+msgid "6 Months"
+msgstr "Amezi 6"
+
+#: templates/core/market_insights.html:121
+msgid "1 Year"
+msgstr "Umwaka 1"
+
+#: templates/core/market_insights.html:126
+msgid "Track how product listings and ratings have changed over time."
+msgstr ""
+"Reba ukwo ibicuruzwa byagiye bishyirwaho n'amanota byagiye bihindagurika."
+
+#: templates/core/market_insights.html:203
+#: templates/core/product_listings.html:17 templates/products.html:5
+msgid "Product Listings"
+msgstr "Ibicuruzwa"
+
+#: templates/core/market_insights.html:212
+msgid "Average Ratings"
+msgstr "Impuzandengo y'amanota"
+
+#: templates/core/product_detail.html:35
+#: templates/core/product_listings.html:229
+msgid "Not Provided"
+msgstr "Ntabyatanzwe"
+
+#: templates/core/product_detail.html:39
+#: templates/core/product_listings.html:235 templates/core/user_profile.html:89
+#: templates/core/user_profile.html:201
 msgid "Added"
 msgstr "Byashyizweho"
 
-#: templates/core/product_list.html:13
-msgid "Location Filter"
-msgstr "Aho biherereye"
-
-#: templates/core/product_list.html:64
-msgid "Apply Filter"
-msgstr "Yungurura"
-
-#: templates/core/product_list.html:67
-msgid "Clear Filter"
-msgstr "Siba"
-
-#: templates/core/product_list.html:104
-#: templates/core/product_listings.html:205
-msgid "View"
-msgstr "Reba"
-
-#: templates/core/product_list.html:119
-msgid "No products found matching your criteria."
-msgstr "Mwihangane ntagicuruzwa kibonetse bigendeye kubyo mwashakishije"
-
-#: templates/core/product_listings.html:14
+#: templates/core/product_listings.html:20
 msgid ""
-"Ngibi ibicuruzwa bikeneye abaguzi byashyizweho n'abahinzi bo mu Rwanda "
-"bagera kuri"
-msgstr "????"
+"Browse all available agricultural products. Use filters to find exactly what "
+"you need from Rwanda's farmers and cooperatives."
+msgstr ""
+"Reba ibicuruzwa byose biboneka mubuhinzi. Yungurura kugirango umenye neza "
+"ibyo ukeneye mubahinzi ndetse no mu makoperative yo Rwanda."
 
-#: templates/core/product_listings.html:32
+#: templates/core/product_listings.html:45
 msgid "Filters"
 msgstr "Yungurura"
 
-#: templates/core/product_listings.html:49
+#: templates/core/product_listings.html:62
 msgid "Search products..."
 msgstr "Shakisha ibicuruzwa..."
 
-#: templates/core/product_listings.html:108
+#: templates/core/product_listings.html:121
 msgid "Apply Filters"
 msgstr "Yungurura"
 
-#: templates/core/product_listings.html:111
+#: templates/core/product_listings.html:124
 msgid "Clear Filters"
 msgstr "Siba"
 
-#: templates/core/product_listings.html:186
+#: templates/core/product_listings.html:257
 msgid "Submit Rating"
 msgstr "Ohereza Amanota"
 
-#: templates/core/product_listings.html:192
+#: templates/core/product_listings.html:263
 msgid "ratings"
 msgstr "Amanota"
 
-#: templates/core/product_listings.html:199
+#: templates/core/product_listings.html:270
 msgid "Talk to us"
 msgstr "Tuganirize"
 
-#: templates/core/product_listings.html:214
+#: templates/core/product_listings.html:285
 msgid "No products found"
 msgstr "Nta bicuruzwa byabonetse"
 
-#: templates/core/product_listings.html:215
+#: templates/core/product_listings.html:286
 msgid "Try adjusting your filters or search criteria"
 msgstr "Gerageza guhindura uburyo bwo gushakisha"
 
@@ -923,33 +1036,45 @@ msgstr "Akagari mwahisemo siko. Mwongere mugerageze."
 msgid "Failed to load villages. Please try again."
 msgstr "Umudugudu mwahisemo siwo. Mwongere mugerageze."
 
-#: templates/core/user_profile.html:34
-msgid "View Market Insights"
-msgstr "Reba ibigezweho k'isoko"
+#: templates/core/user_profile.html:54
+msgid "Products You've Rated"
+msgstr ""
 
-#: templates/core/user_profile.html:45
+#: templates/core/user_profile.html:78 templates/core/user_profile.html:192
+msgid "RWF"
+msgstr "RWF"
+
+#: templates/core/user_profile.html:85
+msgid "Your Rating:"
+msgstr "Amanota yawe"
+
+#: templates/core/user_profile.html:89 templates/core/user_profile.html:201
+msgid "ago"
+msgstr "Ashize/Ishize"
+
+#: templates/core/user_profile.html:93
+msgid "View Product"
+msgstr "Reba Igicuruzwa"
+
+#: templates/core/user_profile.html:102
+msgid "The products you rated will appear here."
+msgstr "Ibicuruzwa mwakunze mugaha amanota bizajya bigaragara aha."
+
+#: templates/core/user_profile.html:166
 msgid "You haven't added any products yet!"
 msgstr "Nta bicuruzwa wariwashyiraho!"
 
-#: templates/core/user_profile.html:48
-msgid "Your Products"
-msgstr "Ibicuruzwa Byawe"
-
-#: templates/core/user_profile.html:72
-msgid "Price"
-msgstr "Igiciro"
-
-#: templates/core/user_profile.html:73
-msgid "Quantity"
-msgstr "Ingano"
-
-#: templates/core/user_profile.html:82
+#: templates/core/user_profile.html:208
 msgid "Edit"
 msgstr "Hindura"
 
-#: templates/core/user_profile.html:85
+#: templates/core/user_profile.html:211
 msgid "Delete"
 msgstr "Siba"
+
+#: templates/core/user_profile.html:222
+msgid "You are registered as a buyer. Browse products and rate them!"
+msgstr "Wiyandikishije nk'Umuguzi. Reba ibicuruzwa ibyo ukunda ubihe amanota!"
 
 #: templates/core/verify_email.html:5 templates/core/verify_email.html:13
 msgid "Verify Your Email"
@@ -971,13 +1096,60 @@ msgstr "Nta kode mwakiriye?"
 msgid "Resend Code"
 msgstr "Ongera wohereze"
 
-#: templates/products.html:5
-msgid "Product Listings"
-msgstr "Ibicuruzwa"
+#~ msgid "This field is required for farmers and cooperatives."
+#~ msgstr "Aha hacyenewe kwuzuzwa n'umuhinzi cyangwa koperative."
+
+#~ msgid "This username is already taken."
+#~ msgstr "Irizina ryamaze gufatwa."
+
+#~ msgid "This phone number is already registered."
+#~ msgstr "Iyimero ya telefoni yarakoreshejwe."
+
+#~ msgid "Welcome to AgriConnect Marketplace"
+#~ msgstr "Murakaza neza kutubuga rwa AgriConnect"
+
+#~ msgid ""
+#~ "Rwanda's Premier Agricultural Marketplace - Connecting Farmers, Buyers, "
+#~ "and Cooperatives"
+#~ msgstr ""
+#~ "Isoko Rikuru ry'Ubuhinzi mu Rwanda - Guhuza Abahinzi, Abaguzi, "
+#~ "n'amakoperative"
+
+#~ msgid "Join Now"
+#~ msgstr "Iyandikishe Nonaha"
+
+#~ msgid "Easy to Use"
+#~ msgstr "Biroroshye Kuyikoresha"
+
+#~ msgid "User-friendly platform with support in Kinyarwanda and English"
+#~ msgstr "Urubuga rukoreshwa mu buryo bworoshye mu Kinyarwanda n'Icyongereza"
+
+#~ msgid "Explore Products"
+#~ msgstr "Reba Ibicuruzwa"
+
+#~ msgid "Location Filter"
+#~ msgstr "Aho biherereye"
+
+#~ msgid "Apply Filter"
+#~ msgstr "Yungurura"
+
+#~ msgid "Clear Filter"
+#~ msgstr "Siba"
+
+#~ msgid ""
+#~ "Ngibi ibicuruzwa bikeneye abaguzi byashyizweho n'abahinzi bo mu Rwanda "
+#~ "bagera kuri"
+#~ msgstr "????"
+
+#~ msgid "View Market Insights"
+#~ msgstr "Reba ibigezweho k'isoko"
+
+#~ msgid "Price"
+#~ msgstr "Igiciro"
+
+#~ msgid "Quantity"
+#~ msgstr "Ingano"
 
 # For chart labels in JS (optional, if you want to translate them)
 #~ msgid "Average Product Rating"
 #~ msgstr "Amanota Y'Ibicuruzwa"
-
-#~ msgid "Average Ratings"
-#~ msgstr "Impuzandengo y'amanota"
