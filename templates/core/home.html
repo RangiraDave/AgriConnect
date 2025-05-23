@@ -128,6 +128,47 @@
     </div>
 </section>
 {% else %}
+<!-- Hero Section for Authenticated Users -->
+<section class="hero-section hero-section-bg text-center py-5">
+    <div class="container">
+        <div class="row align-items-center flex-column-reverse flex-lg-row">
+            <div class="col-lg-6 text-lg-start mb-4 mb-lg-0 animate__animated animate__fadeInLeft">
+                <h1 class="display-3 mb-3 text-success fw-bold animate__animated animate__fadeInDown">
+                    {% trans "Connect, Trade, Grow" %}
+                </h1>
+                <p class="lead mb-4 animate__animated animate__fadeInLeft">
+                    {% trans "Rwanda's #1 digital marketplace for agriculture. Buy, sell, and discover fresh produce directly from local farmers and cooperatives." %}
+                </p>
+                <div class="d-flex gap-3 justify-content-lg-start justify-content-center flex-wrap">
+                    <a href="{% url 'product_listings' %}" class="btn btn-success btn-lg px-4 animate__animated animate__pulse animate__infinite mb-2 mb-lg-0">
+                        <i class="fas fa-shopping-basket me-2"></i>{% trans "Browse Products" %}
+                    </a>
+                    <a href="{% url 'user_profile' %}" class="btn btn-outline-success btn-lg px-4 mb-2 mb-lg-0">
+                        <i class="fas fa-user me-2"></i>{% trans "My Profile" %}
+                    </a>
+                    <a href="{% url 'market_insights' %}" class="btn btn-info btn-lg px-4 mb-2 mb-lg-0 text-white">
+                        <i class="fas fa-chart-line me-2"></i>{% trans "Market Insights" %}
+                    </a>
+                </div>
+                <div class="mt-4">
+                    <span class="badge bg-success fs-6 animate__animated animate__fadeInUp">
+                        {% trans "No fees. No hassle. 100% local." %}
+                    </span>
+                </div>
+            </div>
+            <div class="col-lg-6 animate__animated animate__fadeInRight mb-4 mb-lg-0">
+                <div class="hero-images position-relative mx-auto" style="max-width: 350px;">
+                    <img src="{% static 'img/coffee.png' %}" alt="Coffee" class="grid-img img-1 shadow-lg mb-2" style="width: 48%; position: absolute; top: 0; left: 0; border-radius: 20px;">
+                    <img src="{% static 'img/ibishyimbo.png' %}" alt="Beans" class="grid-img img-2 shadow-lg mb-2" style="width: 48%; position: absolute; top: 0; right: 0; border-radius: 20px;">
+                    <img src="{% static 'img/imyembe.png' %}" alt="Mangoes" class="grid-img img-3 shadow-lg mb-2" style="width: 48%; position: absolute; bottom: 0; left: 0; border-radius: 20px;">
+                    <img src="{% static 'img/ibigori.jpg' %}" alt="Corn" class="grid-img img-4 shadow-lg mb-2" style="width: 48%; position: absolute; bottom: 0; right: 0; border-radius: 20px;">
+                    <div style="padding-top: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Authenticated User Dashboard -->
 <section class="container py-5">
     <div class="row justify-content-center">
@@ -138,25 +179,25 @@
                         <i class="fas fa-leaf me-2"></i>{% trans "Welcome back," %} {{ user.username }}!
                     </h2>
                     <div class="row g-4 justify-content-center mb-4">
-                        <div class="col-md-4">
-                            <a href="{% url 'product_listings' %}" class="btn btn-success btn-lg w-100">
+                        <div class="col-12 col-md-4">
+                            <a href="{% url 'product_listings' %}" class="btn btn-success btn-lg w-100 mb-2 mb-md-0">
                                 <i class="fas fa-shopping-basket me-2"></i>{% trans "Browse Products" %}
                             </a>
                         </div>
-                        <div class="col-md-4">
-                            <a href="{% url 'user_profile' %}" class="btn btn-outline-success btn-lg w-100">
+                        <div class="col-12 col-md-4">
+                            <a href="{% url 'user_profile' %}" class="btn btn-outline-success btn-lg w-100 mb-2 mb-md-0">
                                 <i class="fas fa-user me-2"></i>{% trans "My Profile" %}
                             </a>
                         </div>
-                        <div class="col-md-4">
-                            <a href="{% url 'market_insights' %}" class="btn btn-info btn-lg w-100">
+                        <div class="col-12 col-md-4">
+                            <a href="{% url 'market_insights' %}" class="btn btn-info btn-lg w-100 text-white">
                                 <i class="fas fa-chart-line me-2"></i>{% trans "Market Insights" %}
                             </a>
                         </div>
                     </div>
                     <div class="row g-3 justify-content-center">
-                        <div class="col-md-4">
-                            <div class="bg-light rounded p-3 shadow-sm">
+                        <div class="col-12 col-md-4">
+                            <div class="bg-light rounded p-3 shadow-sm mb-3 mb-md-0">
                                 <i class="fas fa-box-open fa-2x text-success mb-2"></i>
                                 <div class="fw-bold">{% trans "Your Products" %}</div>
                                 <div class="text-muted small">
@@ -164,8 +205,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="bg-light rounded p-3 shadow-sm">
+                        <div class="col-12 col-md-4">
+                            <div class="bg-light rounded p-3 shadow-sm mb-3 mb-md-0">
                                 <i class="fas fa-bell fa-2x text-success mb-2"></i>
                                 <div class="fw-bold">{% trans "Notifications" %}</div>
                                 <div class="text-muted small">
@@ -173,8 +214,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="bg-light rounded p-3 shadow-sm">
+                        <div class="col-12 col-md-4">
+                            <div class="bg-light rounded p-3 shadow-sm mb-3 mb-md-0">
                                 <i class="fas fa-cog fa-2x text-success mb-2"></i>
                                 <div class="fw-bold">{% trans "Settings" %}</div>
                                 <div class="text-muted small">
