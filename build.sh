@@ -5,16 +5,13 @@ set -o errexit
 # Install exact dependencies
 pip install -r requirements.txt
 
-# Upgrade pip
-pip install --upgrade pip
-
 # Collect static assets
-python3 manage.py collectstatic
+python3 manage.py collectstatic --no-input
 
 # Run database migrations
 echo "Running migrations..."
-python3 manage.py makemigrations core
-python3 manage.py migrate
+python3 manage.py makemigrations core --no-input
+python3 manage.py migrate --no-input
 
 # Import locations
 python3 manage.py import_locations
