@@ -6,12 +6,15 @@ set -o errexit
 pip install -r requirements.txt
 
 # Collect static assets
-python3 manage.py collectstatic --no-input
+python3 manage.py collectstatic
 
 # Run database migrations
 echo "Running migrations..."
-python3 manage.py makemigrations core --no-input
-python3 manage.py migrate --no-input
+python3 manage.py makemigrations core
+python3 manage.py migrate
+
+# Import locations
+python3 manage.py import_locations
 
 # Create default superuser if not exists
 python3 manage.py shell << 'END'
