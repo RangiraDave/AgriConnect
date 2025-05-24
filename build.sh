@@ -5,6 +5,9 @@ set -o errexit
 # Install exact dependencies
 pip install -r requirements.txt
 
+# Upgrade pip
+pip install --upgrade pip
+
 # Collect static assets
 python3 manage.py collectstatic
 
