@@ -7,6 +7,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from core.views import debug_db_config
 from django.conf.urls.i18n import i18n_patterns
+from django.views.i18n import set_language
 
 # Non-translatable URLs
 urlpatterns = [
@@ -22,8 +23,13 @@ urlpatterns += i18n_patterns(
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('debug/db-config/', debug_db_config, name='debug_db_config'),
+    path('chatbot/', include('chatbot.urls')),  # Include chatbot URLs
     prefix_default_language=True,  # Always prefix URLs with language code
 )
+
+urlpatterns += [
+    path('i18n/setlang/', set_language, name='set_language'),
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

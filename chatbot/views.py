@@ -1,202 +1,213 @@
 # chatbot/views.py
-from django.http import JsonResponse
-from django.views.decorators.http import require_GET
-from django.shortcuts import get_object_or_404
-from django.utils.translation import gettext_lazy as _
+import json
 import re
-from core.models import Product, Profile
-from django.db.models import Avg
 import logging
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from core.models import Product, ChatLog
 
 logger = logging.getLogger(__name__)
 
-@require_GET
-def chatbot_response(request):
-    """
-    Enhanced chatbot for AgriConnect that provides intelligent responses about products,
-    market insights, and general agricultural information.
-    """
-    try:
-        # Initialize session variables if they don't exist
-        if not request.session.get('conversation_state'):
-            request.session['conversation_state'] = 'start'
-        if not request.session.get('context'):
-            request.session['context'] = {}
+# Enhanced patterns for more accurate intent recognition
+PATTERNS = {
+    'greeting': [
+        r'\b(?:hello|hi|hey|greetings|hola|bonjour)\b',
+        r'\bhow are you\b',
+        r'\bgood (?:morning|afternoon|evening|day)\b',
+    ],
+    'product_info': [
+        r'\b(?:what|tell me|info|information|details|learn|know)\b.*\b(?:about|regarding|on)\b',
+        r'\b(?:describe|explain|elaborate|details)\b',
+        r'\bmore details\b',
+        r'\bwhat (?:product|item) is this\b',
+        r'\bwhat is (?:it|this)\b',
+        r'\bwhat can you tell me\b',
+        r'\bdescribe this product\b',
+        r'\btell me about\b',
+        r'\bproduct details\b',
+    ],
+    'price_inquiry': [
+        r'\b(?:price|cost|how much)\b',
+        r'\b(?:pricing|fee|charge|rate)\b',
+        r'\bhow much (?:does|is|costs|will)\b',
+        r'\bhow many (?:rwf|dollars)\b',
+    ],
+    'contact_request': [
+        r'\b(?:contact|reach|call|phone|email|message|number)\b',
+        r'\b(?:seller|vendor|owner|supplier|farmer)\b',
+        r'\bhow (?:to|can|do) (?:contact|reach|call)\b',
+        r'\bget in touch\b',
+        r'\bphoning\b',
+        r'\btalking to\b',
+    ],
+    'availability': [
+        r'\b(?:available|in stock|quantity|how many)\b',
+        r'\b(?:have|left|remain|stock)\b',
+        r'\bhow much (?:is|are) available\b',
+        r'\bquantity left\b',
+        r'\bhow many units\b',
+    ],
+    'location_inquiry': [
+        r'\b(?:where|location|address|place|area)\b',
+        r'\bwhere (?:is|can|to)\b',
+        r'\bpick up\b',
+        r'\bdelivery\b',
+    ],
+    'help_request': [
+        r'\b(?:help|assist|guide)\b',
+        r'\bwhat can you (?:do|help|assist)\b',
+        r'\bhow (?:can|do) you (?:help|assist|work)\b',
+        r'\bwhat (?:should|can) I ask\b',
+        r'\bwhat questions\b',
+    ],
+}
 
-        state = request.session['conversation_state']
-        context = request.session['context']
-        message = request.GET.get('message', '').lower()
-        product_id = request.GET.get('product_id')
-        user_name = request.user.username if request.user.is_authenticated else "Guest"
-
-        response = ""
-        
-        # Common greetings and farewells
-        greetings = ['hello', 'hi!', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening']
-        farewells = ['bye', 'goodbye', 'see you', 'thank you', 'thanks']
-        
-        # Check for greetings
-        if any(greeting in message for greeting in greetings):
-            if product_id:
-                try:
-                    product = get_object_or_404(Product, id=product_id)
-                    response = _("Hello {user_name}! I'm AgriConnect Assistant. I can help you with information about {product_name}. What would you like to know?").format(
-                        user_name=user_name,
-                        product_name=product.name
-                    )
-                except Product.DoesNotExist:
-                    response = _("I'm sorry, I couldn't find that product. How else can I help you?")
-            else:
-                response = _("Hello {user_name}! I'm AgriConnect Assistant. How can I help you today?").format(
-                    user_name=user_name
-                )
-            request.session['conversation_state'] = 'waiting_for_query'
-            return JsonResponse({'response': response})
-
-        # Check for farewells
-        if any(farewell in message for farewell in farewells):
-            response = _("Thank you for using AgriConnect! If you have any more questions, feel free to ask. Have a great day!")
-            request.session['conversation_state'] = 'start'
-            request.session['context'] = {}  # Reset context on farewell
-            return JsonResponse({'response': response})
-
-        if state == 'start':
-            if product_id:
-                try:
-                    product = get_object_or_404(Product, id=product_id)
-                    response = _("Hello {user_name}, I'm AgriConnect Assistant. I can help you with information about {product_name}. What would you like to know?").format(
-                        user_name=user_name,
-                        product_name=product.name
-                    )
-                except Product.DoesNotExist:
-                    response = _("I'm sorry, I couldn't find that product. How else can I help you?")
-            else:
-                response = _("Hello! I'm AgriConnect Assistant. How can I help you today?")
-            request.session['conversation_state'] = 'waiting_for_query'
-        
-        elif state == 'waiting_for_query':
-            if product_id:
-                try:
-                    product = get_object_or_404(Product, id=product_id)
-                    owner = product.owner
-                    owner_profile = Profile.objects.get(user=owner)
-                    
-                    # Calculate average rating
-                    avg_rating = product.ratings.aggregate(Avg('rating'))['rating__avg'] or 0
-                    rating_count = product.ratings.count()
-                    
-                    # Define comprehensive response patterns
-                    if re.search(r'\b(description|details|about)\b', message):
-                        response = product.description if product.description else _("No detailed description available for this product.")
-                    
-                    elif re.search(r'\b(location|where|place)\b', message):
-                        location_info = []
-                        if owner_profile.role == 'umuhinzi':
-                            farmer = owner_profile.farmer
-                            if farmer:
-                                location_info = [
-                                    farmer.province.name if farmer.province else None,
-                                    farmer.district.name if farmer.district else None,
-                                    farmer.sector.name if farmer.sector else None,
-                                    farmer.cell.name if farmer.cell else None,
-                                    farmer.village.name if farmer.village else None,
-                                    farmer.specific_location
-                                ]
-                        elif owner_profile.role == 'cooperative':
-                            cooperative = owner_profile.cooperative
-                            if cooperative:
-                                location_info = [
-                                    cooperative.province.name if cooperative.province else None,
-                                    cooperative.district.name if cooperative.district else None,
-                                    cooperative.sector.name if cooperative.sector else None,
-                                    cooperative.cell.name if cooperative.cell else None,
-                                    cooperative.village.name if cooperative.village else None,
-                                    cooperative.specific_location
-                                ]
-                        
-                        location_info = [loc for loc in location_info if loc]
-                        response = _("This product is available in: {location}").format(
-                            location=", ".join(location_info) if location_info else _("Location information not available")
-                        )
-                    
-                    elif re.search(r'\b(price|cost|how much)\b', message):
-                        response = _("The price is {price} per {unit} of {product_name}.").format(
-                            price=product.price_per_unit,
-                            unit=product.unit,
-                            product_name=product.name
-                        )
-                    
-                    elif re.search(r'\b(quantity|available|stock)\b', message):
-                        response = _("There are {quantity} {unit} of {product_name} available.").format(
-                            quantity=product.quantity_available,
-                            unit=product.unit,
-                            product_name=product.name
-                        )
-                    
-                    elif re.search(r'\b(contact|phone|number|reach|"seller\'s contact"|"seller\'s phone"|"seller\'s number")\b', message):
-                        response = _("You can contact the seller at {phone}. The seller is a {role}.").format(
-                            phone=owner_profile.phone or _("Contact information not available"),
-                            role=owner_profile.role
-                        )
-                    
-                    elif re.search(r'\b(rating|review|feedback)\b', message):
-                        if rating_count > 0:
-                            response = _("This product has an average rating of {rating:.1f} stars from {count} reviews.").format(
-                                rating=avg_rating,
-                                count=rating_count
-                            )
-                        else:
-                            response = _("This product hasn't received any ratings yet.")
-                    
-                    elif re.search(r'\b(image|photo|picture|"show me")\b', message):
-                        if product.media and not product.is_video():
-                            response = _("Here is an image of the product: {url}").format(url=product.media.url)
-                        else:
-                            response = _("No image is available for this product.")
-                    
-                    elif re.search(r'\b(video|watch|"show me video")\b', message):
-                        if product.media and product.is_video():
-                            response = _("Here is a video of the product: {url}").format(url=product.media.url)
-                        else:
-                            response = _("No video is available for this product.")
-                    
-                    elif re.search(r'\b(seller|owner|producer|"seller\'s name"|who)\b', message):
-                        response = _("This product is sold by {username}, who is a {role}. You can contact them at {phone}.").format(
-                            username=owner.username,
-                            role=owner_profile.role,
-                            phone=owner_profile.phone
-                        )
-                    
-                    elif re.search(r'\b(help|assist|support)\b', message):
-                        response = _("I can help you with information about:\n"
-                                   "- Product details and description\n"
-                                   "- Price and availability\n"
-                                   "- Location and contact information\n"
-                                   "- Ratings and reviews\n"
-                                   "- Images and videos\n"
-                                   "- Seller information\n"
-                                   "What would you like to know?")
-
-                    else:
-                        response = _("Please clarify your question. I can help you with information about this product's:\n"
-                                   "- Description\n"
-                                   "- Price\n"
-                                   "- Quantity\n"
-                                   "- Location\n"
-                                   "- Contact details\n"
-                                   "- Ratings\n"
-                                   "- Media (images/videos)\n"
-                                   "What would you like to know?")
-                except (Product.DoesNotExist, Profile.DoesNotExist) as e:
-                    logger.error(f"Error accessing product or profile: {str(e)}")
-                    response = _("I'm sorry, I encountered an error while retrieving the product information. Please try again later.")
-            else:
-                response = _("I can help you browse products, provide market insights, or answer questions about AgriConnect. What would you like to know?")
-
-        return JsonResponse({'response': response})
+def detect_intent(message):
+    """Determine the intent of the user's message"""
+    message = message.lower().strip()
     
+    # Check each pattern category
+    for intent, pattern_list in PATTERNS.items():
+        for pattern in pattern_list:
+            if re.search(pattern, message):
+                logger.info(f"Message '{message}' matched pattern '{pattern}' with intent '{intent}'")
+                return intent
+    
+    # Very short messages (1-2 words) might be greetings or simple queries
+    words = message.strip().split()
+    if len(words) <= 2:
+        if any(greeting in words for greeting in ['hi', 'hello', 'hey', 'hola']):
+            return 'greeting'
+        if any(word in words for word in ['price', 'cost', 'contact', 'call', 'help']):
+            for word in words:
+                if word == 'price' or word == 'cost':
+                    return 'price_inquiry'
+                elif word == 'contact' or word == 'call':
+                    return 'contact_request'
+                elif word == 'help':
+                    return 'help_request'
+    
+    # Default fallback
+    logger.info(f"No intent matched for message: '{message}'")
+    return 'unknown'
+
+def get_product_info(product_id):
+    """Get formatted product information"""
+    try:
+        product = get_object_or_404(Product, id=product_id)
+        
+        # Get contact information from product owner
+        contact = None
+        # Try direct contact field (if it exists)
+        if hasattr(product, 'contact') and getattr(product, 'contact', None):
+            contact = product.contact
+        # Try profile phone
+        elif hasattr(product.owner, 'profile'):
+            contact = getattr(product.owner.profile, 'phone', None)
+        # If still no contact, try other profile fields
+        if not contact and hasattr(product.owner, 'profile'):
+            profile = product.owner.profile
+            contact = getattr(profile, 'contact_number', None) or getattr(profile, 'email', None)
+        
+        # Format contact if found, otherwise provide guidance
+        if contact:
+            formatted_contact = contact
+        else:
+            formatted_contact = "Contact information not available. Please check seller profile."
+        
+        # Prepare product information
+        product_info = {
+            'name': product.name,
+            'description': product.description or "No description available",
+            'price': product.price_per_unit,
+            'unit': product.unit,
+            'quantity': product.quantity_available,
+            'contact': formatted_contact,
+            'owner': product.owner.username,
+        }
+        
+        logger.info(f"Successfully retrieved product info for product ID: {product_id}")
+        return product_info
+    except Product.DoesNotExist:
+        logger.error(f"Product with ID {product_id} not found")
+        return None
+    except Exception as e:
+        logger.error(f"Error retrieving product info for ID {product_id}: {str(e)}")
+        return None
+
+def generate_response(intent, product_info):
+    """Generate a response based on intent and product information"""
+    if not product_info:
+        return "I'm sorry, I couldn't find information about this product."
+    
+    product_name = product_info.get('name', 'this product')
+    
+    owner_name = product_info.get('owner', 'the seller')
+    responses = {
+        'greeting': f"Hello! I can help you with information about {product_name}. What would you like to know?",
+        
+        'product_info': f"{product_name}: {product_info['description']} It costs {product_info['price']} per {product_info['unit']} and there are {product_info['quantity']} {product_info['unit']}s available. The seller is {owner_name}.",
+        
+        'price_inquiry': f"The price of '{product_name}' is {product_info['price']} per {product_info['unit']}.",
+        
+        'contact_request': f"You can contact the {owner_name} at {product_info['contact']}.",
+        
+        'availability': f"There are currently {product_info['quantity']} {product_info['unit']}s of '{product_name}' available.",
+        
+        'location_inquiry': f"For location details and delivery options for {product_name}, please contact the seller {owner_name} directly at {product_info['contact']}.",
+        
+        'help_request': f"I can answer questions about {product_name} including:\n• Product details and description\n• Price ({product_info['price']} per {product_info['unit']})\n• Availability ({product_info['quantity']} {product_info['unit']}s)\n• How to contact the seller ({owner_name})\nJust ask what you'd like to know!",
+        
+        'unknown': f"I'm not sure what you're asking about {product_name}. You can ask about the product details, price, availability, or how to contact the seller {owner_name}."
+    }
+    
+    return responses.get(intent, responses['unknown'])
+
+def log_conversation(user_message, bot_response, intent, product_id):
+    """Log the conversation to the database"""
+    try:
+        ChatLog.objects.create(
+            user_message=user_message,
+            bot_response=bot_response,
+            intent=intent,
+            product_id=product_id
+        )
+    except Exception as e:
+        logger.error(f"Failed to log conversation: {str(e)}")
+
+def chatbot_response(request):
+    """Process chatbot requests and return responses"""
+    message = request.GET.get('message', '').strip()
+    product_id = request.GET.get('product_id')
+    
+    if not message or not product_id:
+        return JsonResponse({
+            'response': "I'm sorry, I couldn't process your request."
+        })
+    
+    try:
+        # Get product information
+        product_info = get_product_info(product_id)
+        
+        if not product_info:
+            return JsonResponse({
+                'response': "I'm sorry, I couldn't find information about this product."
+            })
+        
+        # Determine intent from message
+        intent = detect_intent(message)
+        logger.info(f"Detected intent '{intent}' for message: '{message}'")
+        
+        # Generate appropriate response
+        response = generate_response(intent, product_info)
+        
+        # Log the conversation
+        log_conversation(message, response, intent, product_id)
+        
+        return JsonResponse({'response': response})
+        
     except Exception as e:
         logger.error(f"Error in chatbot_response: {str(e)}")
         return JsonResponse({
-            'response': _("I'm sorry, I encountered an error. Please try again later.")
-        }, status=500)
+            'response': "I'm sorry, there was an error processing your request."
+        })

@@ -6,3 +6,4 @@
 *.pyd
 *.db
 database_creation.sh
+data.txt
