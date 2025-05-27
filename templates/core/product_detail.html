@@ -1,6 +1,5 @@
 {% extends 'core/base.html' %}
-{% load static %}
-{% load i18n %}
+{% load i18n static %}
 {% load time_ago %}
 
 {% block title %}Product Detail - AgriConnect{% endblock %}
@@ -50,7 +49,7 @@
         <div class="chatbot-header">
             <h5 class="mb-0">
                 <i class="fas fa-robot me-2"></i>
-                {{ product.user.get_full_name|default:product.user.username }} - {{ product.name }}
+                <span id="chatbot-title">{{ product.name }} - {{ product.owner.username }}</span>
             </h5>
             <button class="btn-close btn-close-white" onclick="closeChatbot()"></button>
         </div>
@@ -67,15 +66,6 @@
             <button class="btn btn-success ms-2" onclick="sendMessage()">
                 <i class="fas fa-paper-plane"></i>
             </button>
-        </div>
-        <div class="chatbot-instructions">
-            <small>
-                You can ask about:
-                • Product details
-                • Price information
-                • Availability
-                • Contact information
-            </small>
         </div>
     </div>
 </div>
