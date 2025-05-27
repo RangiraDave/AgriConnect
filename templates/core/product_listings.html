@@ -191,8 +191,8 @@
     <div class="product-grid">
         {% if products %}
             {% for product in products %}
-                <div class="card product-card fade-in">
-                    <!-- Product Media: Remove unwanted space by removing 'card-img-top' class -->
+                <div class="card product-card fade-in" data-product-id="{{ product.id }}">
+                    <!-- Product Media -->
                     <div class="card-img-wrapper">
                         {% if product.media %}
                             {% with ext=product.media.url|lower|slice:"-4:" %}
@@ -292,8 +292,16 @@
 <!-- Chatbot Interface -->
 <div id="chatbot" class="chatbot" style="display: none;">
     <div class="chatbot-header">
-        <h5 class="mb-0"><i class="fas fa-robot me-2"></i>Chat with us</h5>
+        <h5 class="mb-0">
+            <i class="fas fa-robot me-2"></i>
+            <span id="chatbot-title">Product & Seller Information</span>
+        </h5>
         <button class="btn-close btn-close-white" onclick="closeChatbot()"></button>
+    </div>
+    <div class="chatbot-hint">
+        <p class="text-muted small mb-2">
+            <i class="fas fa-lightbulb"></i> Ask about product details, price, availability, or contact information.
+        </p>
     </div>
     <div class="chatbot-body">
         <!-- Chat messages will be appended here -->
@@ -642,6 +650,15 @@ function openChatbot(productId) {
     chatbot.style.display = 'block';
     chatbot.setAttribute('data-product-id', productId);
     
+    // Get product details for the title
+    const productCard = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+    const productName = productCard ? productCard.querySelector('.card-title').textContent : 'Product';
+    const productOwner = productCard ? productCard.querySelector('.owner-info small').textContent.split('-')[1].trim() : '';
+    
+    // Update chatbot title with product info
+    const chatbotTitle = document.getElementById('chatbot-title');
+    chatbotTitle.textContent = productOwner ? `${productName} - ${productOwner}` : productName;
+    
     // Clear previous messages
     const chatBody = chatbot.querySelector('.chatbot-body');
     chatBody.innerHTML = '';
@@ -649,7 +666,7 @@ function openChatbot(productId) {
     // Add welcome message
     const welcomeMessage = document.createElement('div');
     welcomeMessage.className = 'message bot-message';
-    welcomeMessage.textContent = 'Hello! How can I help you with this product?';
+    welcomeMessage.textContent = `Hello! How can I help you with ${productName}?`;
     chatBody.appendChild(welcomeMessage);
 }
 
@@ -798,6 +815,13 @@ document.getElementById('chatbot-input').addEventListener('keypress', function(e
 /* Animation for collapse */
 .collapse {
     transition: all 0.3s ease;
+}
+
+/* Chatbot hint styles */
+.chatbot-hint {
+    padding: 5px 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eaeaea;
 }
 
 /* Responsive adjustments */
