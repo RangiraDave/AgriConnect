@@ -140,6 +140,13 @@ AgriConnect is a comprehensive agricultural marketplace platform designed to con
    - Track market trends
    - Monitor your performance
 
+## Notes on AI Model Usage
+
+- The chatbot uses the Blenderbot model from Hugging Face.
+- If CUDA drivers are not available, the model will run on the CPU. This may result in slower response times.
+- Ensure your system has sufficient memory to handle AI model inference.
+- For GPU support, install the appropriate CUDA drivers and ensure `torch.cuda.is_available()` returns `True`.
+
 ## Contributing
 
 1. **Fork the repository**

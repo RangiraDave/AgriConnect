@@ -681,6 +681,7 @@ function sendMessage() {
     const input = document.getElementById('chatbot-input');
     const message = input.value.trim();
     const productId = document.getElementById('chatbot').getAttribute('data-product-id');
+    const sessionId = document.getElementById('chatbot').getAttribute('data-session-id') || '';
 
     if (message) {
         const chatBody = document.querySelector('.chatbot-body');
@@ -695,9 +696,12 @@ function sendMessage() {
         input.value = '';
 
         // Send message to server
-        fetch(`/chatbot/get_response/?message=${encodeURIComponent(message)}&product_id=${encodeURIComponent(productId)}`)
+        fetch(`/chatbot/get_response/?message=${encodeURIComponent(message)}&product_id=${encodeURIComponent(productId)}&session_id=${encodeURIComponent(sessionId)}`)
             .then(response => response.json())
             .then(data => {
+                // Store session ID for conversation continuity
+                document.getElementById('chatbot').setAttribute('data-session-id', data.session_id || '');
+                
                 const botMessage = document.createElement('div');
                 botMessage.className = 'message bot-message';
                 botMessage.textContent = data.response;

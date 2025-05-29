@@ -2,9 +2,13 @@
 import json
 import re
 import logging
+import random
+import uuid
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from core.models import Product, ChatLog
+from core.models import Product
+from django.core.cache import cache
+from .ai_chatbot import chatbot as ai_chatbot
 
 logger = logging.getLogger(__name__)
 
@@ -62,9 +66,41 @@ PATTERNS = {
     ],
 }
 
-def detect_intent(message):
-    """Determine the intent of the user's message"""
+# Store conversation history
+CONVERSATION_TTL = 60 * 30  # 30 minutes
+
+def get_conversation_key(product_id, session_id=None):
+    """Generate a unique key for storing conversation history"""
+    if session_id:
+        return f"chat_history_{product_id}_{session_id}"
+    return f"chat_history_{product_id}"
+
+def get_conversation_history(product_id, session_id=None):
+    """Retrieve conversation history from cache"""
+    key = get_conversation_key(product_id, session_id)
+    history = cache.get(key, [])
+    return history
+
+def save_conversation_history(product_id, history, session_id=None):
+    """Save conversation history to cache"""
+    key = get_conversation_key(product_id, session_id)
+    cache.set(key, history, CONVERSATION_TTL)
+
+def detect_intent(message, history=None):
+    """Determine the intent of the user's message with context awareness."""
     message = message.lower().strip()
+    
+    # Special handling for follow-up messages based on history
+    if history and len(history) > 1:
+        last_bot_intent = history[-1].get('intent', 'unknown')
+        
+        # Check for conversational follow-ups
+        if last_bot_intent == 'greeting' and re.search(r'\b(fine|good|great|well|okay|not bad)\b', message):
+            return 'casual_conversation'
+        
+        # Check for price follow-up questions
+        if last_bot_intent == 'price_inquiry' and re.search(r'\b(cheaper|expensive|discount|better price|negotiate)\b', message):
+            return 'price_inquiry'
     
     # Check each pattern category
     for intent, pattern_list in PATTERNS.items():
@@ -73,19 +109,11 @@ def detect_intent(message):
                 logger.info(f"Message '{message}' matched pattern '{pattern}' with intent '{intent}'")
                 return intent
     
-    # Very short messages (1-2 words) might be greetings or simple queries
-    words = message.strip().split()
-    if len(words) <= 2:
-        if any(greeting in words for greeting in ['hi', 'hello', 'hey', 'hola']):
-            return 'greeting'
-        if any(word in words for word in ['price', 'cost', 'contact', 'call', 'help']):
-            for word in words:
-                if word == 'price' or word == 'cost':
-                    return 'price_inquiry'
-                elif word == 'contact' or word == 'call':
-                    return 'contact_request'
-                elif word == 'help':
-                    return 'help_request'
+    # Handle ambiguous or irrelevant inputs
+    if len(message.split()) <= 3 and not re.search(r'[a-zA-Z]', message):
+        return 'irrelevant'
+    if re.match(r'^[a-zA-Z]+$', message) and len(message) < 5:
+        return 'irrelevant'
     
     # Default fallback
     logger.info(f"No intent matched for message: '{message}'")
@@ -135,50 +163,50 @@ def get_product_info(product_id):
         logger.error(f"Error retrieving product info for ID {product_id}: {str(e)}")
         return None
 
-def generate_response(intent, product_info):
-    """Generate a response based on intent and product information"""
+def generate_response(intent, product_info, message=None, history=None):
+    """Generate a response based on intent, product information, and conversation history."""
     if not product_info:
         return "I'm sorry, I couldn't find information about this product."
     
     product_name = product_info.get('name', 'this product')
-    
     owner_name = product_info.get('owner', 'the seller')
+    
+    try:
+        # Use AI model for response generation
+        ai_response = ai_chatbot.generate_response(
+            message=message,
+            product_context=product_info,
+            session_id=str(uuid.uuid4())
+        )
+        if ai_response:
+            return ai_response
+    except Exception as e:
+        logger.error(f"AI response generation failed: {str(e)}")
+    
+    # Fallback to rule-based responses
     responses = {
         'greeting': f"Hello! I can help you with information about {product_name}. What would you like to know?",
-        
-        'product_info': f"{product_name}: {product_info['description']} It costs {product_info['price']} per {product_info['unit']} and there are {product_info['quantity']} {product_info['unit']}s available. The seller is {owner_name}.",
-        
-        'price_inquiry': f"The price of '{product_name}' is {product_info['price']} per {product_info['unit']}.",
-        
-        'contact_request': f"You can contact the {owner_name} at {product_info['contact']}.",
-        
-        'availability': f"There are currently {product_info['quantity']} {product_info['unit']}s of '{product_name}' available.",
-        
-        'location_inquiry': f"For location details and delivery options for {product_name}, please contact the seller {owner_name} directly at {product_info['contact']}.",
-        
-        'help_request': f"I can answer questions about {product_name} including:\n• Product details and description\n• Price ({product_info['price']} per {product_info['unit']})\n• Availability ({product_info['quantity']} {product_info['unit']}s)\n• How to contact the seller ({owner_name})\nJust ask what you'd like to know!",
-        
-        'unknown': f"I'm not sure what you're asking about {product_name}. You can ask about the product details, price, availability, or how to contact the seller {owner_name}."
+        'casual_conversation': "I'm just a chatbot here to assist you with product information. How can I help?",
+        'irrelevant': "I'm sorry, I didn't understand that. Could you ask something specific about the product?",
+        'unknown': f"I'm not sure I understand. Could you clarify your question about {product_name}?",
     }
     
+    # Provide varied fallback responses for unknown intents
+    if intent == 'unknown':
+        fallback_responses = [
+            f"I'm not sure I understand. Could you clarify your question about {product_name}?",
+            f"Could you rephrase your question about {product_name}? I'd love to help.",
+            f"Hmm, I didn't catch that. What would you like to know about {product_name}?",
+        ]
+        return random.choice(fallback_responses)
+    
     return responses.get(intent, responses['unknown'])
-
-def log_conversation(user_message, bot_response, intent, product_id):
-    """Log the conversation to the database"""
-    try:
-        ChatLog.objects.create(
-            user_message=user_message,
-            bot_response=bot_response,
-            intent=intent,
-            product_id=product_id
-        )
-    except Exception as e:
-        logger.error(f"Failed to log conversation: {str(e)}")
 
 def chatbot_response(request):
     """Process chatbot requests and return responses"""
     message = request.GET.get('message', '').strip()
     product_id = request.GET.get('product_id')
+    session_id = request.GET.get('session_id', None) or request.session.session_key
     
     if not message or not product_id:
         return JsonResponse({
@@ -186,25 +214,30 @@ def chatbot_response(request):
         })
     
     try:
+        # Get conversation history
+        history = get_conversation_history(product_id, session_id)
+        
         # Get product information
         product_info = get_product_info(product_id)
+        if product_info:
+            product_info['id'] = product_id  # Add ID for AI context
         
         if not product_info:
             return JsonResponse({
                 'response': "I'm sorry, I couldn't find information about this product."
             })
         
-        # Determine intent from message
-        intent = detect_intent(message)
+        # Determine intent from message with conversation context
+        intent = detect_intent(message, history)
         logger.info(f"Detected intent '{intent}' for message: '{message}'")
         
-        # Generate appropriate response
-        response = generate_response(intent, product_info)
+        # Generate appropriate response with context
+        response = generate_response(intent, product_info, message, history)
         
-        # Log the conversation
-        log_conversation(message, response, intent, product_id)
-        
-        return JsonResponse({'response': response})
+        return JsonResponse({
+            'response': response,
+            'session_id': session_id
+        })
         
     except Exception as e:
         logger.error(f"Error in chatbot_response: {str(e)}")
