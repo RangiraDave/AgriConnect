@@ -16,3 +16,4 @@ python-telegram-bot==22.0
 whitenoise==6.5.0
 django-jazzmin
 django-simple-captcha>=0.5.17
+django-widget-tweaks>=1.4.12
