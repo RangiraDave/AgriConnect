@@ -16,8 +16,10 @@
                     <h4 class="mb-0">{% trans "Add Your Produce" %}</h4>
                 </div>
                 <div class="card-body">
-                    <form method="post" enctype="multipart/form-data">
+                    <form id="product-form" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
+                        
+                        {# Render all form fields as before #}
                         {% for field in form %}
                             <div class="mb-3">
                                 <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
@@ -32,95 +34,43 @@
                                 {% endif %}
                             </div>
                         {% endfor %}
+
+                        {# Hidden inputs for latitude & longitude #}
+                        <input type="hidden" name="latitude" id="id_latitude">
+                        <input type="hidden" name="longitude" id="id_longitude">
+
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
                             {% trans "If you don't provide a contact number, your profile's phone number will be used as the default contact for this product." %}
                         </div>
-                        <button type="submit" class="btn btn-success">{% trans "Add Product" %}</button>
+
+                        <!-- {# Location privacy note #}
+                        <div class="alert alert-secondary alert-sm mt-3">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            {% trans "Your location helps buyers find your produce easily. We store only coordinates, not personal address." %}
+                        </div> -->
+
+                        <button type="submit" class="btn btn-success" id="submit-btn" disabled>{% trans "Add Product" %}</button>
                     </form>
+
+                    {# Show status of geolocation fetch here #}
+                    <div id="location-status" class="mt-3 text-muted">
+                        {% trans "Detecting your location…" %}
+                    </div>
+
+                    <div id="geoloc-warning" class="alert alert-warning mt-3 d-none">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {% trans "Location is required to add a product. Please allow location access and try again." %}
+                        <button type="button" class="btn btn-link btn-sm" id="retry-geoloc">{% trans "Retry Location" %}</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
 {% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const imageInput = document.getElementById('id_image');
-    const previewContainer = document.getElementById('image-preview');
-    
-    // Add Bootstrap classes to form fields
-    document.querySelectorAll('input, select, textarea').forEach(element => {
-        element.classList.add('form-control');
-    });
-    
-    // Handle image preview
-    imageInput.addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        
-        // Clear previous preview
-        previewContainer.innerHTML = `
-            <i class="fas fa-cloud-upload-alt upload-icon"></i>
-            <p class="mb-0">{% trans "Drag and drop your image here or click to browse" %}</p>
-            <small class="text-muted">{% trans "Supported formats: JPG, PNG, GIF (Max 5MB)" %}</small>
-        `;
-        
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                alert('{% trans "File size should not exceed 5MB" %}');
-                imageInput.value = '';
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewContainer.innerHTML = `
-                    <img src="${e.target.result}" class="img-fluid rounded" alt="Preview">
-                    <button type="button" class="btn btn-sm btn-danger mt-2" onclick="clearImage()">
-                        <i class="fas fa-times me-1"></i>{% trans "Remove" %}
-                    </button>
-                `;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-    
-    // Drag and drop functionality
-    previewContainer.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        previewContainer.style.borderColor = '#4CAF50';
-    });
-    
-    previewContainer.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        previewContainer.style.borderColor = '#e0e0e0';
-    });
-    
-    previewContainer.addEventListener('drop', function(e) {
-        e.preventDefault();
-        previewContainer.style.borderColor = '#e0e0e0';
-        
-        const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('image/')) {
-            imageInput.files = e.dataTransfer.files;
-            const event = new Event('change');
-            imageInput.dispatchEvent(event);
-        }
-    });
-});
 
-function clearImage() {
-    const imageInput = document.getElementById('id_image');
-    const previewContainer = document.getElementById('image-preview');
-    
-    imageInput.value = '';
-    previewContainer.innerHTML = `
-        <i class="fas fa-cloud-upload-alt upload-icon"></i>
-        <p class="mb-0">{% trans "Drag and drop your image here or click to browse" %}</p>
-        <small class="text-muted">{% trans "Supported formats: JPG, PNG, GIF (Max 5MB)" %}</small>
-    `;
-}
-</script>
-{% endblock %}
+<script src="{% static 'js/geo-location.js' %}"></script>
 {% endblock %}

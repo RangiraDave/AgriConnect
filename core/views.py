@@ -9,7 +9,7 @@ from django.db import IntegrityError, transaction
 from django.db.models import Avg, Count, Q
 from django.http import JsonResponse
 from .models import Profile, Farmer, VerificationCode, Product, ProductRating, Province, District, Sector, Cell, Village, Cooperative, Buyer
-from .forms import AddProductForm, EditProductForm, ProfileEditForm, SignupForm
+from .forms import AddProductForm, EditProductForm, ProfileEditForm, SignupForm, LoginForm
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import random
@@ -34,46 +34,48 @@ def logout_view(request):
 
 
 def login_view(request):
-    """Render the login page and handle user authentication."""
-    # Show a message if redirected due to login required
+    """Render the login page and handle user authentication with reCAPTCHA v3."""
     if 'next' in request.GET and not request.user.is_authenticated:
         messages.info(request, _("Login required to access this page."))
 
+    form = LoginForm(request.POST or None)
     if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        role = request.POST.get('role')
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            role = form.cleaned_data['role']
+            # reCAPTCHA is validated by the form
+            user = authenticate(username=email, password=password)
 
-        user = authenticate(username=email, password=password)
+            if user and not user.email_verified:
+                messages.error(request, _("Email not verified. Please check your email for the verification link."))
+                return redirect('verify_email')
 
-        if user and not user.email_verified:
-            messages.error(request, _("Email not verified. Please check your email for the verification link."))
-            return redirect('verify_email')
-
-        if user:
-            try:
-                # Check if user has a profile and if the role matches
-                if hasattr(user, 'profile') and user.profile and user.profile.role:
-                    user_role = user.profile.role.strip().lower()
-                    if user_role == role.lower():
-                        login(request, user)
-                        if user_role == 'cooperative':
-                            return redirect('product_listings')
-                        # Redirect to 'next' if present
-                        next_url = request.GET.get('next') or request.POST.get('next')
-                        if next_url:
-                            return redirect(next_url)
-                        return redirect('user_profile')
+            if user:
+                try:
+                    if hasattr(user, 'profile') and user.profile and user.profile.role:
+                        user_role = user.profile.role.strip().lower()
+                        if user_role == role.lower():
+                            login(request, user)
+                            if user_role == 'cooperative':
+                                return redirect('product_listings')
+                            next_url = request.GET.get('next') or request.POST.get('next')
+                            if next_url:
+                                return redirect(next_url)
+                            return redirect('user_profile')
+                        else:
+                            messages.error(request, _("Invalid role selected for this account."))
                     else:
-                        messages.error(request, _("Invalid role selected for this account."))
-                else:
+                        messages.error(request, _("User profile not properly configured. Please contact support."))
+                except AttributeError:
                     messages.error(request, _("User profile not properly configured. Please contact support."))
-            except AttributeError:
-                messages.error(request, _("User profile not properly configured. Please contact support."))
+            else:
+                messages.error(request, _("Invalid username or password!"))
         else:
-            messages.error(request, _("Invalid username or password!"))
+            # If reCAPTCHA or form is invalid, show a simple error
+            messages.error(request, _("Please verify you are human and fill all fields correctly."))
 
-    return render(request, 'auth/login.html')
+    return render(request, 'auth/login.html', {'form': form})
 
 
 @login_required
@@ -302,6 +304,13 @@ def product_listings(request):
     # Get all provinces for the filter dropdown
     provinces = Province.objects.all()
 
+    # Add a 'location' property to each product for display
+    for product in products:
+        if product.latitude and product.longitude:
+            product.location = f"{product.latitude}, {product.longitude}"
+        else:
+            product.location = None
+
     context = {
         'products': products,
         'provinces': provinces,
@@ -318,7 +327,7 @@ def product_listings(request):
 
 @login_required(login_url='/login/')
 def add_product(request):
-    """Handle the form submission for adding a product."""
+    """Handle the form submission for adding a product, including lat/lng."""
     if request.user.profile.role.lower() not in ["umuhinzi", "cooperative"]:
         messages.error(request, _("You are not authorized to add a product."))
         return redirect('product_listings')
@@ -328,25 +337,36 @@ def add_product(request):
         if form.is_valid():
             try:
                 with transaction.atomic():
+                    # Create instance but don't save to DB yet
                     instance = form.save(commit=False)
                     instance.owner = request.user
-                    
-                    # Ensure the user has a profile with contact information
+
+                    # Ensure the user has a profile phone number before saving
                     if not hasattr(request.user, 'profile') or not request.user.profile.phone:
-                        messages.error(request, _("Please update your profile with contact information before adding a product."))
+                        messages.error(
+                            request,
+                            _("Please update your profile with contact information before adding a product.")
+                        )
                         return redirect('edit_profile')
-                    
+
                     instance.save()
+
                     messages.success(request, _("Product added successfully!"))
                     return redirect('product_listings')
+
             except Exception as e:
-                logger.error(f"Error while saving product: {str(e)}")
-                messages.error(request, _("An error occurred while saving the product. Please try again."))
+                logger.error(f"Error while saving product: {e}")
+                messages.error(
+                    request,
+                    _("An error occurred while saving the product. Please try again.")
+                )
         else:
             logger.error(f"Form validation errors: {form.errors}")
             messages.error(request, _("Please correct the errors in the form."))
 
-    form = AddProductForm()
+    else:
+        form = AddProductForm()
+
     return render(request, 'core/add_product.html', {'form': form})
 
 

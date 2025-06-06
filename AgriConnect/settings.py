@@ -25,6 +25,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1').split(',')
 # Application definition
 INSTALLED_APPS = [
     'jazzmin',  # Should be before django.contrib.admin
+    'captcha',  # django-recaptcha
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework.authtoken',
+    'widget_tweaks',  # for form rendering
 ]
 
 MIDDLEWARE = [
@@ -351,3 +353,9 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-success"
     }
 }
+
+# reCAPTCHA v3 settings (add your keys to .env)
+RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', default='')
+RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', default='')
+RECAPTCHA_DEFAULT_ACTION = 'login'
+RECAPTCHA_SCORE_THRESHOLD = 0.5

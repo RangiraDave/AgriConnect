@@ -30,7 +30,19 @@
             <p>{{ product.description }}</p>
             <p><strong>Price:</strong> {{ product.price_per_unit }}</p>
             <p><strong>Quantity:</strong> {{ product.quantity_available }} {{ product.unit }}</p>
-            <p><strong>Location:</strong> {{ product.location }}</p>
+            <div class="location-section mb-3">
+                {% if product.latitude and product.longitude %}
+                    <p><strong>{% trans "Location:" %}</strong> {{ product.latitude }}, {{ product.longitude }}</p>
+                    <a href="https://www.google.com/maps?q={{ product.latitude }},{{ product.longitude }}"
+                       target="_blank"
+                       class="btn btn-outline-secondary btn-sm mt-2">
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        {% trans "View on Map" %}
+                    </a>
+                {% else %}
+                    <p><strong>{% trans "Location:" %}</strong> {% trans "Location not provided." %}</p>
+                {% endif %}
+            </div>
             <p><strong>Contact:</strong> {% if product.contact_number %}{{ product.contact_number }}{% else %}{% trans "Not Provided" %}{% endif %}</p>
             <p class="text-muted">
                 <small>
@@ -71,6 +83,64 @@
 </div>
 
 <script>
+// Removed the old Location button handler script
+
+// Fix for district loading (Keep this if needed for other parts of the page)
+document.addEventListener('DOMContentLoaded', function() {
+    const provinceSelect = document.getElementById('province');
+    if (provinceSelect) {
+        provinceSelect.addEventListener('change', function() {
+            const provinceId = this.value;
+            if (provinceId) {
+                loadDistricts(provinceId);
+            }
+        });
+    }
+});
+
+function loadDistricts(provinceId) {
+    fetch(`/api/districts/?province=${provinceId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load districts');
+            }
+            return response.json();
+        })
+        .then(districts => {
+            const districtSelect = document.getElementById('district');
+            if (districtSelect) {
+                districtSelect.innerHTML = '<option value="">{% trans "Select District" %}</option>';
+                districts.forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district.id;
+                    option.textContent = district.name;
+                    districtSelect.appendChild(option);
+                });
+                districtSelect.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error loading districts:', error);
+            showError('Failed to load districts. Please try again.');
+        });
+}
+
+function showError(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'alert alert-danger alert-dismissible fade show';
+    errorDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    document.querySelector('.location-section').prepend(errorDiv);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        errorDiv.remove();
+    }, 5000);
+}
+
+// Original talk-to-us button code
 document.getElementById('talk-to-us').addEventListener('click', function() {
     const chatbot = document.getElementById('chatbot');
     chatbot.style.display = 'block';

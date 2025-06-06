@@ -19,6 +19,7 @@ urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('api/', include('core.api.urls')),
+    path('captcha/', include('captcha.urls')),
     path('api/locations/', include('core.api_urls')),  # Add location API endpoints
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

@@ -236,6 +236,8 @@ class Product(models.Model):
     contact = models.CharField(max_length=15, blank=True, null=True, help_text="Contact number for this product (optional)")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
 
     class Meta:
         verbose_name = 'Product'
