@@ -279,54 +279,58 @@ class AIChatbot:
         return response.strip()
 
     def _format_location_response(self, context: Dict) -> str:
-        """Format location response."""
-        latitude = context.get('latitude') if context else None
-        longitude = context.get('longitude') if context else None
-        location = context.get('location') if context else None
-        description = context.get('description') if context else None
-        # Try to build a full written location from context if possible
-        province = context.get('province') if context else None
-        district = context.get('district') if context else None
-        sector = context.get('sector') if context else None
-        cell = context.get('cell') if context else None
-        village = context.get('village') if context else None
-        specific_location = context.get('specific_location') if context else None
+        """Format location response with enhanced user experience."""
+        if not context:
+            return "Sorry, I couldn't find location information for this product."
 
-        # Build the full written location string
-        written_parts = []
+        # Get location components
+        latitude = context.get('latitude')
+        longitude = context.get('longitude')
+        province = context.get('province')
+        district = context.get('district')
+        sector = context.get('sector')
+        cell = context.get('cell')
+        village = context.get('village')
+        specific_location = context.get('specific_location')
+        contact = context.get('contact')
+
+        # Build the location string (skip duplicate words and add commas)
+        location_parts = []
         if province:
-            written_parts.append(f"{province.title()}")
+            location_parts.append(str(province))
         if district:
-            written_parts.append(f"{district.title()} District")
+            location_parts.append(f"{district} District")
         if sector:
-            written_parts.append(f"{sector.title()} Sector")
+            location_parts.append(f"{sector} Sector")
         if cell:
-            written_parts.append(f"{cell.title()} Cell")
+            location_parts.append(f"{cell} Cell")
         if village:
-            written_parts.append(f"{village.title()} Village")
-        written_location = ", ".join(written_parts)
+            location_parts.append(f"in {village} Village")
         if specific_location:
-            written_location += f" ({specific_location})"
+            location_parts.append(f"({specific_location})")
 
-        # If both written location and lat/lng are present, show both
-        if written_location.strip() and latitude and longitude:
-            maps_url = f"https://www.google.com/maps?q={latitude},{longitude}"
-            return f"The product is located at: {written_location}. <a href='{maps_url}' target='_blank' style='color:#007bff;text-decoration:underline;font-weight:bold;'>View on map</a>"
-        # If only written location
-        if written_location.strip():
-            return f"The product is located at: {written_location}."
-        # If only lat/lng
+        location_str = ", ".join(location_parts)
+
+        # Compose the response
+        response_lines = []
+        if location_str:
+            response_lines.append(f"The product is located at: {location_str}")
+        else:
+            response_lines.append("Location details are not available.")
+
+        # Add map link if coordinates are available
         if latitude and longitude:
-            maps_url = f"https://www.google.com/maps?q={latitude},{longitude}"
-            return f"The product's geolocation is: ({latitude}, {longitude}). <a href='{maps_url}' target='_blank' style='color:#007bff;text-decoration:underline;font-weight:bold;'>View on map</a>"
-        # Fallback: try to extract location from description
-        if description:
-            import re
-            match = re.search(r'(kuva [^.,;\n]+|i [^.,;\n]+|mu [^.,;\n]+|kwa [^.,;\n]+|Kigali|Huye|Musanze|Rubavu|Nyagatare|Rwamagana|Kibungo|Gisenyi|Butare|Muhanga|Rusizi|Karongi|Bugesera|Gicumbi|Nyanza|Nyamasheke|Ngoma|Kirehe|Gatsibo|Kamonyi|Rulindo|Gakenke|Burera|Nyabihu|Ngororero|Nyaruguru|Gisagara|Rutsiro|Nyamagabe|Gasabo|Kicukiro|Nyarugenge)', description, re.IGNORECASE)
-            if match:
-                return f"The product is available in this area: {match.group(0).capitalize()}. (Based on product description)"
-            return f"Location details are not structured, but the product description says: {description}"
-        return "I'm sorry, I don't have location information for this product. Please contact the seller directly for more details."
+            response_lines.append(
+                f"<a href='https://www.google.com/maps?q={latitude},{longitude}' target='_blank' style='color:#007bff;text-decoration:underline;font-weight:bold;'>View on map</a>"
+            )
+
+        response_lines.append("You can arrange pickup with the seller or discuss delivery options.")
+
+        # Add contact info if available
+        if contact and contact != "N/A":
+            response_lines.append(f"You can call them on {contact}.")
+
+        return "\n".join(response_lines)
 
     def _format_contact_response(self, context: Dict) -> str:
         """Format contact information response."""

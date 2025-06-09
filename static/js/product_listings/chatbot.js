@@ -92,7 +92,8 @@ function sendMessage() {
                 if (chatbot) chatbot.setAttribute('data-session-id', data.session_id || '');
                 const botMessage = document.createElement('div');
                 botMessage.className = 'message bot-message';
-                botMessage.textContent = data.response;
+                // Use innerHTML instead of textContent to render HTML content
+                botMessage.innerHTML = data.response;
                 chatBody.appendChild(botMessage);
                 chatBody.scrollTop = chatBody.scrollHeight;
             })

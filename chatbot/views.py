@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from core.models import Product
 from django.core.cache import cache
 from .ai_chatbot import chatbot as ai_chatbot
+from django.utils.safestring import mark_safe
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +57,14 @@ PATTERNS = {
         r'\bwhere (?:is|can|to)\b',
         r'\bpick up\b',
         r'\bdelivery\b',
+        r'\b(?:find|locate|get to|reach|access)\b',
+        r'\b(?:near|close|nearby|around|in the area)\b',
+        r'\b(?:distance|how far|how close)\b',
+        r'\b(?:map|directions|route|way)\b',
+        r'\b(?:coordinates|gps|latitude|longitude)\b',
+        r'\b(?:market|shop|store|seller|vendor)\b.*\b(?:location|place|where)\b',
+        r'\b(?:pickup|collection|meeting)\b.*\b(?:point|place|location)\b',
+        r'\b(?:transport|shipping|delivery)\b.*\b(?:options|available|possible)\b',
     ],
     'help_request': [
         r'\b(?:help|assist|guide)\b',
@@ -199,8 +208,11 @@ def chatbot_response(request):
         # Generate appropriate response with context
         response = generate_response(intent, product_info, message, history)
         
+        # Mark the response as safe HTML
+        safe_response = mark_safe(response)
+        
         return JsonResponse({
-            'response': response,
+            'response': safe_response,
             'session_id': session_id
         })
         
