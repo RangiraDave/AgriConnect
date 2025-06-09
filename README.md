@@ -23,46 +23,42 @@ AgriConnect is a comprehensive agricultural marketplace platform designed to con
 - **Smart Filtering**: Filter products by any location level
 - **Dynamic Dropdowns**: Cascading location selection
 - **Location Validation**: Ensures accurate location data
+- **Geolocation Support**: Automatic location detection and manual input options
 
 ### Interactive Features
-- **Real-time Chatbot**: AI-powered assistant for product inquiries
+- **AI Chatbot**: Intelligent assistant for product inquiries and information
 - **Product Ratings**: 5-star rating system with user feedback
-- **Real-time Notifications**: WebSocket-based notifications for ratings and updates
 - **Interactive UI**: Modern, responsive design with hover effects and animations
-
-### Market Insights
-- **Analytics Dashboard**: View market trends and statistics
-- **Top Products**: See highest-rated products
-- **Top Farmers**: Discover leading farmers and cooperatives
-- **Market Statistics**: Total products, active farmers, average ratings
 
 ### User Experience
 - **Responsive Design**: Works seamlessly on all devices
 - **Multi-language Support**: English and Kinyarwanda interface
 - **Modern UI**: Clean, intuitive interface with smooth animations
-- **Real-time Updates**: Live notifications and chat responses
+- **Jazzmin Admin**: Enhanced admin interface with modern design
 
 ### Security Features
 - **Email Verification**: Required for account activation
 - **Secure Authentication**: JWT-based authentication
 - **Role-based Access**: Different permissions for different user types
 - **Data Validation**: Comprehensive input validation and sanitization
+- **CAPTCHA Protection**: Prevents automated form submissions
 
 ## Technical Stack
 
 ### Backend
-- **Django**: High-level Python web framework
+- **Django 5.1.3**: High-level Python web framework
 - **Django REST Framework**: API development
 - **Channels**: WebSocket support for real-time features
 - **PostgreSQL**: Robust database system
 - **JWT Authentication**: Secure user authentication
+- **Redis**: Caching and session management
 
 ### Frontend
 - **Bootstrap 5**: Modern CSS framework
 - **JavaScript**: Dynamic UI interactions
-- **WebSocket**: Real-time communication
 - **Font Awesome**: Icon library
 - **Custom CSS**: Enhanced UI/UX
+- **Widget Tweaks**: Enhanced form rendering
 
 ### Development Tools
 - **Git**: Version control
@@ -70,6 +66,7 @@ AgriConnect is a comprehensive agricultural marketplace platform designed to con
 - **Django Debug Toolbar**: Development debugging
 - **WhiteNoise**: Static file serving
 - **CORS Headers**: Cross-origin resource sharing
+- **Gunicorn**: Production-grade WSGI server
 
 ## Installation
 
@@ -125,27 +122,14 @@ AgriConnect is a comprehensive agricultural marketplace platform designed to con
 2. **For Farmers/Cooperatives**:
    - Add products with details and media
    - Manage your product listings
-   - View market insights
    - Respond to buyer inquiries
+   - Update location information
 
 3. **For Buyers**:
    - Browse products with advanced filters
    - Use the chatbot for product inquiries
    - Rate products after purchase
    - View seller profiles and contact information
-
-4. **Market Insights**:
-   - Access analytics dashboard
-   - View top-rated products
-   - Track market trends
-   - Monitor your performance
-
-## Notes on AI Model Usage
-
-- The chatbot uses the Blenderbot model from Hugging Face.
-- If CUDA drivers are not available, the model will run on the CPU. This may result in slower response times.
-- Ensure your system has sufficient memory to handle AI model inference.
-- For GPU support, install the appropriate CUDA drivers and ensure `torch.cuda.is_available()` returns `True`.
 
 ## Contributing
 
