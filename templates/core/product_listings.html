@@ -81,9 +81,9 @@
 
                         <div class="col-md-4">
                             <label class="form-label">
-                                <i class="fas fa-map text-success me-1"></i>{% trans "District" %}
+                                <i class="fas fa-map-marker-alt text-success me-1"></i>{% trans "District" %}
                             </label>
-                            <select name="district" id="district" class="form-select" {% if not selected_province %}disabled{% endif %}>
+                            <select name="district" id="district" class="form-select" {% if not selected_province %}disabled{% endif %} data-placeholder="{% trans 'Select District' %}">
                                 <option value="">{% trans "Select District" %}</option>
                             </select>
                         </div>
@@ -317,10 +317,131 @@
 
 {% block extra_scripts %}
 {{ block.super }}
-<script src="{% static 'js/product_listings/notifications.js' %}"></script>
 <script src="{% static 'js/product_listings/location.js' %}"></script>
 <script src="{% static 'js/product_listings/rating.js' %}"></script>
 <script src="{% static 'js/product_listings/chatbot.js' %}"></script>
 <script src="{% static 'js/product_listings/main.js' %}"></script>
 
 {% endblock %}
+
+<style>
+/* Filter Card Styles */
+.filter-card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.filter-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.filter-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    padding: 1rem;
+}
+
+.filter-header:hover {
+    background-color: #e9ecef;
+}
+
+/* Search Input Styles */
+.search-group {
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border: 1px solid #dee2e6;
+}
+
+.search-input {
+    border: none;
+    padding: 12px;
+}
+
+.search-input:focus {
+    box-shadow: none;
+    border-color: #28a745;
+}
+
+/* Select Styles */
+.form-select {
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+
+.form-select:hover {
+    border-color: #28a745;
+}
+
+.form-select:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Button Styles */
+.btn-success {
+    border-radius: 8px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
+}
+
+.btn-outline-secondary {
+    border-radius: 8px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
+}
+
+/* Form Label Styles */
+.form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+/* Animation for collapse */
+.collapse {
+    transition: all 0.3s ease;
+}
+
+/* Chatbot hint styles */
+.chatbot-hint {
+    padding: 5px 15px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eaeaea;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .filter-card {
+        margin: 0 -15px;
+        border-radius: 0;
+    }
+    
+    .btn-lg {
+        padding: 8px 16px;
+        font-size: 1rem;
+    }
+
+    .filter-header {
+        padding: 0.75rem;
+    }
+}
+</style>

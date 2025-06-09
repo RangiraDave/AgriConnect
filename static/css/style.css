@@ -1085,3 +1085,14 @@ body {
 }
 
 /* Note: aspect-ratio is supported in all modern browsers. For older browsers, min-height/max-height fallback is used. */
+
+#location-status .text-success {
+    color: #28a745 !important;
+}
+#location-status .text-warning {
+    color: #ffc107 !important;
+}
+#location-display.is-valid {
+    border-color: #28a745;
+    background-color: #e8f5e9;
+}

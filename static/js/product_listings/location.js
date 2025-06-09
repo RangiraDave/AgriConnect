@@ -85,20 +85,20 @@ async function loadDistricts(provinceId, districtSelect) {
         }
         const districts = await response.json();
         
-        districtSelect.innerHTML = '<option value="">{% trans "Select District" %}</option>';
+        districtSelect.innerHTML = '<option value="">----------</option>';
         districts.forEach(district => {
             const option = document.createElement('option');
             option.value = district.id;
             option.textContent = district.name;
             // Check if the district should be pre-selected
-            const selectedDistrict = document.getElementById('district').dataset.initialValue; // Assuming initial value is stored in a data attribute
+            const selectedDistrict = document.getElementById('district').dataset.initialValue;
             if (district.id == selectedDistrict) {
-                 option.selected = true;
+                option.selected = true;
             }
             districtSelect.appendChild(option);
         });
         districtSelect.disabled = false;
-         // Trigger change event if a district was pre-selected to load dependent dropdowns
+        // Trigger change event if a district was pre-selected to load dependent dropdowns
         if (districtSelect.value) {
             districtSelect.dispatchEvent(new Event('change'));
         }
@@ -118,7 +118,7 @@ async function loadSectors(districtId, sectorSelect) {
         }
         const sectors = await response.json();
         
-        sectorSelect.innerHTML = '<option value="">{% trans "Select Sector" %}</option>';
+        sectorSelect.innerHTML = '<option value="">----------</option>';
         sectors.forEach(sector => {
             const option = document.createElement('option');
             option.value = sector.id;
@@ -149,7 +149,7 @@ async function loadCells(sectorId, cellSelect) {
         }
         const cells = await response.json();
         
-        cellSelect.innerHTML = '<option value="">{% trans "Select Cell" %}</option>';
+        cellSelect.innerHTML = '<option value="">----------</option>';
         cells.forEach(cell => {
             const option = document.createElement('option');
             option.value = cell.id;
@@ -180,7 +180,7 @@ async function loadVillages(cellId, villageSelect) {
         }
         const villages = await response.json();
         
-        villageSelect.innerHTML = '<option value="">{% trans "Select Village" %}</option>';
+        villageSelect.innerHTML = '<option value="">----------</option>';
         villages.forEach(village => {
             const option = document.createElement('option');
             option.value = village.id;

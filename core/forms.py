@@ -60,6 +60,18 @@ class AddProductForm(forms.ModelForm):
             # latitude/longitude use HiddenInput, so no need to define here
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Set autocomplete attributes for all fields
+        self.fields['name'].widget.attrs['autocomplete'] = 'off'
+        self.fields['description'].widget.attrs['autocomplete'] = 'off'
+        self.fields['price_per_unit'].widget.attrs['autocomplete'] = 'off'
+        self.fields['quantity_available'].widget.attrs['autocomplete'] = 'off'
+        self.fields['unit'].widget.attrs['autocomplete'] = 'off'
+        self.fields['contact'].widget.attrs['autocomplete'] = 'tel'
+        self.fields['latitude'].widget.attrs['autocomplete'] = 'off'
+        self.fields['longitude'].widget.attrs['autocomplete'] = 'off'
+
     def clean(self):
         cleaned_data = super().clean()
         media = cleaned_data.get('media')

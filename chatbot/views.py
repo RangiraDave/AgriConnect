@@ -120,45 +120,10 @@ def detect_intent(message, history=None):
     return 'unknown'
 
 def get_product_info(product_id):
-    """Get formatted product information"""
+    """Get formatted product information with full context for AIChatbot"""
     try:
-        product = get_object_or_404(Product, id=product_id)
-        
-        # Get contact information from product owner
-        contact = None
-        # Try direct contact field (if it exists)
-        if hasattr(product, 'contact') and getattr(product, 'contact', None):
-            contact = product.contact
-        # Try profile phone
-        elif hasattr(product.owner, 'profile'):
-            contact = getattr(product.owner.profile, 'phone', None)
-        # If still no contact, try other profile fields
-        if not contact and hasattr(product.owner, 'profile'):
-            profile = product.owner.profile
-            contact = getattr(profile, 'contact_number', None) or getattr(profile, 'email', None)
-        
-        # Format contact if found, otherwise provide guidance
-        if contact:
-            formatted_contact = contact
-        else:
-            formatted_contact = "Contact information not available. Please check seller profile."
-        
-        # Prepare product information
-        product_info = {
-            'name': product.name,
-            'description': product.description or "No description available",
-            'price': product.price_per_unit,
-            'unit': product.unit,
-            'quantity': product.quantity_available,
-            'contact': formatted_contact,
-            'owner': product.owner.username,
-        }
-        
-        logger.info(f"Successfully retrieved product info for product ID: {product_id}")
-        return product_info
-    except Product.DoesNotExist:
-        logger.error(f"Product with ID {product_id} not found")
-        return None
+        # Use the AIChatbot's get_product_context to get all fields (including location)
+        return ai_chatbot.get_product_context(product_id)
     except Exception as e:
         logger.error(f"Error retrieving product info for ID {product_id}: {str(e)}")
         return None

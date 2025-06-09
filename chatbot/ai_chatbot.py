@@ -149,7 +149,15 @@ class AIChatbot:
                 'location': location_str,
                 'contact': product.contact or product.owner.profile.phone or 'N/A',
                 'created_at': product.created_at.strftime("%B %d, %Y"),
-                'media': bool(product.media)
+                'media': bool(product.media),
+                'latitude': product.latitude,
+                'longitude': product.longitude,
+                'province': location_info['province'] if location_info else '',
+                'district': location_info['district'] if location_info else '',
+                'sector': location_info['sector'] if location_info else '',
+                'cell': location_info['cell'] if location_info else '',
+                'village': location_info['village'] if location_info else '',
+                'specific_location': location_info['specific_location'] if location_info else '',
             }
         except Product.DoesNotExist:
             return {}
@@ -272,19 +280,51 @@ class AIChatbot:
 
     def _format_location_response(self, context: Dict) -> str:
         """Format location response."""
+        latitude = context.get('latitude') if context else None
+        longitude = context.get('longitude') if context else None
         location = context.get('location') if context else None
         description = context.get('description') if context else None
-        # If structured location is present and not 'Location not specified', use it
-        if location and location not in ["N/A", "", "Location not specified", "Location not available (owner is not a farmer or cooperative)"]:
-            return f"The product is available in {location}."
+        # Try to build a full written location from context if possible
+        province = context.get('province') if context else None
+        district = context.get('district') if context else None
+        sector = context.get('sector') if context else None
+        cell = context.get('cell') if context else None
+        village = context.get('village') if context else None
+        specific_location = context.get('specific_location') if context else None
+
+        # Build the full written location string
+        written_parts = []
+        if province:
+            written_parts.append(f"{province.title()}")
+        if district:
+            written_parts.append(f"{district.title()} District")
+        if sector:
+            written_parts.append(f"{sector.title()} Sector")
+        if cell:
+            written_parts.append(f"{cell.title()} Cell")
+        if village:
+            written_parts.append(f"{village.title()} Village")
+        written_location = ", ".join(written_parts)
+        if specific_location:
+            written_location += f" ({specific_location})"
+
+        # If both written location and lat/lng are present, show both
+        if written_location.strip() and latitude and longitude:
+            maps_url = f"https://www.google.com/maps?q={latitude},{longitude}"
+            return f"The product is located at: {written_location}. <a href='{maps_url}' target='_blank' style='color:#007bff;text-decoration:underline;font-weight:bold;'>View on map</a>"
+        # If only written location
+        if written_location.strip():
+            return f"The product is located at: {written_location}."
+        # If only lat/lng
+        if latitude and longitude:
+            maps_url = f"https://www.google.com/maps?q={latitude},{longitude}"
+            return f"The product's geolocation is: ({latitude}, {longitude}). <a href='{maps_url}' target='_blank' style='color:#007bff;text-decoration:underline;font-weight:bold;'>View on map</a>"
         # Fallback: try to extract location from description
         if description:
-            # Look for common Rwandan place names or phrases like 'kuva', 'i', 'mu', 'kwa', 'Kigali', etc.
             import re
             match = re.search(r'(kuva [^.,;\n]+|i [^.,;\n]+|mu [^.,;\n]+|kwa [^.,;\n]+|Kigali|Huye|Musanze|Rubavu|Nyagatare|Rwamagana|Kibungo|Gisenyi|Butare|Muhanga|Rusizi|Karongi|Bugesera|Gicumbi|Nyanza|Nyamasheke|Ngoma|Kirehe|Gatsibo|Kamonyi|Rulindo|Gakenke|Burera|Nyabihu|Ngororero|Nyaruguru|Gisagara|Rutsiro|Nyamagabe|Gasabo|Kicukiro|Nyarugenge)', description, re.IGNORECASE)
             if match:
                 return f"The product is available in this area: {match.group(0).capitalize()}. (Based on product description)"
-            # Otherwise, just use the whole description as a last resort
             return f"Location details are not structured, but the product description says: {description}"
         return "I'm sorry, I don't have location information for this product. Please contact the seller directly for more details."
 

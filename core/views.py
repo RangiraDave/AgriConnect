@@ -639,7 +639,14 @@ def edit_profile(request):
             # Handle location data for farmers and cooperatives
             if profile.role in ['umuhinzi', 'cooperative']:
                 try:
-                    location = profile.farmer
+                    location = getattr(profile, 'farmer', None) or getattr(profile, 'cooperative', None)
+                    if not location and profile.role == 'umuhinzi':
+                        # Create Farmer object if missing
+                        from .models import Farmer
+                        location = Farmer.objects.create(profile=profile)
+                    elif not location and profile.role == 'cooperative':
+                        from .models import Cooperative
+                        location = Cooperative.objects.create(profile=profile)
                     if location:
                         # Update location data
                         location.province_id = form.cleaned_data.get('province')
@@ -657,18 +664,24 @@ def edit_profile(request):
             return redirect('user_profile')
     else:
         form = ProfileEditForm(instance=profile)
-        
         # Set initial values for location fields if user is a farmer or cooperative
         if profile.role in ['umuhinzi', 'cooperative', 'umuguzi']:
             try:
-                location = profile.farmer
+                location = getattr(profile, 'farmer', None) or getattr(profile, 'cooperative', None)
+                if not location and profile.role == 'umuhinzi':
+                    # Create Farmer object if missing
+                    from .models import Farmer
+                    location = Farmer.objects.create(profile=profile)
+                elif not location and profile.role == 'cooperative':
+                    from .models import Cooperative
+                    location = Cooperative.objects.create(profile=profile)
                 if location:
-                    form.fields['province'].initial = location.province_id
-                    form.fields['district'].initial = location.district_id
-                    form.fields['sector'].initial = location.sector_id
-                    form.fields['cell'].initial = location.cell_id
-                    form.fields['village'].initial = location.village_id
-                    form.fields['specific_location'].initial = location.specific_location
+                    form.fields['province'].initial = getattr(location, 'province_id', None)
+                    form.fields['district'].initial = getattr(location, 'district_id', None)
+                    form.fields['sector'].initial = getattr(location, 'sector_id', None)
+                    form.fields['cell'].initial = getattr(location, 'cell_id', None)
+                    form.fields['village'].initial = getattr(location, 'village_id', None)
+                    form.fields['specific_location'].initial = getattr(location, 'specific_location', None)
             except Exception as e:
                 messages.error(request, _('Error loading location information. Please try again.'))
                 return redirect('user_profile')
