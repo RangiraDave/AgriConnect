@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-09 08:01+0200\n"
+"POT-Creation-Date: 2025-06-09 11:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: rw <rw@li.org>\n"
@@ -314,7 +314,7 @@ msgstr "Habayeho ikosa kuguhindura amakuru y'aho mutuye. Mwongere mugerageze."
 
 #: core/views.py:663
 msgid "Profile updated successfully."
-msgstr "Igicuruzwa cyamaze guhindurwa neza!"
+msgstr "Amakuru kuri konti yamaze guhindurwa neza!"
 
 #: core/views.py:686
 msgid "Error loading location information. Please try again."
@@ -349,7 +349,24 @@ msgstr "Kora konti nonaha!"
 msgid "Add Your Produce"
 msgstr "Ongeraho umusaruro"
 
-#: templates/core/add_product.html:39 templates/core/edit_product.html:56
+#: templates/core/add_product.html:35 templates/core/edit_product.html:36
+#: templates/core/product_detail.html:154
+#, fuzzy
+#| msgid "Location Filter"
+msgid "Location"
+msgstr "Aho biherereye"
+
+#: templates/core/add_product.html:37 templates/core/edit_product.html:38
+msgid "Latitude, Longitude"
+msgstr ""
+
+#: templates/core/add_product.html:39 templates/core/edit_product.html:40
+#, fuzzy
+#| msgid "Specific Location"
+msgid "Get Location"
+msgstr "Aho uherereye neza"
+
+#: templates/core/add_product.html:49 templates/core/edit_product.html:70
 msgid ""
 "If you don't provide a contact number, your profile's phone number will be "
 "used as the default contact for this product."
@@ -357,25 +374,15 @@ msgstr ""
 "Nudatanga nimero ya telefone, kuri ikigicuruzwa hazakoreshwa iyo usanganwe "
 "kuri konti yawe."
 
-#: templates/core/add_product.html:44
-msgid ""
-"Location is required to add a product. Please allow location access and try "
-"again."
-msgstr ""
-
-#: templates/core/add_product.html:45
+#: templates/core/add_product.html:55 templates/core/edit_product.html:76
 #, fuzzy
 #| msgid "Specific Location"
 msgid "Retry Location"
 msgstr "Aho uherereye neza"
 
-#: templates/core/add_product.html:48 templates/core/user_profile.html:144
+#: templates/core/add_product.html:58 templates/core/user_profile.html:144
 msgid "Add Product"
 msgstr "Ongeraho Igicuruzwa"
-
-#: templates/core/add_product.html:52
-msgid "Detecting your location..."
-msgstr ""
 
 #: templates/core/base.html:40 templates/core/base.html:147
 msgid "Home"
@@ -431,7 +438,7 @@ msgid ""
 "Are you sure you want to delete your account? This action cannot be undone."
 msgstr "Urashaka koko gusiba konti yawe? Iki gikorwa ntikizagarurwa."
 
-#: templates/core/delete_account.html:13 templates/core/edit_product.html:64
+#: templates/core/delete_account.html:13 templates/core/edit_product.html:84
 #: templates/core/edit_profile.html:178
 msgid "Cancel"
 msgstr "Hagarika"
@@ -444,35 +451,35 @@ msgstr "Hindura Igicuruzwa"
 msgid "Update your product information"
 msgstr "Hindura amakuru y'igicuruzwa cyawe"
 
-#: templates/core/edit_product.html:36
+#: templates/core/edit_product.html:50
 msgid "Current Media"
 msgstr "Isanzweho"
 
-#: templates/core/edit_product.html:40
+#: templates/core/edit_product.html:54 templates/core/product_detail.html:99
 msgid "Your browser does not support the video tag."
 msgstr ""
 "Iyi videwo ntibashije kuboneka kubera ikibazo cya mudasobwa cyangwa telefone "
 "yanya"
 
-#: templates/core/edit_product.html:50 templates/core/edit_product.html:91
-#: templates/core/edit_product.html:146
+#: templates/core/edit_product.html:64 templates/core/edit_product.html:129
+#: templates/core/edit_product.html:184
 msgid "Drag and drop your new image here or click to browse"
 msgstr "Kurura ifoto nshyashya uyishyire hano cyangwa ukandeho uyishake"
 
-#: templates/core/edit_product.html:51 templates/core/edit_product.html:92
-#: templates/core/edit_product.html:147
+#: templates/core/edit_product.html:65 templates/core/edit_product.html:130
+#: templates/core/edit_product.html:185
 msgid "Supported formats: JPG, PNG, GIF (Max 5MB)"
 msgstr "Amaforume yemewe ni: JPG, PNG, GIF (zitarengeje ingano ya 5MB)"
 
-#: templates/core/edit_product.html:61 templates/core/edit_profile.html:175
+#: templates/core/edit_product.html:81 templates/core/edit_profile.html:175
 msgid "Save Changes"
 msgstr "Bika Impinduka"
 
-#: templates/core/edit_product.html:97
+#: templates/core/edit_product.html:135
 msgid "File size should not exceed 5MB"
 msgstr "Ubunini bw'ifoto cyangwa videwo ntibugomba kurenga ingano ya 5MB"
 
-#: templates/core/edit_product.html:107
+#: templates/core/edit_product.html:145
 msgid "Remove"
 msgstr "Kuraho"
 
@@ -504,7 +511,6 @@ msgid "Select Province"
 msgstr "Hitamo Intara"
 
 #: templates/core/edit_profile.html:244 templates/core/edit_profile.html:260
-#: templates/core/product_detail.html:112
 #: templates/core/product_listings.html:86
 #: templates/core/product_listings.html:87 templates/core/signup.html:133
 #: templates/core/signup.html:323 templates/core/signup.html:333
@@ -780,32 +786,88 @@ msgstr "Ibicuruzwa"
 msgid "Average Ratings"
 msgstr "Impuzandengo y'amanota"
 
-#: templates/core/product_detail.html:35 templates/core/product_detail.html:43
-#, fuzzy
-#| msgid "Location Filter"
-msgid "Location:"
-msgstr "Aho biherereye"
+#: templates/core/product_detail.html:82
+msgid "Direct from Farmer"
+msgstr ""
 
-#: templates/core/product_detail.html:40
+#: templates/core/product_detail.html:84
+#, fuzzy
+#| msgid "Cooperative"
+msgid "From Cooperative"
+msgstr "Koperative"
+
+#: templates/core/product_detail.html:107
+msgid "No media available"
+msgstr ""
+
+#: templates/core/product_detail.html:133
+msgid "Description"
+msgstr ""
+
+#: templates/core/product_detail.html:134
+#, fuzzy
+#| msgid "Location Information"
+msgid "No description provided."
+msgstr "Amakuru y'aho uherereye"
+
+#: templates/core/product_detail.html:138
+#, fuzzy
+#| msgid "Product Listings"
+msgid "Product Details"
+msgstr "Ibicuruzwa"
+
+#: templates/core/product_detail.html:141
+msgid "Unit"
+msgstr ""
+
+#: templates/core/product_detail.html:145
+#, fuzzy
+#| msgid "Quantity"
+msgid "Available Quantity"
+msgstr "Ingano"
+
+#: templates/core/product_detail.html:149
+msgid "Listed"
+msgstr ""
+
+#: templates/core/product_detail.html:164
 msgid "View on Map"
 msgstr ""
 
-#: templates/core/product_detail.html:43
+#: templates/core/product_detail.html:167
 #, fuzzy
 #| msgid "Location Information"
 msgid "Location not provided."
 msgstr "Amakuru y'aho uherereye"
 
-#: templates/core/product_detail.html:46
+#: templates/core/product_detail.html:172
+#, fuzzy
+#| msgid "Basic Information"
+msgid "Contact Information"
+msgstr "Amakuru y'ibanze"
+
+#: templates/core/product_detail.html:175
 #: templates/core/product_listings.html:229
 msgid "Not Provided"
 msgstr "Ntabyatanzwe"
 
-#: templates/core/product_detail.html:50
-#: templates/core/product_listings.html:235 templates/core/user_profile.html:89
-#: templates/core/user_profile.html:201
-msgid "Added"
-msgstr "Byashyizweho"
+#: templates/core/product_detail.html:181
+#, fuzzy
+#| msgid "Talk to us"
+msgid "Talk to Seller"
+msgstr "Tuganirize"
+
+#: templates/core/product_detail.html:188
+msgid "About the Seller"
+msgstr ""
+
+#: templates/core/product_detail.html:219
+msgid "Ask about product details, price, availability, or contact information."
+msgstr ""
+
+#: templates/core/product_detail.html:226
+msgid "Type your message..."
+msgstr ""
 
 #: templates/core/product_listings.html:20
 msgid ""
@@ -830,6 +892,11 @@ msgstr "Yungurura"
 #: templates/core/product_listings.html:124
 msgid "Clear Filters"
 msgstr "Siba"
+
+#: templates/core/product_listings.html:235 templates/core/user_profile.html:89
+#: templates/core/user_profile.html:201
+msgid "Added"
+msgstr "Byashyizweho"
 
 #: templates/core/product_listings.html:257
 msgid "Submit Rating"
@@ -1199,9 +1266,6 @@ msgstr "Ongera wohereze"
 
 #~ msgid "Price"
 #~ msgstr "Igiciro"
-
-#~ msgid "Quantity"
-#~ msgstr "Ingano"
 
 # For chart labels in JS (optional, if you want to translate them)
 #~ msgid "Average Product Rating"

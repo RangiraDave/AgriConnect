@@ -16,6 +16,7 @@ import random
 import logging
 from django.utils.timesince import timesince
 from django.core.exceptions import ObjectDoesNotExist
+import json
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -477,9 +478,9 @@ def market_insights(request):
     # Serialize top products for JSON
     top_products_data = [
         {
-            "name": product.name,
-            "avg_rating": float(product.avg_rating),
-            "num_ratings": product.num_ratings,
+            "name": str(product.name),
+            "avg_rating": float(product.avg_rating or 0),
+            "num_ratings": int(product.num_ratings),
         }
         for product in top_products
     ]
@@ -497,23 +498,26 @@ def market_insights(request):
     # Serialize top farmers for JSON
     top_farmers_data = [
         {
-            "username": farmer.username,
-            "avg_rating": float(farmer.avg_rating) if farmer.avg_rating else 0,
-            "total_products": farmer.total_products,
-            "total_ratings": farmer.total_ratings,
+            "username": str(farmer.username),
+            "avg_rating": float(farmer.avg_rating or 0),
+            "total_products": int(farmer.total_products),
+            "total_ratings": int(farmer.total_ratings),
         }
         for farmer in top_farmers
     ]
 
-    import json
+    # Log the data for debugging
+    logger.debug('Top products data: %s', top_products_data)
+    logger.debug('Top farmers data: %s', top_farmers_data)
+
     context = {
         'total_products': total_products,
         'active_farmers': active_farmers,
         'avg_rating': avg_rating,
         'top_products': top_products,
-        'top_products_json': json.dumps(top_products_data),
+        'top_products_json': top_products_data,
         'top_farmers': top_farmers,
-        'top_farmers_json': json.dumps(top_farmers_data),
+        'top_farmers_json': top_farmers_data,
     }
     return render(request, 'core/market_insights.html', context)
 

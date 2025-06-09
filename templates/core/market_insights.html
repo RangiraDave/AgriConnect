@@ -135,97 +135,117 @@
 
 {% block extra_scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{{ top_products_json|json_script:"top-products-data" }}
+{{ top_farmers_json|json_script:"top-farmers-data" }}
 <script>
-  const topProductsData = JSON.parse("{{ top_products_json|escapejs }}");
-  const topFarmersData = JSON.parse("{{ top_farmers_json|escapejs }}");
+  // Get data from the json_script elements
+  const topProductsData = JSON.parse(document.getElementById('top-products-data').textContent);
+  const topFarmersData = JSON.parse(document.getElementById('top-farmers-data').textContent);
+
+  // Get translated labels
+  const translations = {
+    averageRating: "{% trans 'Average Rating' %}",
+    averageRatingAcrossProducts: "{% trans 'Average Rating Across All Products' %}",
+    productListings: "{% trans 'Product Listings' %}",
+    averageRatings: "{% trans 'Average Ratings' %}"
+  };
 
   document.addEventListener('DOMContentLoaded', function() {
     // Products Chart
-    new Chart(document.getElementById('productsChart'), {
-      type: 'bar',
-      data: {
-        labels: topProductsData.map(product => product.name),
-        datasets: [{
-          label: '{% trans "Average Rating" %}',
-          data: topProductsData.map(product => product.avg_rating),
-          backgroundColor: '#28a745',
-          borderRadius: 8,
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false }
+    const productsChart = document.getElementById('productsChart');
+    if (productsChart) {
+      new Chart(productsChart, {
+        type: 'bar',
+        data: {
+          labels: topProductsData.map(product => product.name),
+          datasets: [{
+            label: translations.averageRating,
+            data: topProductsData.map(product => product.avg_rating),
+            backgroundColor: '#28a745',
+            borderRadius: 8,
+          }]
         },
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 5,
-            ticks: { stepSize: 1 }
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 5,
+              ticks: { stepSize: 1 }
+            }
           }
         }
-      }
-    });
+      });
+    }
 
     // Farmers Chart
-    new Chart(document.getElementById('farmersChart'), {
-      type: 'bar',
-      data: {
-        labels: topFarmersData.map(farmer => farmer.username),
-        datasets: [{
-          label: '{% trans "Average Rating Across All Products" %}',
-          data: topFarmersData.map(farmer => farmer.avg_rating),
-          backgroundColor: '#007bff',
-          borderRadius: 8,
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false }
+    const farmersChart = document.getElementById('farmersChart');
+    if (farmersChart) {
+      new Chart(farmersChart, {
+        type: 'bar',
+        data: {
+          labels: topFarmersData.map(farmer => farmer.username),
+          datasets: [{
+            label: translations.averageRatingAcrossProducts,
+            data: topFarmersData.map(farmer => farmer.avg_rating),
+            backgroundColor: '#007bff',
+            borderRadius: 8,
+          }]
         },
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 5,
-            ticks: { stepSize: 1 }
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 5,
+              ticks: { stepSize: 1 }
+            }
           }
         }
-      }
-    });
+      });
+    }
 
     // Market Trends Chart
-    new Chart(document.getElementById('trendsChart'), {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        datasets: [{
-          label: '{% trans "Product Listings" %}',
-          data: [65, 78, 90, 85, 95, 100],
-          borderColor: '#28a745',
-          backgroundColor: 'rgba(40,167,69,0.1)',
-          tension: 0.3,
-          fill: true,
-          pointRadius: 4,
-          pointBackgroundColor: '#28a745'
-        }, {
-          label: '{% trans "Average Ratings" %}',
-          data: [4.2, 4.3, 4.1, 4.4, 4.3, 4.5],
-          borderColor: '#007bff',
-          backgroundColor: 'rgba(0,123,255,0.1)',
-          tension: 0.3,
-          fill: true,
-          pointRadius: 4,
-          pointBackgroundColor: '#007bff'
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'top' }
+    const trendsChart = document.getElementById('trendsChart');
+    if (trendsChart) {
+      new Chart(trendsChart, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [{
+            label: translations.productListings,
+            data: [65, 78, 90, 85, 95, 100],
+            borderColor: '#28a745',
+            backgroundColor: 'rgba(40,167,69,0.1)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 4,
+            pointBackgroundColor: '#28a745'
+          }, {
+            label: translations.averageRatings,
+            data: [4.2, 4.3, 4.1, 4.4, 4.3, 4.5],
+            borderColor: '#007bff',
+            backgroundColor: 'rgba(0,123,255,0.1)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 4,
+            pointBackgroundColor: '#007bff'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'top' }
+          }
         }
-      }
-    });
+      });
+    }
 
     // Tooltips for stars
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
