@@ -66,7 +66,7 @@
 
                         <!-- Location Filters -->
                         <div class="col-md-4">
-                            <label class="form-label">
+                            <label for="province" class="form-label">
                                 <i class="fas fa-map-marker-alt text-success me-1"></i>{% trans "Province" %}
                             </label>
                             <select name="province" id="province" class="form-select">
@@ -80,7 +80,7 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">
+                            <label for="district" class="form-label">
                                 <i class="fas fa-map-marker-alt text-success me-1"></i>{% trans "District" %}
                             </label>
                             <select name="district" id="district" class="form-select" {% if not selected_province %}disabled{% endif %} data-placeholder="{% trans 'Select District' %}">
@@ -89,7 +89,7 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">
+                            <label for="sector" class="form-label">
                                 <i class="fas fa-compass text-success me-1"></i>{% trans "Sector" %}
                             </label>
                             <select name="sector" id="sector" class="form-select" {% if not selected_district %}disabled{% endif %}>
@@ -98,7 +98,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">
+                            <label for="cell" class="form-label">
                                 <i class="fas fa-th-large text-success me-1"></i>{% trans "Cell" %}
                             </label>
                             <select name="cell" id="cell" class="form-select" {% if not selected_sector %}disabled{% endif %}>
@@ -107,7 +107,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">
+                            <label for="village" class="form-label">
                                 <i class="fas fa-home text-success me-1"></i>{% trans "Village" %}
                             </label>
                             <select name="village" id="village" class="form-select" {% if not selected_cell %}disabled{% endif %}>

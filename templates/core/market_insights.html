@@ -73,7 +73,7 @@
                   {% endwith %}
                 </span>
               </div>
-              <span class="badge bg-success">{% blocktrans %}{{ product.num_ratings }} ratings{% endblocktrans %}</span>
+              <!-- <span class="badge bg-success">{% blocktrans %}{{ product.num_ratings }} ratings{% endblocktrans %}</span> -->
             </div>
           {% empty %}
             <div class="text-muted">{% trans "No product ratings yet." %}</div>
@@ -97,10 +97,10 @@
                   {% endwith %}
                 </span>
               </div>
-              <div class="text-end">
+              <!-- <div class="text-end">
                 <span class="badge bg-primary">{% blocktrans %}{{ farmer.total_products }} products{% endblocktrans %}</span>
                 <span class="badge bg-success ms-1">{% blocktrans %}{{ farmer.total_ratings }} ratings{% endblocktrans %}</span>
-              </div>
+              </div> -->
             </div>
           {% empty %}
             <div class="text-muted">{% trans "No farmer ratings yet." %}</div>
@@ -111,22 +111,6 @@
   </div>
 </div>
 
-<!-- Market Trends Section -->
-<div class="container mt-5">
-  <div class="insights-card shadow-sm p-4 bg-white rounded">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h4 class="mb-0 text-success"><i class="fas fa-chart-area me-2"></i>{% trans "Market Trends" %}</h4>
-      <div>
-        <button class="btn btn-outline-success btn-sm me-2 active" data-period="6m">{% trans "6 Months" %}</button>
-        <button class="btn btn-outline-success btn-sm" data-period="12m">{% trans "1 Year" %}</button>
-      </div>
-    </div>
-    <canvas id="trendsChart" height="100"></canvas>
-    <div class="text-muted mt-2" style="font-size: 0.95em;">
-      {% trans "Track how product listings and ratings have changed over time." %}
-    </div>
-  </div>
-</div>
 {% endblock %}
 
 {% block extra_css %}
@@ -206,42 +190,6 @@
               max: 5,
               ticks: { stepSize: 1 }
             }
-          }
-        }
-      });
-    }
-
-    // Market Trends Chart
-    const trendsChart = document.getElementById('trendsChart');
-    if (trendsChart) {
-      new Chart(trendsChart, {
-        type: 'line',
-        data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-          datasets: [{
-            label: translations.productListings,
-            data: [65, 78, 90, 85, 95, 100],
-            borderColor: '#28a745',
-            backgroundColor: 'rgba(40,167,69,0.1)',
-            tension: 0.3,
-            fill: true,
-            pointRadius: 4,
-            pointBackgroundColor: '#28a745'
-          }, {
-            label: translations.averageRatings,
-            data: [4.2, 4.3, 4.1, 4.4, 4.3, 4.5],
-            borderColor: '#007bff',
-            backgroundColor: 'rgba(0,123,255,0.1)',
-            tension: 0.3,
-            fill: true,
-            pointRadius: 4,
-            pointBackgroundColor: '#007bff'
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: 'top' }
           }
         }
       });
