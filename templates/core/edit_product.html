@@ -18,7 +18,7 @@
                 <form id="product-form" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                     {% csrf_token %}
                     
-                    {% for field in form %}
+                    {% for field in form.visible_fields %}
                     <div class="form-group">
                         <label for="{{ field.id_for_label }}" class="form-label required-field">
                             {{ field.label }}
@@ -30,6 +30,20 @@
                         {% endif %}
                     </div>
                     {% endfor %}
+                    
+                    {# Location fields #}
+                    <div class="mb-3">
+                        <label for="location-display" class="form-label">{% trans "Location" %}</label>
+                        <div class="input-group">
+                            <input type="text" id="location-display" class="form-control" placeholder="{% trans 'Latitude, Longitude' %}" readonly>
+                            <button type="button" id="get-location" class="btn btn-outline-success">
+                                <i class="fas fa-map-marker-alt"></i> {% trans "Get Location" %}
+                            </button>
+                        </div>
+                        <input type="hidden" name="latitude" id="id_latitude" value="{{ form.instance.latitude|default:'' }}">
+                        <input type="hidden" name="longitude" id="id_longitude" value="{{ form.instance.longitude|default:'' }}">
+                        <div id="location-status" class="form-text text-muted mt-1"></div>
+                    </div>
                     
                     {% if form.instance.media %}
                     <div class="current-image text-center">
@@ -55,6 +69,12 @@
                         <i class="fas fa-info-circle me-2"></i>
                         {% trans "If you don't provide a contact number, your profile's phone number will be used as the default contact for this product." %}
                     </div>
+
+                    <div id="geoloc-warning" class="alert alert-warning mt-3 d-none">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <span id="geoloc-message"></span>
+                        <button type="button" class="btn btn-link btn-sm" id="retry-geoloc">{% trans "Retry Location" %}</button>
+                    </div>
                     
                     <div class="btn-group">
                         <button type="submit" class="submit-btn">
@@ -71,6 +91,7 @@
 </div>
 
 {% block extra_js %}
+<script src="{% static 'js/add_product.js' %}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const imageInput = document.getElementById('id_media');
@@ -80,6 +101,23 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('input, select, textarea').forEach(element => {
         element.classList.add('form-control');
     });
+    
+    // Initialize location display with existing values
+    const latField = document.getElementById('id_latitude');
+    const lngField = document.getElementById('id_longitude');
+    const locationDisplay = document.getElementById('location-display');
+    
+    if (latField && lngField && latField.value && lngField.value) {
+        locationDisplay.value = `${latField.value}, ${lngField.value}`;
+        locationDisplay.classList.add('is-valid');
+        setLocationStatus('success', `Location detected: (${latField.value}, ${lngField.value})`);
+    }
+
+    // Add event listener for the retry button
+    const retryButton = document.getElementById('retry-geoloc');
+    if (retryButton) {
+        retryButton.addEventListener('click', getLocation);
+    }
     
     // Handle image preview
     imageInput.addEventListener('change', function(event) {
