@@ -204,7 +204,7 @@ class AIChatbot:
         if intent == 'reset_password':
             return "To reset your password, click 'Forgot Password' on the login page and follow the instructions sent to your email."
         if intent == 'contact_support':
-            return "If you have issues or need help, contact AgriConnect support at support@agriconnect.com or use the 'Contact Support' form on the website."
+            return "If you have issues or need help, contact AgriConnect support at rangiradave6@gmail.com or use the 'Contact Support' form on the website."
         if intent == 'update_profile':
             return "To update your profile information, go to your profile page and click 'Edit Profile'. You can change your name, phone, email, and other details."
         if intent == 'connectivity_issue':
@@ -214,7 +214,7 @@ class AIChatbot:
         if intent == 'edit_listing':
             return ("To edit your product listing, go to your product page and click 'Edit'. You can update the price, description, and other details. Changes will be reviewed before going live.")
         if intent == 'security':
-            return ("Your personal information is protected with industry-standard security measures. If you notice suspicious activity, report it immediately to support@agriconnect.com. Never share your password with anyone.")
+            return ("Your personal information is protected with industry-standard security measures. If you notice suspicious activity, report it immediately to rangiradave6@gmail.com. Never share your password with anyone.")
         if intent == 'platform_down':
             return ("If the platform is down or under maintenance, please wait and try again later. For urgent issues, contact support. We apologize for any inconvenience.")
         if intent == 'buy_product':

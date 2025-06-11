@@ -68,6 +68,86 @@ AgriConnect is a comprehensive agricultural marketplace platform designed to con
 - **CORS Headers**: Cross-origin resource sharing
 - **Gunicorn**: Production-grade WSGI server
 
+## Entity-Relationship Diagram
+
+Below is the Entity-Relationship (ER) diagram representing the main data entities and their relationships in the project:
+
+```mermaid
+erDiagram
+    CUSTOMUSER ||--|| PROFILE : has
+    CUSTOMUSER ||--o{ VERIFICATIONCODE : receives
+    PROFILE ||--|| FARMER : is
+    PROFILE ||--|| BUYER : is
+    PROFILE ||--|| COOPERATIVE : is
+
+    PROVINCE ||--o{ DISTRICT : has
+    DISTRICT ||--o{ SECTOR : has
+    SECTOR ||--o{ CELL : has
+    CELL ||--o{ VILLAGE : has
+
+    FARMER }o--|| PROVINCE : lives_in
+    FARMER }o--|| DISTRICT : lives_in
+    FARMER }o--|| SECTOR : lives_in
+    FARMER }o--|| CELL : lives_in
+    FARMER }o--|| VILLAGE : lives_in
+
+    COOPERATIVE }o--|| PROVINCE : located_in
+    COOPERATIVE }o--|| DISTRICT : located_in
+    COOPERATIVE }o--|| SECTOR : located_in
+    COOPERATIVE }o--|| CELL : located_in
+    COOPERATIVE }o--|| VILLAGE : located_in
+
+    PRODUCT }o--|| CUSTOMUSER : owned_by
+    PRODUCT ||--o{ PRODUCTRATING : has
+    PRODUCTRATING }o--|| CUSTOMUSER : rated_by
+
+    PRODUCT ||--o{ CHATBOT : has
+    CHATBOT }o--|| CUSTOMUSER : chats_with
+```
+
+## Data Flow Diagram
+
+The key data flows in the system are:
+
+1. **User Authentication and Verification**
+   - Users sign up with roles and contact details.
+   - Email verification codes are generated and validated.
+   - Users log in and access role-based dashboards.
+
+2. **Product Management**
+   - Users (farmers, cooperatives) add, edit, delete products.
+   - Products include details, media, location coordinates.
+   - Buyers browse and rate products.
+
+3. **Profile and Location Management**
+   - Users maintain profiles with roles and contact info.
+   - Location hierarchy (Province > District > Sector > Cell > Village) is used to specify user and product locations.
+
+4. **Product Rating**
+   - Buyers rate products, with ratings linked to both product and user.
+
+```mermaid
+flowchart TD
+    UserSignup[User Signup]
+    EmailVerification[Email Verification]
+    UserLogin[User Login]
+    Captcha[CAPTCHA Verification]
+    ProfileManagement[Profile Management]
+    ProductManagement[Product Management]
+    ProductBrowsing[Product Browsing]
+    ProductRating[Product Rating]
+
+    UserSignup --> EmailVerification --> UserLogin
+    UserLogin --> Captcha --> ProfileManagement
+    ProfileManagement --> ProductManagement
+    ProductBrowsing --> ProductRating
+    ProductRating --> ProductManagement
+```
+
+---
+
+For more details, refer to the models in `core/models.py` and views in `core/views.py`.
+
 ## Installation
 
 1. **Clone the repository**:
@@ -154,4 +234,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Support
 
-For support, email support@agriconnect.com or create an issue in the repository.
+For support, email rangiradave6@gmail.com or create an issue in the repository.

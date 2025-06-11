@@ -66,11 +66,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         window.location.reload();
                     }, 1000);
                 } else {
-                    showToast('Error submitting rating. Please try again.', 'danger');
+                    showToast('', '');
                 }
             })
             .catch(error => {
-                showToast('Error submitting rating. Please try again.', 'danger');
+                showToast('', '');
                 console.error('Error:', error);
             });
         });
