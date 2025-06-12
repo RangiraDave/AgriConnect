@@ -73,7 +73,7 @@ def login_view(request):
                 except AttributeError:
                     messages.error(request, _("User profile not properly configured. Please contact support."))
             else:
-                messages.error(request, _("Invalid username or password!"))
+                messages.error(request, _("Invalid user email or password!"))
         else:
             # If reCAPTCHA or form is invalid, show a simple error
             messages.error(request, _("Please verify you are human and fill all fields correctly."))

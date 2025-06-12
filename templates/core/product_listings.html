@@ -266,11 +266,11 @@
                         </div>
 
                         <!-- Chat Button -->
-                        <button class="btn btn-primary w-100 mt-3 chatbot-button" data-product-id="{{ product.id }}">
+                        <button class="btn btn-primary w-100 mt-3 mb-3 chatbot-button" data-product-id="{{ product.id }}">
                             <i class="fas fa-comments me-2"></i>{% trans "Talk to us" %}
                         </button>
 
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center mt-3">
                             <span class="h5 mb-0">{{ product.price_per_unit }} RWF</span>
                             <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-success">
                                 <i class="fas fa-eye me-1"></i>{% trans "View" %}
