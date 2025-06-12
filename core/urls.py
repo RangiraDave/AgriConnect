@@ -5,6 +5,7 @@ from . import views
 from chatbot.views import chatbot_response
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
 from core.api.api_views import (
     UserViewSet, ProfileViewSet, FarmerViewSet, BuyerViewSet,
     CooperativeViewSet, ProductViewSet, ProductRatingViewSet,
@@ -44,6 +45,13 @@ urlpatterns = [
     path('chatbot/get_response/', chatbot_response, name='chatbot_response'),
     path('market-insights/', views.market_insights, name='market_insights'),
     path('delete-account/', views.delete_account, name='delete_account'),
+    
+    # Password reset URLs
+    path('password-reset/', views.CustomPasswordResetView.as_view(), name='password_reset'),
+    path('password-reset/done/', views.CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('password-reset-confirm/<uidb64>/<token>/', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('password-reset-complete/', views.CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    
     path('api/', include(router.urls)),  # Add API routes
     path('products/', views.product_list, name='product_list'),
     path('api/districts/', views.get_districts, name='get_districts'),

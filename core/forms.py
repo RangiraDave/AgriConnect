@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django import forms
 from .models import Product, Profile, Province, District, Sector, Cell, Village, Farmer, Cooperative
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 import os
 from captcha.fields import CaptchaField
 

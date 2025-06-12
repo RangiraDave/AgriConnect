@@ -66,6 +66,10 @@
                 </div>
                 <div class="card-footer text-center py-3">
                     <div class="small">
+                        <a href="{% url 'password_reset' %}" class="text-success">
+                            {% trans "Forgot Password?" %}
+                        </a>
+                        <br>
                         {% trans "Don't have an account?" %} 
                         <a href="{% url 'signup' %}" class="text-success">
                             {% trans "Sign up now!" %}

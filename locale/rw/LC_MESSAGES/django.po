@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-09 11:31+0200\n"
+"POT-Creation-Date: 2025-06-12 10:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: rw <rw@li.org>\n"
@@ -24,306 +24,319 @@ msgstr "Icyongereza"
 msgid "Kinyarwanda"
 msgstr "Ikinyarwanda"
 
-#: core/forms.py:13
+#: core/forms.py:14
 msgid "Name"
 msgstr "Izina"
 
-#: core/forms.py:82 core/forms.py:165
+#: core/forms.py:83 core/forms.py:166
 msgid "File size must be no more than 5MB."
 msgstr "Ingano y'ifoto cyangwa videwo ntigomba kurenga 5MB."
 
-#: core/forms.py:87 core/forms.py:170
+#: core/forms.py:88 core/forms.py:171
 msgid "Only JPG, PNG, and MP4 files are allowed."
 msgstr "Hemewe JPG, PNG, na MP4 gusa."
 
-#: core/forms.py:177
+#: core/forms.py:178
 msgid "Quantity must be a non-negative number."
 msgstr ""
 
-#: core/forms.py:195
+#: core/forms.py:196
 #, fuzzy
 #| msgid "This username is already taken."
 msgid "The username is already taken."
 msgstr "Irizina ryamaze gufatwa."
 
-#: core/forms.py:201
+#: core/forms.py:202
 #, fuzzy
 #| msgid "Your email is already verified."
 msgid "The email is already in use."
 msgstr "Imeyili yawe yarangije kwemezwa."
 
-#: core/forms.py:207
+#: core/forms.py:208
 #, fuzzy
 #| msgid "This phone number is already registered."
 msgid "The phone number is already in use."
 msgstr "Iyimero ya telefoni yarakoreshejwe."
 
-#: core/forms.py:214
+#: core/forms.py:215
 #, fuzzy
 #| msgid "Passwords do not match"
 msgid "Passwords do not match."
 msgstr "Ijambobanga ntabwo rihuye"
 
-#: core/forms.py:221
+#: core/forms.py:222
 msgid "Password must be at least 6 characters long."
 msgstr "Ijambobanga ntirigomba kujya munsi y'inyuguti 6."
 
-#: core/forms.py:223
+#: core/forms.py:224
 msgid "Password must contain at least one uppercase letter."
 msgstr "Ijambobanga rigomba kugira byibuze inyuguti imwe nkuru."
 
-#: core/forms.py:225
+#: core/forms.py:226
 msgid "Password must contain at least one lowercase letter."
 msgstr "Ijambobanga rigomba kugira byibuze inyuguti imwe ntoya."
 
-#: core/forms.py:227
+#: core/forms.py:228
 msgid "Password must contain at least one digit."
 msgstr "Ijambobanga rigomba kugira byibuze umubare umwe."
 
-#: core/forms.py:246 templates/core/edit_profile.html:62
+#: core/forms.py:247 templates/core/edit_profile.html:62
 msgid "Full Name"
 msgstr "Amazina yombi"
 
-#: core/forms.py:256 templates/core/edit_profile.html:32
+#: core/forms.py:257 templates/core/edit_profile.html:32
 msgid "Profile Picture"
 msgstr "Konti Yanjye"
 
-#: core/forms.py:261
+#: core/forms.py:262
 msgid "Bio"
 msgstr "Ibyerekeye nyiri konti"
 
-#: core/forms.py:267 templates/core/edit_profile.html:91
+#: core/forms.py:268 templates/core/edit_profile.html:91
 #: templates/core/product_listings.html:70 templates/core/signup.html:127
 msgid "Province"
 msgstr "Intara"
 
-#: core/forms.py:273 templates/core/edit_profile.html:102
+#: core/forms.py:274 templates/core/edit_profile.html:102
 #: templates/core/product_listings.html:84 templates/core/signup.html:135
 msgid "District"
 msgstr "Akarere"
 
-#: core/forms.py:279 templates/core/edit_profile.html:115
+#: core/forms.py:280 templates/core/edit_profile.html:115
 #: templates/core/product_listings.html:93 templates/core/signup.html:145
 msgid "Sector"
 msgstr "Umurenge"
 
-#: core/forms.py:285 templates/core/edit_profile.html:126
+#: core/forms.py:286 templates/core/edit_profile.html:126
 #: templates/core/product_listings.html:102 templates/core/signup.html:153
 msgid "Cell"
 msgstr "Akagari"
 
-#: core/forms.py:291 templates/core/edit_profile.html:139
+#: core/forms.py:292 templates/core/edit_profile.html:139
 #: templates/core/product_listings.html:111 templates/core/signup.html:163
 msgid "Village"
 msgstr "Umudugudu"
 
-#: core/forms.py:296 templates/core/edit_profile.html:150
+#: core/forms.py:297 templates/core/edit_profile.html:150
 #: templates/core/signup.html:170
 msgid "Specific Location"
 msgstr "Aho uherereye neza"
 
-#: core/forms.py:301 core/forms.py:455 templates/auth/login.html:42
+#: core/forms.py:302 core/forms.py:456 templates/auth/login.html:42
 #: templates/core/edit_profile.html:164 templates/core/signup.html:111
 msgid "Role"
 msgstr "Icyiciro"
 
-#: core/forms.py:379
+#: core/forms.py:380
 msgid "If you provide location, all location fields are required."
 msgstr "Aho muherereye harakenewe, mwuhuzuze hose neza."
 
-#: core/forms.py:383
+#: core/forms.py:384
 msgid "Selected district does not belong to the selected province."
 msgstr "Akarere muhisemmo ntikabarizwa mu ntara mwahisemo."
 
-#: core/forms.py:385
+#: core/forms.py:386
 msgid "Selected sector does not belong to the selected district."
 msgstr "Umurenge muhisemmo ntubarizwa mu karere mwahisemmo."
 
-#: core/forms.py:387
+#: core/forms.py:388
 msgid "Selected cell does not belong to the selected sector."
 msgstr "Akagari muhisemo ntikaarizwa mu mu renge mwahisemo."
 
-#: core/forms.py:389
+#: core/forms.py:390
 msgid "Selected village does not belong to the selected cell."
 msgstr "Umudugudu muhisemmo ntuherereye mu kagari mwahisemo."
 
-#: core/forms.py:439 templates/auth/login.html:32 templates/core/signup.html:50
+#: core/forms.py:440 templates/auth/login.html:32
+#: templates/auth/password_reset.html:28 templates/core/signup.html:50
 msgid "Email Address"
 msgstr "Imeyili"
 
-#: core/forms.py:443
+#: core/forms.py:444
 #, fuzzy
 #| msgid "Verify Your Email"
 msgid "Enter your email"
 msgstr "Subiramo imeyili yawe"
 
-#: core/forms.py:447 templates/auth/login.html:37 templates/core/signup.html:63
+#: core/forms.py:448 templates/auth/login.html:37 templates/core/signup.html:63
 msgid "Password"
 msgstr "Ijambobanga"
 
-#: core/forms.py:451
+#: core/forms.py:452
 #, fuzzy
 #| msgid "Invalid username or password!"
 msgid "Enter your password"
 msgstr "Izina cyangwa ijambobanga ntabwo ari byo!"
 
-#: core/forms.py:460
+#: core/forms.py:461
 msgid "Captcha"
 msgstr ""
 
-#: core/views.py:39
+#: core/views.py:42
 msgid "Login required to access this page."
 msgstr "Mugomba kwinjira murinti kugirango mubashe kubona iyi paje."
 
-#: core/views.py:51
+#: core/views.py:54
 msgid "Email not verified. Please check your email for the verification link."
 msgstr ""
 "Imeyili ntiyemejwe. Nyamuneka reba ubutumwa bwo kwemeza muri imeyili yawe."
 
-#: core/views.py:67
+#: core/views.py:70
 msgid "Invalid role selected for this account."
 msgstr "Icyiciro cyahiswemo ntikiaho."
 
-#: core/views.py:69 core/views.py:71
+#: core/views.py:72 core/views.py:74
 msgid "User profile not properly configured. Please contact support."
 msgstr "Konti yawe ntirandikwa neza. Murebe ahatangirwa ubufasha."
 
-#: core/views.py:73
+#: core/views.py:76
 msgid "Invalid username or password!"
 msgstr "Izina cyangwa ijambobanga ntabwo ari byo!"
 
-#: core/views.py:76
+#: core/views.py:79
 msgid "Please verify you are human and fill all fields correctly."
 msgstr ""
 
-#: core/views.py:120
+#: core/views.py:123
 msgid "AgriConnect Email Verification"
 msgstr "Kwemeza Imeyili ya AgriConnect"
 
-#: core/views.py:121
+#: core/views.py:124
 #, python-format
 msgid "Your verification code is: %(code)s"
 msgstr "Kode yo kwemeza ni: %(code)s"
 
-#: core/views.py:169
+#: core/views.py:172
 msgid ""
 "No email found for this session. Please try resending the verification code."
 msgstr ""
 "Nta imeyili yabashije kuboneka. Nyamuneka gerageza kongera kohereza kode yo "
 "kwemeza."
 
-#: core/views.py:179
+#: core/views.py:182
 msgid "No verification code found. Please request a new one."
 msgstr "Nta kode yo kwemeza yaonetse. Mwongere musabe indi."
 
-#: core/views.py:188
+#: core/views.py:191
 msgid "Email verified successfully! You can now log in."
 msgstr "Kwemeza imeyili byakunze! Ubu mushobora kwinjira."
 
-#: core/views.py:192
+#: core/views.py:195
 msgid "Verification code has expired. Please request a new one."
 msgstr "Kode yo kwemeza yashaje. Musabe indi kode."
 
-#: core/views.py:195
+#: core/views.py:198
 msgid "Invalid verification code. Please try again."
 msgstr "Kode yo kwemeza siyo. Mwongere mugerageze."
 
-#: core/views.py:198
+#: core/views.py:201
 msgid "Invalid verification process. Please try again."
 msgstr "Uburyo bwo kwemeza ntabwo ari bwo. Mwongere mugerageze."
 
-#: core/views.py:212
+#: core/views.py:215
 msgid "No email provided for verification."
 msgstr "Nta imeyili yatanzwe yo kwemeza."
 
-#: core/views.py:218
+#: core/views.py:221
 msgid "Your email is already verified."
 msgstr "Imeyili yawe yarangije kwemezwa."
 
-#: core/views.py:233
+#: core/views.py:236
 msgid "AgriConnect Email Verification - Resend"
 msgstr "Kwemeza Imeyili ya AgriConnect - Ongera wohereze"
 
-#: core/views.py:234
+#: core/views.py:237
 #, python-format
 msgid "Your new verification code is: %(code)s"
 msgstr "Kode nshya yo kwemeza ni: %(code)s"
 
-#: core/views.py:243
+#: core/views.py:246
 msgid "A new verification code has been sent to your email."
 msgstr "Kode nshya yo kwemeza yoherejwe kuri imeyili yawe."
 
-#: core/views.py:248
+#: core/views.py:251
 msgid "Email not found."
 msgstr "Imeyili ntabwo yabonetse."
 
-#: core/views.py:332
+#: core/views.py:335
 msgid "You are not authorized to add a product."
 msgstr "Nta burenganzira ufite bwo kwongeraho igicuruzwa."
 
-#: core/views.py:348
+#: core/views.py:351
 msgid ""
 "Please update your profile with contact information before adding a product."
 msgstr ""
 "Nyamuneka nimwongere nimero za telefoni kuri konti yanyu mubone kwongeraho "
 "igicuruzwa."
 
-#: core/views.py:354
+#: core/views.py:357
 msgid "Product added successfully!"
 msgstr "Igicuruzwa Cyamazekwongerwaho neza!"
 
-#: core/views.py:361
+#: core/views.py:364
 msgid "An error occurred while saving the product. Please try again."
 msgstr ""
 "Habayeho ikibazo tekinike mukubika igicuruzwa. Nyamuneka ongera ugerageze "
 "mukanya."
 
-#: core/views.py:365
+#: core/views.py:368
 msgid "Please correct the errors in the form."
 msgstr "Nyabuneka nimukosore amakosa mubyo mwanditse."
 
-#: core/views.py:379
+#: core/views.py:382
 #, fuzzy
 #| msgid "User profile not properly configured. Please contact support."
 msgid "Your profile is not configured. Please contact support or log in again."
 msgstr "Konti yawe ntirandikwa neza. Murebe ahatangirwa ubufasha."
 
-#: core/views.py:395
+#: core/views.py:398
 msgid "You are not authorized to edit this product."
 msgstr "Nta burenganzira ufite bwo guhindura iki gicuruzwa."
 
-#: core/views.py:402
+#: core/views.py:405
 msgid "Product updated successfully!"
 msgstr "Igicuruzwa cyahinduwe neza!"
 
-#: core/views.py:414
+#: core/views.py:417
 msgid "You are not authorized to delete this product."
 msgstr "Nta burenganzira ufite bwo gusiba iki gicuruzwa."
 
-#: core/views.py:419
+#: core/views.py:422
 msgid "Product deleted successfully!"
 msgstr "Igicuruzwa Cyamazekwongerwaho neza!"
 
-#: core/views.py:432
+#: core/views.py:435
 msgid "Please provide a valid rating between 1 and 5."
 msgstr "Nyamuneka tanga amanota ari hagati ya 1 na 5."
 
-#: core/views.py:660
+#: core/views.py:537
+msgid "Your account has been successfully deleted."
+msgstr ""
+
+#: core/views.py:541
+#, fuzzy
+#| msgid "An error occurred while saving the product. Please try again."
+msgid "An error occurred while deleting your account."
+msgstr ""
+"Habayeho ikibazo tekinike mukubika igicuruzwa. Nyamuneka ongera ugerageze "
+"mukanya."
+
+#: core/views.py:691
 msgid "Error updating location information. Please try again."
 msgstr "Habayeho ikosa kuguhindura amakuru y'aho mutuye. Mwongere mugerageze."
 
-#: core/views.py:663
+#: core/views.py:694
 msgid "Profile updated successfully."
 msgstr "Amakuru kuri konti yamaze guhindurwa neza!"
 
-#: core/views.py:686
+#: core/views.py:717
 msgid "Error loading location information. Please try again."
 msgstr ""
 "Habayeho ikosa mugushaka amakuru y'aho muherereye. Mwongere mugerageze."
 
 #: templates/auth/login.html:7 templates/auth/login.html:15
-#: templates/auth/login.html:62 templates/core/base.html:106
-#: templates/core/home.html:24
+#: templates/auth/login.html:62 templates/auth/password_reset_complete.html:21
+#: templates/core/base.html:106 templates/core/home.html:24
 msgid "Login"
 msgstr "Injira"
 
@@ -337,13 +350,101 @@ msgid ""
 "keep your account safe and prevent fake logins."
 msgstr ""
 
-#: templates/auth/login.html:69
+#: templates/auth/login.html:70
+#, fuzzy
+#| msgid "Confirm Password"
+msgid "Forgot Password?"
+msgstr "Emeza Ijambobanga"
+
+#: templates/auth/login.html:73
 msgid "Don't have an account?"
 msgstr "Nta konti ufite?"
 
-#: templates/auth/login.html:71
+#: templates/auth/login.html:75
 msgid "Sign up now!"
 msgstr "Kora konti nonaha!"
+
+#: templates/auth/password_reset.html:4 templates/auth/password_reset.html:12
+#, fuzzy
+#| msgid "Password"
+msgid "Password Reset"
+msgstr "Ijambobanga"
+
+#: templates/auth/password_reset.html:33
+msgid "Send Reset Link"
+msgstr ""
+
+#: templates/auth/password_reset.html:40
+#, fuzzy
+#| msgid "Invalid username or password!"
+msgid "Remember your password?"
+msgstr "Izina cyangwa ijambobanga ntabwo ari byo!"
+
+#: templates/auth/password_reset.html:42
+#: templates/auth/password_reset_confirm.html:47
+#, fuzzy
+#| msgid "Login here!"
+msgid "Login now!"
+msgstr "Injirira hano"
+
+#: templates/auth/password_reset_complete.html:4
+#: templates/auth/password_reset_complete.html:12
+msgid "Password Reset Complete"
+msgstr ""
+
+#: templates/auth/password_reset_complete.html:17
+msgid "Your password has been set. You may go ahead and log in now."
+msgstr ""
+
+#: templates/auth/password_reset_confirm.html:4
+#: templates/auth/password_reset_confirm.html:12
+#, fuzzy
+#| msgid "Invalid username or password!"
+msgid "Enter New Password"
+msgstr "Izina cyangwa ijambobanga ntabwo ari byo!"
+
+#: templates/auth/password_reset_confirm.html:28
+#, fuzzy
+#| msgid "Password"
+msgid "New Password"
+msgstr "Ijambobanga"
+
+#: templates/auth/password_reset_confirm.html:33
+#, fuzzy
+#| msgid "Confirm Password"
+msgid "Confirm New Password"
+msgstr "Emeza Ijambobanga"
+
+#: templates/auth/password_reset_confirm.html:38
+#, fuzzy
+#| msgid "Confirm Password"
+msgid "Change Password"
+msgstr "Emeza Ijambobanga"
+
+#: templates/auth/password_reset_confirm.html:45
+msgid "Need to login?"
+msgstr ""
+
+#: templates/auth/password_reset_done.html:4
+#: templates/auth/password_reset_done.html:12
+msgid "Password Reset Sent"
+msgstr ""
+
+#: templates/auth/password_reset_done.html:17
+msgid ""
+"We've emailed you instructions for setting your password, if an account "
+"exists with the email you entered. You should receive them shortly."
+msgstr ""
+
+#: templates/auth/password_reset_done.html:20
+msgid ""
+"If you don't receive an email, please make sure you've entered the address "
+"you registered with, and check your spam folder."
+msgstr ""
+
+#: templates/auth/password_reset_done.html:24
+msgid "Back to Login"
+msgstr ""
 
 #: templates/core/add_product.html:12
 msgid "Add Your Produce"
@@ -719,7 +820,7 @@ msgstr "Abahinzi Bari Kurubuga"
 
 #: templates/core/market_insights.html:51
 #: templates/core/market_insights.html:69
-#: templates/core/market_insights.html:149
+#: templates/core/market_insights.html:131
 msgid "Average Rating"
 msgstr "Impuzandengo y'amanota"
 
@@ -741,7 +842,7 @@ msgid "Top Performing Farmers"
 msgstr "Abahinzi Bahize Abandi"
 
 #: templates/core/market_insights.html:93
-#: templates/core/market_insights.html:176
+#: templates/core/market_insights.html:132
 msgid "Average Rating Across All Products"
 msgstr "Impuzandengo y'amanota kubicuruzwa byose."
 
@@ -760,29 +861,12 @@ msgstr "Amanota %(farmer.num_ratings)s"
 msgid "No farmer ratings yet."
 msgstr "Ntamanota aratangwa."
 
-#: templates/core/market_insights.html:118
-msgid "Market Trends"
-msgstr "Ibigezweho k'isoko"
-
-#: templates/core/market_insights.html:120
-msgid "6 Months"
-msgstr "Amezi 6"
-
-#: templates/core/market_insights.html:121
-msgid "1 Year"
-msgstr "Umwaka 1"
-
-#: templates/core/market_insights.html:126
-msgid "Track how product listings and ratings have changed over time."
-msgstr ""
-"Reba ukwo ibicuruzwa byagiye bishyirwaho n'amanota byagiye bihindagurika."
-
-#: templates/core/market_insights.html:203
+#: templates/core/market_insights.html:133
 #: templates/core/product_listings.html:17 templates/products.html:5
 msgid "Product Listings"
 msgstr "Ibicuruzwa"
 
-#: templates/core/market_insights.html:212
+#: templates/core/market_insights.html:134
 msgid "Average Ratings"
 msgstr "Impuzandengo y'amanota"
 
@@ -1069,6 +1153,19 @@ msgstr "Nta kode mwakiriye?"
 #: templates/core/verify_email.html:47
 msgid "Resend Code"
 msgstr "Ongera wohereze"
+
+#~ msgid "Market Trends"
+#~ msgstr "Ibigezweho k'isoko"
+
+#~ msgid "6 Months"
+#~ msgstr "Amezi 6"
+
+#~ msgid "1 Year"
+#~ msgstr "Umwaka 1"
+
+#~ msgid "Track how product listings and ratings have changed over time."
+#~ msgstr ""
+#~ "Reba ukwo ibicuruzwa byagiye bishyirwaho n'amanota byagiye bihindagurika."
 
 #, python-brace-format
 #~ msgid ""

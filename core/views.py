@@ -8,6 +8,8 @@ from django.contrib import messages
 from django.db import IntegrityError, transaction
 from django.db.models import Avg, Count, Q
 from django.http import JsonResponse
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.urls import reverse_lazy
 from .models import Profile, Farmer, VerificationCode, Product, ProductRating, Province, District, Sector, Cell, Village, Cooperative, Buyer
 from .forms import AddProductForm, EditProductForm, ProfileEditForm, SignupForm, LoginForm
 from channels.layers import get_channel_layer
@@ -526,11 +528,36 @@ def market_insights(request):
 def delete_account(request):
     """Handle account deletion."""
     if request.method == 'POST':
-        request.user.delete()
-        # messages.success(request, _("Your account has been deleted successfully."))
-        return redirect('homepage')
-
+        user = request.user
+        if user.is_authenticated:
+            # Delete the user's profile and related objects
+            try:
+                user.profile.delete()
+                user.delete()
+                messages.success(request, _('Your account has been successfully deleted.'))
+                return redirect('login')
+            except Exception as e:
+                logger.error(f"Error deleting account: {e}")
+                messages.error(request, _('An error occurred while deleting your account.'))
     return render(request, 'core/delete_account.html')
+
+
+# Password Reset Views
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'auth/password_reset.html'
+    email_template_name = 'auth/password_reset_email.html'
+    subject_template_name = 'auth/password_reset_subject.txt'
+    success_url = reverse_lazy('password_reset_done')
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'auth/password_reset_done.html'
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'auth/password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'auth/password_reset_complete.html'
 
 
 def get_provinces(request):
