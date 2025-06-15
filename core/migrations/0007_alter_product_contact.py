@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0005_product_latitude_product_longitude'),
+        ('core', '0006_alter_product_contact'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='product',
             name='contact',
-            field=models.CharField(blank=True, help_text='Contact number for this product (optional)', max_length=16, null=True),
+            field=models.CharField(blank=True, help_text='Contact number for this product (optional)', max_length=15, null=True),
         ),
     ]
