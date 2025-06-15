@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 import os
 from captcha.fields import CaptchaField
+import re
 
 User = get_user_model()
 
@@ -86,6 +87,12 @@ class AddProductForm(forms.ModelForm):
             ext = os.path.splitext(media.name)[1].lower()
             if ext not in ['.jpg', '.jpeg', '.png', '.mp4']:
                 raise forms.ValidationError(_("Only JPG, PNG, and MP4 files are allowed."))
+
+        # Validate contact number if provided
+        contact = cleaned_data.get('contact')
+        if contact:
+            if not re.fullmatch(r'07\d{8}', contact):
+                raise forms.ValidationError(_("Contact number must be 10 digits, start with '07', and contain only numbers."))
 
         return cleaned_data
 
@@ -170,6 +177,12 @@ class EditProductForm(forms.ModelForm):
             if ext not in ['.jpg', '.jpeg', '.png', '.mp4']:
                 raise forms.ValidationError(_("Only JPG, PNG, and MP4 files are allowed."))
 
+            # Validate contact number if provided
+            contact = cleaned_data.get('contact')
+            if contact:
+                if not re.fullmatch(r'07\d{8}', contact):
+                    raise forms.ValidationError(_("Contact number must be 10 digits, start with '07', and contain only numbers."))
+
         return cleaned_data
 
     def clean_quantity_available(self):
@@ -204,7 +217,11 @@ class SignupForm(forms.Form):
 
     def clean_phone(self):
         phone = self.cleaned_data['phone']
-        if Profile.objects.filter(phone=phone).exists():
+        # Regex: starts with 07, followed by 8 more digits, exactly 10 digits total
+        if not re.fullmatch(r'07\d{8}', phone):
+            raise forms.ValidationError(_("Phone number must be 10 digits, start with '07', and contain only numbers."))
+        
+        if User.objects.filter(profile__phone=phone).exists():
             raise forms.ValidationError(_('The phone number is already in use.'))
         return phone
 
@@ -364,6 +381,19 @@ class ProfileEditForm(forms.ModelForm):
         self.fields['village'].queryset = \
             Village.objects.filter(cell_id=cell_id) if cell_id else Village.objects.none()
 
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+        if phone:
+            if not re.fullmatch(r'07\d{8}', phone):
+                raise forms.ValidationError(_("Phone number must be 10 digits, start with '07', and contain only numbers."))
+
+            # Check if phone number is already in use by another user's profile
+            if self.instance and Profile.objects.filter(phone=phone).exclude(pk=self.instance.pk).exists():
+                raise forms.ValidationError(_('This phone number is already in use by another account.'))
+            elif not self.instance and Profile.objects.filter(phone=phone).exists(): # For new profiles, if applicable
+                raise forms.ValidationError(_('The phone number is already in use.'))
+        return phone
+
     def clean(self):
         cleaned_data = super().clean()
         province = cleaned_data.get('province')
@@ -459,4 +489,3 @@ class LoginForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-select'})
     )
     recaptcha = CaptchaField(label=_('Captcha'))
-
