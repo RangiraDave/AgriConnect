@@ -6,50 +6,121 @@
 {% block content %}
 {% if not user.is_authenticated %}
 <!-- Hero Section -->
-<section class="hero-section hero-section-bg text-center py-5">
+<section class="hero-section py-5 bg-light">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-6 text-lg-start mb-4 mb-lg-0">
-                <h1 class="display-3 mb-3 text-success fw-bold animate__animated animate__fadeInDown">
-                    {% trans "Connect, Trade, Grow" %}
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h1 class="display-4 fw-bold text-success mb-4">
+                    {% trans "Rwanda's Agricultural Marketplace" %}
                 </h1>
-                <p class="lead mb-4 animate__animated animate__fadeInLeft">
-                    {% trans "Rwanda's #1 digital marketplace for agriculture. Buy, sell, and discover fresh produce directly from local farmers and cooperatives." %}
+                <p class="lead text-muted mb-4">
+                    {% trans "Connect directly with farmers and buyers. Buy fresh produce or sell your harvest with zero commission." %}
                 </p>
-                <div class="d-flex gap-3 justify-content-lg-start justify-content-center">
-                    <a href="{% url 'signup' %}" class="btn btn-success btn-lg px-4 animate__animated animate__pulse animate__infinite">
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <a href="{% url 'signup' %}" class="btn btn-success btn-lg px-4 btn-pulse">
                         <i class="fas fa-user-plus me-2"></i>{% trans "Get Started Free" %}
                     </a>
                     <a href="{% url 'login' %}" class="btn btn-outline-success btn-lg px-4">
                         <i class="fas fa-sign-in-alt me-2"></i>{% trans "Login" %}
                     </a>
                 </div>
-                <div class="mt-4">
-                    <span class="badge bg-success fs-6 animate__animated animate__fadeInUp">
-                        {% trans "No fees. No hassle. 100% local." %}
-                    </span>
+                <div class="text-center mt-5">
+                    <a href="{% url 'product_listings' %}" class="btn btn-outline-success px-4">
+                        <i class="fas fa-store me-2"></i>{% trans "View All Products" %}
+                    </a>
+                </div>
+                <div class="d-flex flex-wrap gap-4 text-muted small">
+                    <span><i class="fas fa-check-circle text-success me-2"></i>{% trans "No hidden fees" %}</span>
+                    <span><i class="fas fa-check-circle text-success me-2"></i>{% trans "Secure payments" %}</span>
+                    <span><i class="fas fa-check-circle text-success me-2"></i>{% trans "24/7 support" %}</span>
                 </div>
             </div>
-            <div class="col-lg-6 animate__animated animate__fadeInRight mb-4 mb-lg-0">
-                <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
-                    </div>
-                    <div class="carousel-inner rounded-4 shadow-lg">
+            <div class="col-lg-6">
+                <div id="heroCarousel" class="carousel slide carousel-fade shadow-lg rounded-4 overflow-hidden" data-bs-ride="carousel" data-bs-interval="3000">
+                    <div class="carousel-inner">
+                        <!-- Mangoes -->
                         <div class="carousel-item active">
-                            <img src="{% static 'img/imyembe.png' %}" class="d-block w-100 object-fit-cover" alt="Mangoes" style="height: 350px;">
+                            <img src="{% static 'img/imyembe.png' %}" class="d-block w-100" alt="Mangoes" style="height: 400px; object-fit: cover;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Fresh Mangoes" %}</h5>
+                                <p>{% trans "Direct from Rwandan farms" %}</p>
+                            </div>
                         </div>
+                        <!-- Coffee -->
                         <div class="carousel-item">
-                            <img src="{% static 'img/coffee.png' %}" class="d-block w-100 object-fit-cover" alt="Coffee" style="height: 350px;">
+                            <img src="{% static 'img/coffee.png' %}" class="d-block w-100" alt="Coffee" style="height: 400px; object-fit: cover;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Premium Coffee" %}</h5>
+                                <p>{% trans "Finest Rwandan coffee beans" %}</p>
+                            </div>
                         </div>
+                        <!-- Beans -->
                         <div class="carousel-item">
-                            <img src="{% static 'img/ibishyimbo.png' %}" class="d-block w-100 object-fit-cover" alt="Beans" style="height: 350px;">
+                            <img src="{% static 'img/ibishyimbo.png' %}" class="d-block w-100" alt="Beans" style="height: 400px; object-fit: cover;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Organic Beans" %}</h5>
+                                <p>{% trans "Nutritious and fresh" %}</p>
+                            </div>
                         </div>
+                        <!-- Pineapple -->
                         <div class="carousel-item">
-                            <img src="{% static 'img/ibigori.jpg' %}" class="d-block w-100 object-fit-cover" alt="Corn" style="height: 350px;">
+                            <img src="{% static 'img/Fene.jpeg' %}" class="d-block w-100" alt="Pineapple" style="height: 400px; object-fit: cover;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Sweet Pineapples" %}</h5>
+                                <p>{% trans "Juicy and delicious" %}</p>
+                            </div>
+                        </div>
+                        <!-- Potatoes -->
+                        <div class="carousel-item">
+                            <img src="{% static 'img/Ibirayi.jpeg' %}" class="d-block w-100" alt="Potatoes" style="height: 400px; object-fit: cover;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Irish Potatoes" %}</h5>
+                                <p>{% trans "Fresh from the highlands" %}</p>
+                            </div>
+                        </div>
+                        <!-- Passion Fruit -->
+                        <div class="carousel-item">
+                            <img src="{% static 'img/Ikinyomoro.jpeg' %}" class="d-block w-100" alt="Passion Fruit" style="height: 400px; object-fit: cover;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Passion Fruits" %}</h5>
+                                <p>{% trans "Tropical and flavorful" %}</p>
+                            </div>
+                        </div>
+                        <!-- Tea -->
+                        <div class="carousel-item">
+                            <img src="{% static 'img/Ikirayi.jpeg' %}" class="d-block w-100" alt="Tea" style="height: 400px; object-fit: cover;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Tea Leaves" %}</h5>
+                                <p>{% trans "Premium quality" %}</p>
+                            </div>
+                        </div>
+                        <!-- Tomatoes -->
+                        <div class="carousel-item">
+                            <img src="{% static 'img/Ubutunda.jpeg' %}" class="d-block w-100" alt="Tomatoes" style="height: 400px; object-fit: cover;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Fresh Tomatoes" %}</h5>
+                                <p>{% trans "Organic and delicious" %}</p>
+                            </div>
+                        </div>
+                        <!-- Maize -->
+                        <div class="carousel-item">
+                            <img src="{% static 'img/ibigori.jpg' %}" class="d-block w-100" alt="Maize" style="height: 400px; object-fit: cover;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Maize" %}</h5>
+                                <p>{% trans "High quality grains" %}</p>
+                            </div>
+                        </div>
+                        <!-- Amateke -->
+                        <div class="carousel-item">
+                            <img src="{% static 'img/amateke.png' %}" class="d-block w-100" alt="Bananas" style="height: 400px; object-fit: cover;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Bananas" %}</h5>
+                                <p>{% trans "Sweet and fresh" %}</p>
+                            </div>
+                        </div>
+                        <div class="text-center mb-5">
+                            <h2 class="fw-bold">{% trans "Fresh From Our Farms" %}</h2>
+                            <p class="lead text-muted">{% trans "Discover the best of Rwandan agriculture" %}</p>
                         </div>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
@@ -67,29 +138,52 @@
 </section>
 
 <!-- Features Section -->
-<section class="features-section py-5 bg-light">
+<section class="py-5">
     <div class="container">
-        <h2 class="text-center mb-5 fw-bold">{% trans "Why AgriConnect?" %}</h2>
         <div class="row g-4">
+            <!-- Main Action Cards -->
             <div class="col-md-4">
-                <div class="feature-card text-center p-4 h-100 shadow-sm">
-                    <i class="fas fa-handshake fa-3x text-success mb-3"></i>
-                    <h4>{% trans "Direct Connections" %}</h4>
-                    <p>{% trans "No middlemen. Chat and trade directly with farmers, buyers, and cooperatives." %}</p>
+                <div class="card h-100 border-0 shadow-sm hover-scale">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-wrapper bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-handshake fa-2x text-success"></i>
+                        </div>
+                        <h4 class="mb-3">{% trans "Direct Connections" %}</h4>
+                        <p class="text-muted mb-4">{% trans "Connect directly with farmers and buyers. No middlemen means better prices for everyone." %}</p>
+                        <a href="{% url 'signup' %}" class="btn btn-success w-100">
+                            <i class="fas fa-user-plus me-2"></i>{% trans "Join Now" %}
+                        </a>
+                    </div>
                 </div>
             </div>
+            
             <div class="col-md-4">
-                <div class="feature-card text-center p-4 h-100 shadow-sm">
-                    <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
-                    <h4>{% trans "Market Insights" %}</h4>
-                    <p>{% trans "See real-time prices, trends, and top products to make smart decisions." %}</p>
+                <div class="card h-100 border-0 shadow-sm hover-scale">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-wrapper bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-chart-line fa-2x text-warning"></i>
+                        </div>
+                        <h4 class="mb-3">{% trans "Market Insights" %}</h4>
+                        <p class="text-muted mb-4">{% trans "Get real-time market prices, trends, and insights to make informed buying and selling decisions." %}</p>
+                        <a href="{% url 'signup' %}" class="btn btn-warning text-white w-100">
+                            <i class="fas fa-chart-bar me-2"></i>{% trans "View Insights" %}
+                        </a>
+                    </div>
                 </div>
             </div>
+            
             <div class="col-md-4">
-                <div class="feature-card text-center p-4 h-100 shadow-sm">
-                    <i class="fas fa-mobile-alt fa-3x text-success mb-3"></i>
-                    <h4>{% trans "Easy & Secure" %}</h4>
-                    <p>{% trans "Simple to use, mobile-friendly, and safe for everyone." %}</p>
+                <div class="card h-100 border-0 shadow-sm hover-scale">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-wrapper bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-mobile-alt fa-2x text-info"></i>
+                        </div>
+                        <h4 class="mb-3">{% trans "Easy & Secure" %}</h4>
+                        <p class="text-muted mb-4">{% trans "Simple to use, mobile-friendly platform with secure payments and 24/7 support." %}</p>
+                        <a href="{% url 'signup' %}" class="btn btn-info text-white w-100">
+                            <i class="fas fa-rocket me-2"></i>{% trans "Get Started" %}
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -187,19 +281,93 @@
                         <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
                         <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
                         <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
+                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="6" aria-label="Slide 7"></button>
+                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="7" aria-label="Slide 8"></button>
+                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="8" aria-label="Slide 9"></button>
+                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="9" aria-label="Slide 10"></button>
                     </div>
                     <div class="carousel-inner rounded-4 shadow-lg">
+                        <!-- Mangoes -->
                         <div class="carousel-item active">
                             <img src="{% static 'img/imyembe.png' %}" class="d-block w-100 object-fit-cover" alt="Mangoes" style="height: 350px;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Fresh Mangoes" %}</h5>
+                                <p>{% trans "Direct from Rwandan farms" %}</p>
+                            </div>
                         </div>
+                        <!-- Coffee -->
                         <div class="carousel-item">
                             <img src="{% static 'img/coffee.png' %}" class="d-block w-100 object-fit-cover" alt="Coffee" style="height: 350px;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Premium Coffee" %}</h5>
+                                <p>{% trans "Finest Rwandan coffee beans" %}</p>
+                            </div>
                         </div>
+                        <!-- Beans -->
                         <div class="carousel-item">
                             <img src="{% static 'img/ibishyimbo.png' %}" class="d-block w-100 object-fit-cover" alt="Beans" style="height: 350px;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Organic Beans" %}</h5>
+                                <p>{% trans "Nutritious and fresh" %}</p>
+                            </div>
                         </div>
+                        <!-- Pineapple -->
                         <div class="carousel-item">
-                            <img src="{% static 'img/ibigori.jpg' %}" class="d-block w-100 object-fit-cover" alt="Corn" style="height: 350px;">
+                            <img src="{% static 'img/Fene.jpeg' %}" class="d-block w-100 object-fit-cover" alt="Pineapple" style="height: 350px;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Sweet Pineapples" %}</h5>
+                                <p>{% trans "Juicy and delicious" %}</p>
+                            </div>
+                        </div>
+                        <!-- Potatoes -->
+                        <div class="carousel-item">
+                            <img src="{% static 'img/Ibirayi.jpeg' %}" class="d-block w-100 object-fit-cover" alt="Potatoes" style="height: 350px;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Irish Potatoes" %}</h5>
+                                <p>{% trans "Fresh from the highlands" %}</p>
+                            </div>
+                        </div>
+                        <!-- Passion Fruit -->
+                        <div class="carousel-item">
+                            <img src="{% static 'img/Ikinyomoro.jpeg' %}" class="d-block w-100 object-fit-cover" alt="Passion Fruit" style="height: 350px;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Passion Fruits" %}</h5>
+                                <p>{% trans "Tropical and flavorful" %}</p>
+                            </div>
+                        </div>
+                        <!-- Tea -->
+                        <div class="carousel-item">
+                            <img src="{% static 'img/Ikirayi.jpeg' %}" class="d-block w-100 object-fit-cover" alt="Tea" style="height: 350px;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Tea Leaves" %}</h5>
+                                <p>{% trans "Premium quality" %}</p>
+                            </div>
+                        </div>
+                        <!-- Tomatoes -->
+                        <div class="carousel-item">
+                            <img src="{% static 'img/Ubutunda.jpeg' %}" class="d-block w-100 object-fit-cover" alt="Tomatoes" style="height: 350px;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Fresh Tomatoes" %}</h5>
+                                <p>{% trans "Organic and delicious" %}</p>
+                            </div>
+                        </div>
+                        <!-- Maize -->
+                        <div class="carousel-item">
+                            <img src="{% static 'img/ibigori.jpg' %}" class="d-block w-100 object-fit-cover" alt="Maize" style="height: 350px;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Maize" %}</h5>
+                                <p>{% trans "High quality grains" %}</p>
+                            </div>
+                        </div>
+                        <!-- Amateke -->
+                        <div class="carousel-item">
+                            <img src="{% static 'img/amateke.png' %}" class="d-block w-100 object-fit-cover" alt="Bananas" style="height: 350px;">
+                            <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+                                <h5>{% trans "Bananas" %}</h5>
+                                <p>{% trans "Sweet and fresh" %}</p>
+                            </div>
                         </div>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
