@@ -70,7 +70,17 @@ class AddProductForm(forms.ModelForm):
         self.fields['price_per_unit'].widget.attrs['autocomplete'] = 'off'
         self.fields['quantity_available'].widget.attrs['autocomplete'] = 'off'
         self.fields['unit'].widget.attrs['autocomplete'] = 'off'
-        self.fields['contact'].widget.attrs['autocomplete'] = 'tel'
+        
+        # Configure contact field for numeric input
+        contact = self.fields['contact']
+        contact.widget.attrs.update({
+            'autocomplete': 'tel',
+            'inputmode': 'tel',
+            'pattern': '07[0-9]{8}',
+            'oninput': 'this.value = this.value.replace(/[^0-9]/g, "").slice(0, 10)',
+            'title': 'Enter a valid phone number starting with 07 and 10 digits long'
+        })
+        
         self.fields['latitude'].widget.attrs['autocomplete'] = 'off'
         self.fields['longitude'].widget.attrs['autocomplete'] = 'off'
 
@@ -122,6 +132,18 @@ class EditProductForm(forms.ModelForm):
     """
     latitude = forms.FloatField(widget=forms.HiddenInput(), required=False)
     longitude = forms.FloatField(widget=forms.HiddenInput(), required=False)
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Configure contact field for numeric input
+        contact = self.fields['contact']
+        contact.widget.attrs.update({
+            'autocomplete': 'tel',
+            'inputmode': 'tel',
+            'pattern': '07[0-9]{8}',
+            'oninput': 'this.value = this.value.replace(/[^0-9]/g, "").slice(0, 10)',
+            'title': 'Enter a valid phone number starting with 07 and 10 digits long'
+        })
 
     class Meta:
         model = Product
@@ -170,18 +192,18 @@ class EditProductForm(forms.ModelForm):
         if media:
             # Enforce 5MB limit
             if media.size > 5 * 1024 * 1024:
-                raise forms.ValidationError(_("File size must be no more than 5MB."))
+                self.add_error('media', _("File size must be no more than 5MB."))
 
             # Only allow .jpg, .jpeg, .png, .mp4
             ext = os.path.splitext(media.name)[1].lower()
             if ext not in ['.jpg', '.jpeg', '.png', '.mp4']:
-                raise forms.ValidationError(_("Only JPG, PNG, and MP4 files are allowed."))
+                self.add_error('media', _("Only JPG, PNG, and MP4 files are allowed."))
 
-            # Validate contact number if provided
-            contact = cleaned_data.get('contact')
-            if contact:
-                if not re.fullmatch(r'07\d{8}', contact):
-                    raise forms.ValidationError(_("Contact number must be 10 digits, start with '07', and contain only numbers."))
+        # Always validate contact number if provided
+        contact = cleaned_data.get('contact')
+        if contact:
+            if not re.fullmatch(r'07\d{8}', contact):
+                self.add_error('contact', _("Contact number must be 10 digits, start with '07', and contain only numbers."))
 
         return cleaned_data
 
