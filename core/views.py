@@ -341,24 +341,19 @@ def add_product(request):
             try:
                 with transaction.atomic():
                     # Create instance but don't save to DB yet
-                    instance = form.save(commit=False)
-                    instance.owner = request.user
-
-                    # Ensure the user has a profile phone number before saving
-                    if not hasattr(request.user, 'profile') or not request.user.profile.phone:
-                        messages.error(
-                            request,
-                            _("Please update your profile with contact information before adding a product.")
-                        )
-                        return redirect('edit_profile')
-
-                    instance.save()
-
+                    product = form.save(commit=False)
+                    # Assign the current user as the owner
+                    product.owner = request.user
+                    # Set is_available to True by default for new products
+                    product.is_available = True
+                    # Now save to DB
+                    product.save()
+                    logger.info(f"Product {product.id} created successfully")
                     messages.success(request, _("Product added successfully!"))
-                    return redirect('product_listings')
+                    return redirect('user_profile')
 
             except Exception as e:
-                logger.error(f"Error while saving product: {e}")
+                logger.error(f"Error while saving product: {e}", exc_info=True)
                 messages.error(
                     request,
                     _("An error occurred while saving the product. Please try again.")
@@ -401,12 +396,21 @@ def edit_product(request, pk):
     if request.method == 'POST':
         form = EditProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
-            form.save()
-            messages.success(request, _("Product updated successfully!"))
-            return redirect('user_profile')
+            try:
+                with transaction.atomic():
+                    product = form.save(commit=False)
+                    # Ensure is_available is set to True when editing
+                    product.is_available = True
+                    product.save()
+                    logger.info(f"Product {product.id} updated successfully")
+                    messages.success(request, _("Product updated successfully!"))
+                    return redirect('user_profile')
+            except Exception as e:
+                logger.error(f"Error updating product {pk}: {e}", exc_info=True)
+                messages.error(request, _("An error occurred while updating the product. Please try again."))
     else:
         form = EditProductForm(instance=product)
-    return render(request, 'core/edit_product.html', {'form': form})
+    return render(request, 'core/edit_product.html', {'form': form, 'product': product})
 
 
 @login_required

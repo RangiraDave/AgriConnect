@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-16 11:12+0200\n"
+"POT-Creation-Date: 2025-06-16 13:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: rw <rw@li.org>\n"
@@ -178,21 +178,6 @@ msgstr "Shyiramo ijambobanga"
 msgid "Captcha"
 msgstr "Captcha"
 
-#: core/models.py:20 core/models.py:71 templates/auth/login.html:44
-#: templates/core/signup.html:102
-msgid "Farmer"
-msgstr "Umuhinzi"
-
-#: core/models.py:21 core/models.py:72 templates/auth/login.html:47
-#: templates/core/signup.html:105
-msgid "Buyer"
-msgstr "Umuguzi"
-
-#: core/models.py:22 core/models.py:73 templates/auth/login.html:50
-#: templates/core/signup.html:108
-msgid "Cooperative"
-msgstr "Koperative"
-
 #: core/views.py:42
 msgid "Login required to access this page."
 msgstr "Mugomba kwinjira murinti kugirango mubashe kubona iyi paje."
@@ -283,70 +268,71 @@ msgstr "Imeyili ntabwo yabonetse."
 msgid "You are not authorized to add a product."
 msgstr "Nta burenganzira ufite bwo kwongeraho igicuruzwa."
 
-#: core/views.py:351
-msgid ""
-"Please update your profile with contact information before adding a product."
-msgstr ""
-"Nyamuneka nimwongere nimero za telefoni kuri konti yanyu mubone kwongeraho "
-"igicuruzwa."
-
-#: core/views.py:357
+#: core/views.py:352
 msgid "Product added successfully!"
 msgstr "Igicuruzwa Cyamazekwongerwaho neza!"
 
-#: core/views.py:364
+#: core/views.py:359
 msgid "An error occurred while saving the product. Please try again."
 msgstr ""
 "Habayeho ikibazo tekinike mukubika igicuruzwa. Nyamuneka ongera ugerageze "
 "mukanya."
 
-#: core/views.py:368
+#: core/views.py:363
 msgid "Please correct the errors in the form."
 msgstr "Nyabuneka nimukosore amakosa mubyo mwanditse."
 
-#: core/views.py:382
+#: core/views.py:377
 msgid "Your profile is not configured. Please contact support or log in again."
 msgstr ""
 "Konti yawe ntirandikwa neza. Murebe ahatangirwa ubufasha cyangwa mwongere "
 "mukanya."
 
-#: core/views.py:398
+#: core/views.py:393
 msgid "You are not authorized to edit this product."
 msgstr "Nta burenganzira ufite bwo guhindura iki gicuruzwa."
 
-#: core/views.py:405
+#: core/views.py:406
 msgid "Product updated successfully!"
 msgstr "Igicuruzwa cyahinduwe neza!"
 
-#: core/views.py:417
+#: core/views.py:410
+#, fuzzy
+#| msgid "An error occurred while saving the product. Please try again."
+msgid "An error occurred while updating the product. Please try again."
+msgstr ""
+"Habayeho ikibazo tekinike mukubika igicuruzwa. Nyamuneka ongera ugerageze "
+"mukanya."
+
+#: core/views.py:421
 msgid "You are not authorized to delete this product."
 msgstr "Nta burenganzira ufite bwo gusiba iki gicuruzwa."
 
-#: core/views.py:422
+#: core/views.py:426
 msgid "Product deleted successfully!"
 msgstr "Igicuruzwa Cyamazekwongerwaho neza!"
 
-#: core/views.py:435
+#: core/views.py:439
 msgid "Please provide a valid rating between 1 and 5."
 msgstr "Nyamuneka tanga amanota ari hagati ya 1 na 5."
 
-#: core/views.py:537
+#: core/views.py:541
 msgid "Your account has been successfully deleted."
 msgstr "Gusiba konti byakunze."
 
-#: core/views.py:541
+#: core/views.py:545
 msgid "An error occurred while deleting your account."
 msgstr "Habayeho ikibazo mugusiba konti yawe."
 
-#: core/views.py:691
+#: core/views.py:695
 msgid "Error updating location information. Please try again."
 msgstr "Habayeho ikosa kuguhindura amakuru y'aho mutuye. Mwongere mugerageze."
 
-#: core/views.py:694
+#: core/views.py:698
 msgid "Profile updated successfully."
 msgstr "Amakuru kuri konti yamaze guhindurwa neza!"
 
-#: core/views.py:717
+#: core/views.py:721
 msgid "Error loading location information. Please try again."
 msgstr ""
 "Habayeho ikosa mugushaka amakuru y'aho muherereye. Mwongere mugerageze."
@@ -360,6 +346,18 @@ msgstr "Injira"
 #: templates/auth/login.html:42 templates/core/signup.html:100
 msgid "Select your role"
 msgstr "Hitamo icyiciro cyawe"
+
+#: templates/auth/login.html:44 templates/core/signup.html:102
+msgid "Farmer"
+msgstr "Umuhinzi"
+
+#: templates/auth/login.html:47 templates/core/signup.html:105
+msgid "Buyer"
+msgstr "Umuguzi"
+
+#: templates/auth/login.html:50 templates/core/signup.html:108
+msgid "Cooperative"
+msgstr "Koperative"
 
 #: templates/auth/login.html:58
 msgid "Security Check"
@@ -562,6 +560,7 @@ msgid "Current Media"
 msgstr "Isanzweho"
 
 #: templates/core/edit_product.html:54 templates/core/product_detail.html:99
+#: templates/core/product_listings.html:202
 msgid "Your browser does not support the video tag."
 msgstr ""
 "Iyi videwo ntibashije kuboneka kubera ikibazo cya mudasobwa cyangwa telefone "
@@ -781,7 +780,7 @@ msgstr "Ibicuruzwa Byawe"
 msgid "Manage"
 msgstr "Cunga"
 
-#: templates/core/home.html:236 templates/core/product_listings.html:278
+#: templates/core/home.html:236 templates/core/product_listings.html:279
 msgid "View"
 msgstr "Reba"
 
@@ -867,7 +866,7 @@ msgid "No farmer ratings yet."
 msgstr "Ntamanota aratangwa."
 
 #: templates/core/market_insights.html:133
-#: templates/core/product_listings.html:17 templates/products.html:5
+#: templates/core/product_listings.html:17
 msgid "Product Listings"
 msgstr "Ibicuruzwa"
 
@@ -926,7 +925,7 @@ msgid "Contact Information"
 msgstr "Amakuru y'itumanaho"
 
 #: templates/core/product_detail.html:175
-#: templates/core/product_listings.html:231
+#: templates/core/product_listings.html:230
 msgid "Not Provided"
 msgstr "Ntabyatanzwe"
 
@@ -972,28 +971,28 @@ msgstr "Yungurura"
 msgid "Clear Filters"
 msgstr "Siba"
 
-#: templates/core/product_listings.html:237 templates/core/user_profile.html:89
+#: templates/core/product_listings.html:238 templates/core/user_profile.html:89
 #: templates/core/user_profile.html:201
 msgid "Added"
 msgstr "Byashyizweho"
 
-#: templates/core/product_listings.html:259
+#: templates/core/product_listings.html:260
 msgid "Submit Rating"
 msgstr "Ohereza Amanota"
 
-#: templates/core/product_listings.html:265
+#: templates/core/product_listings.html:266
 msgid "ratings"
 msgstr "Amanota"
 
-#: templates/core/product_listings.html:272
+#: templates/core/product_listings.html:273
 msgid "Talk to us"
 msgstr "Tuganirize"
 
-#: templates/core/product_listings.html:287
+#: templates/core/product_listings.html:288
 msgid "No products found"
 msgstr "Nta bicuruzwa byabonetse"
 
-#: templates/core/product_listings.html:288
+#: templates/core/product_listings.html:289
 msgid "Try adjusting your filters or search criteria"
 msgstr "Gerageza guhindura uburyo bwo gushakisha"
 
@@ -1132,3 +1131,10 @@ msgstr "Nta kode mwakiriye?"
 #: templates/core/verify_email.html:47
 msgid "Resend Code"
 msgstr "Ongera wohereze"
+
+#~ msgid ""
+#~ "Please update your profile with contact information before adding a "
+#~ "product."
+#~ msgstr ""
+#~ "Nyamuneka nimwongere nimero za telefoni kuri konti yanyu mubone "
+#~ "kwongeraho igicuruzwa."

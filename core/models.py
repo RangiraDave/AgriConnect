@@ -302,3 +302,8 @@ class ProductRating(models.Model):
 
     def __str__(self):
         return f"{self.user.username} rated {self.product.name} {self.rating} stars"
+
+def product_media_upload_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = f'{uuid.uuid4().hex}.{ext}'
+    return os.path.join('products', now().strftime('%Y/%m/%d'), filename)
