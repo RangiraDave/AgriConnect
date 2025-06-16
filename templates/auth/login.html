@@ -38,8 +38,19 @@
                             {{ form.password.errors }}
                         </div>
                         <div class="form-floating mb-4">
-                            {{ form.role|add_class:'form-select' }}
-                            <label for="id_role"><i class="fas fa-user-tag me-2"></i>{% trans "Role" %}</label>
+                            <select id="role" name="role" class="form-select" required>
+                                <option value="">{% trans "Select your role" %}</option>
+                                <option value="umuhinzi" {% if form.data.role == 'umuhinzi' %}selected{% endif %}>
+                                    {% trans "Farmer" %}
+                                </option>
+                                <option value="umuguzi" {% if form.data.role == 'umuguzi' %}selected{% endif %}>
+                                    {% trans "Buyer" %}
+                                </option>
+                                <option value="cooperative" {% if form.data.role == 'cooperative' %}selected{% endif %}>
+                                    {% trans "Cooperative" %}
+                                </option>
+                            </select>
+                            <label for="role"><i class="fas fa-user-tag me-2"></i>{% trans "Role" %}</label>
                             {{ form.role.errors }}
                         </div>
                         <div class="mb-4 text-center">

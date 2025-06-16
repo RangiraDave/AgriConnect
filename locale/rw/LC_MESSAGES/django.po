@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-15 12:20+0200\n"
+"POT-Creation-Date: 2025-06-16 11:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: rw <rw@li.org>\n"
@@ -128,7 +128,7 @@ msgstr "Umudugudu"
 msgid "Specific Location"
 msgstr "Aho uherereye neza"
 
-#: core/forms.py:319 core/forms.py:486 templates/auth/login.html:42
+#: core/forms.py:319 core/forms.py:486 templates/auth/login.html:53
 #: templates/core/edit_profile.html:164 templates/core/signup.html:111
 msgid "Role"
 msgstr "Icyiciro"
@@ -178,6 +178,21 @@ msgstr "Shyiramo ijambobanga"
 msgid "Captcha"
 msgstr "Captcha"
 
+#: core/models.py:20 core/models.py:71 templates/auth/login.html:44
+#: templates/core/signup.html:102
+msgid "Farmer"
+msgstr "Umuhinzi"
+
+#: core/models.py:21 core/models.py:72 templates/auth/login.html:47
+#: templates/core/signup.html:105
+msgid "Buyer"
+msgstr "Umuguzi"
+
+#: core/models.py:22 core/models.py:73 templates/auth/login.html:50
+#: templates/core/signup.html:108
+msgid "Cooperative"
+msgstr "Koperative"
+
 #: core/views.py:42
 msgid "Login required to access this page."
 msgstr "Mugomba kwinjira murinti kugirango mubashe kubona iyi paje."
@@ -189,7 +204,7 @@ msgstr ""
 
 #: core/views.py:70
 msgid "Invalid role selected for this account."
-msgstr "Icyiciro cyahiswemo ntikiaho."
+msgstr "Icyiciro cyahiswemo ntikibaho."
 
 #: core/views.py:72 core/views.py:74
 msgid "User profile not properly configured. Please contact support."
@@ -337,30 +352,36 @@ msgstr ""
 "Habayeho ikosa mugushaka amakuru y'aho muherereye. Mwongere mugerageze."
 
 #: templates/auth/login.html:7 templates/auth/login.html:15
-#: templates/auth/login.html:62 templates/auth/password_reset_complete.html:21
+#: templates/auth/login.html:73 templates/auth/password_reset_complete.html:21
 #: templates/core/base.html:106 templates/core/home.html:24
 msgid "Login"
 msgstr "Injira"
 
-#: templates/auth/login.html:47
+#: templates/auth/login.html:42 templates/core/signup.html:100
+msgid "Select your role"
+msgstr "Hitamo icyiciro cyawe"
+
+#: templates/auth/login.html:58
 msgid "Security Check"
 msgstr "Suzuma umutekano"
 
-#: templates/auth/login.html:51
+#: templates/auth/login.html:62
 msgid ""
 "Please type the letters or numbers you see in the box below. This helps us "
 "keep your account safe and prevent fake logins."
 msgstr ""
+"Nyamuneka andika neza inyuguti zigaragara mwishusho riri hepfo. Ibi "
+"bidufasha gucunga umutekano wa konti yawe harimo n'ukwinjira kutemewe."
 
-#: templates/auth/login.html:70
+#: templates/auth/login.html:81
 msgid "Forgot Password?"
 msgstr "Wibagiwe Ijambobanga?"
 
-#: templates/auth/login.html:73
+#: templates/auth/login.html:84
 msgid "Don't have an account?"
 msgstr "Nta konti ufite?"
 
-#: templates/auth/login.html:75
+#: templates/auth/login.html:86
 msgid "Sign up now!"
 msgstr "Kora konti nonaha!"
 
@@ -760,7 +781,7 @@ msgstr "Ibicuruzwa Byawe"
 msgid "Manage"
 msgstr "Cunga"
 
-#: templates/core/home.html:236 templates/core/product_listings.html:276
+#: templates/core/home.html:236 templates/core/product_listings.html:278
 msgid "View"
 msgstr "Reba"
 
@@ -905,7 +926,7 @@ msgid "Contact Information"
 msgstr "Amakuru y'itumanaho"
 
 #: templates/core/product_detail.html:175
-#: templates/core/product_listings.html:229
+#: templates/core/product_listings.html:231
 msgid "Not Provided"
 msgstr "Ntabyatanzwe"
 
@@ -951,28 +972,28 @@ msgstr "Yungurura"
 msgid "Clear Filters"
 msgstr "Siba"
 
-#: templates/core/product_listings.html:235 templates/core/user_profile.html:89
+#: templates/core/product_listings.html:237 templates/core/user_profile.html:89
 #: templates/core/user_profile.html:201
 msgid "Added"
 msgstr "Byashyizweho"
 
-#: templates/core/product_listings.html:257
+#: templates/core/product_listings.html:259
 msgid "Submit Rating"
 msgstr "Ohereza Amanota"
 
-#: templates/core/product_listings.html:263
+#: templates/core/product_listings.html:265
 msgid "ratings"
 msgstr "Amanota"
 
-#: templates/core/product_listings.html:270
+#: templates/core/product_listings.html:272
 msgid "Talk to us"
 msgstr "Tuganirize"
 
-#: templates/core/product_listings.html:285
+#: templates/core/product_listings.html:287
 msgid "No products found"
 msgstr "Nta bicuruzwa byabonetse"
 
-#: templates/core/product_listings.html:286
+#: templates/core/product_listings.html:288
 msgid "Try adjusting your filters or search criteria"
 msgstr "Gerageza guhindura uburyo bwo gushakisha"
 
@@ -983,22 +1004,6 @@ msgstr "Kora Konti"
 #: templates/core/signup.html:78
 msgid "Confirm Password"
 msgstr "Emeza Ijambobanga"
-
-#: templates/core/signup.html:100
-msgid "Select your role"
-msgstr "Hitamo icyiciro cyawe"
-
-#: templates/core/signup.html:102
-msgid "Farmer"
-msgstr "Umuhinzi"
-
-#: templates/core/signup.html:105
-msgid "Buyer"
-msgstr "Umuguzi"
-
-#: templates/core/signup.html:108
-msgid "Cooperative"
-msgstr "Koperative"
 
 #: templates/core/signup.html:185
 msgid "Already have an account?"
@@ -1127,217 +1132,3 @@ msgstr "Nta kode mwakiriye?"
 #: templates/core/verify_email.html:47
 msgid "Resend Code"
 msgstr "Ongera wohereze"
-
-#~ msgid "Market Trends"
-#~ msgstr "Ibigezweho k'isoko"
-
-#~ msgid "6 Months"
-#~ msgstr "Amezi 6"
-
-#~ msgid "1 Year"
-#~ msgstr "Umwaka 1"
-
-#~ msgid "Track how product listings and ratings have changed over time."
-#~ msgstr ""
-#~ "Reba ukwo ibicuruzwa byagiye bishyirwaho n'amanota byagiye bihindagurika."
-
-#, python-brace-format
-#~ msgid ""
-#~ "Hello {user_name}! I'm AgriConnect Assistant. I can help you with "
-#~ "information about {product_name}. What would you like to know?"
-#~ msgstr ""
-#~ "Muraho {user_name}! Ngewe mpfasha abagana AgriConnect. Nagufasha kumenya "
-#~ "ibyerecyeye {product_name}. Ni iki ukeneye kumenya kuri iki gicuruzwa?"
-
-#~ msgid "I'm sorry, I couldn't find that product. How else can I help you?"
-#~ msgstr ""
-#~ "Mwihangane icyo gicuruzwa ntikibashije kuboneka. Tubafashe iki kindi?"
-
-#, python-brace-format
-#~ msgid ""
-#~ "Hello {user_name}! I'm AgriConnect Assistant. How can I help you today?"
-#~ msgstr "Muraho {user_name}! Mpfasha abagana AgriConnect. Tubafashe iki?"
-
-#~ msgid ""
-#~ "Thank you for using AgriConnect! If you have any more questions, feel "
-#~ "free to ask. Have a great day!"
-#~ msgstr ""
-#~ "Murakoze gukoresha AgriConnect! Mufite ikindi kibazo mwatubaza.Mugire "
-#~ "umunsi mwiza."
-
-#, python-brace-format
-#~ msgid ""
-#~ "Hello {user_name}, I'm AgriConnect Assistant. I can help you with "
-#~ "information about {product_name}. What would you like to know?"
-#~ msgstr ""
-#~ "Muraho {user_name}! Ngewe mpfasha abagana AgriConnect. Nagufasha kumenya "
-#~ "ibyerecyeye {product_name}. Ni iki ukeneye kumenya kuri iki gicuruzwa?"
-
-#~ msgid "Hello! I'm AgriConnect Assistant. How can I help you today?"
-#~ msgstr "Muraho! Mpfasha abagana AgriConnect. Tubafashe iki?"
-
-#~ msgid "No detailed description available for this product."
-#~ msgstr "Ntabusobanuro kugicuruzwa bubashije kuboneka."
-
-#, python-brace-format
-#~ msgid "This product is available in: {location}"
-#~ msgstr "Ikigicuruzwa mwagisanga aha hakurikira: {location}"
-
-#~ msgid "Location information not available"
-#~ msgstr "Ntamakuru yerecyeye aho giherereye abashije kuboneka"
-
-#, python-brace-format
-#~ msgid "The price is {price} per {unit} of {product_name}."
-#~ msgstr "Igiciro cya {product_name} ni {price} buri {unit}."
-
-#, python-brace-format
-#~ msgid "There are {quantity} {unit} of {product_name} available."
-#~ msgstr "Hari {unit} {quantity} bya {product_name}."
-
-#, python-brace-format
-#~ msgid "You can contact the seller at {phone}. The seller is a {role}."
-#~ msgstr "Mwahamagara uyu {role} kuri {phone}"
-
-#~ msgid "Contact information not available"
-#~ msgstr "Nta nimero za telephone zibashije kuboneka"
-
-#, python-brace-format
-#~ msgid ""
-#~ "This product has an average rating of {rating:.1f} stars from {count} "
-#~ "reviews."
-#~ msgstr "Ikigicuruzwa gifite amanota {rating:.1f} kuva kubantu {count}."
-
-#~ msgid "This product hasn't received any ratings yet."
-#~ msgstr "Ikigicuruzwa ntamanota cyari cyagira."
-
-#, python-brace-format
-#~ msgid "Here is an image of the product: {url}"
-#~ msgstr "Dore ifoto y'igicuruzwa: {url}"
-
-#~ msgid "No image is available for this product."
-#~ msgstr "Ntafoto ibashije kuboneka y'ikigicuruzwa."
-
-#, python-brace-format
-#~ msgid "Here is a video of the product: {url}"
-#~ msgstr "Ngiyi videwo y'ikigicuruzwa: {url}"
-
-#~ msgid "No video is available for this product."
-#~ msgstr "Nta videwo y'ikigicuruzwa ibashije kuboneka."
-
-#, python-brace-format
-#~ msgid ""
-#~ "This product is sold by {username}, who is a {role}. You can contact them "
-#~ "at {phone}."
-#~ msgstr ""
-#~ "Ikigicuruzwa kirimo kugurishwa na {username}, akaba ari {role}."
-#~ "wamuhamagara kuri {phone}."
-
-#~ msgid ""
-#~ "I can help you with information about:\n"
-#~ "- Product details and description\n"
-#~ "- Price and availability\n"
-#~ "- Location and contact information\n"
-#~ "- Ratings and reviews\n"
-#~ "- Images and videos\n"
-#~ "- Seller information\n"
-#~ "What would you like to know?"
-#~ msgstr ""
-#~ "Dore ibyo nabasha kugufasha kumenya kuri iki gicuruzwa:\n"
-#~ "- Amakuru arambuye\n"
-#~ "- Igiciro wakibonaho\n"
-#~ "- Aho wagisanga\n"
-#~ "- Amanota gifite k'isoko\n"
-#~ "- Ifoto cyangwa videwo yacyo\n"
-#~ "- Ndetse n'andimakuru yerecyeye nyiracyo.\n"
-#~ "Ni icyihe muri ibyo mucyeneye kumenya?"
-
-#~ msgid ""
-#~ "Please clarify your question. I can help you with information about this "
-#~ "product's:\n"
-#~ "- Description\n"
-#~ "- Price\n"
-#~ "- Quantity\n"
-#~ "- Location\n"
-#~ "- Contact details\n"
-#~ "- Ratings\n"
-#~ "- Media (images/videos)\n"
-#~ "What would you like to know?"
-#~ msgstr ""
-#~ "Mugerageze kwandika neza icyo mucyeneye kumenya.Dore ibyo nabasha "
-#~ "kugufasha kumenya kuri iki gicuruzwa:\n"
-#~ "- Amakuru arambuye\n"
-#~ "- Igiciro wakibonaho\n"
-#~ "- Aho wagisanga\n"
-#~ "- Amanota gifite k'isoko\n"
-#~ "- Ifoto cyangwa videwo yacyo\n"
-#~ "- Ndetse n'andimakuru yerecyeye nyiracyo.\n"
-#~ "Mukeneye kumenya iki muri ibyo?"
-
-#~ msgid ""
-#~ "I'm sorry, I encountered an error while retrieving the product "
-#~ "information. Please try again later."
-#~ msgstr ""
-#~ "Mwutwihanganire duhuye n'akabazo dushakisha amakuru mwasabye, Mwongere "
-#~ "mugerageze mukanya."
-
-#~ msgid ""
-#~ "I can help you browse products, provide market insights, or answer "
-#~ "questions about AgriConnect. What would you like to know?"
-#~ msgstr ""
-#~ "Mbafasha kubona ibicuruzwa, amakuru k'isoko ndetse no gusubiza ibibazo "
-#~ "byerecyeye AgriConnect. Mucyeneye kumenya iki?"
-
-#~ msgid "I'm sorry, I encountered an error. Please try again later."
-#~ msgstr "Mwihangana duhuye n'ikibazo. Mwongere mugerageze mukanya."
-
-#~ msgid "Drag and drop your image here or click to browse"
-#~ msgstr "Kurura ifoto ushyire hano cyangwa ukandeho uyishake"
-
-#~ msgid "Notifications"
-#~ msgstr "Ubutumwa"
-
-#~ msgid "This field is required for farmers and cooperatives."
-#~ msgstr "Aha hacyenewe kwuzuzwa n'umuhinzi cyangwa koperative."
-
-#~ msgid "Welcome to AgriConnect Marketplace"
-#~ msgstr "Murakaza neza kutubuga rwa AgriConnect"
-
-#~ msgid ""
-#~ "Rwanda's Premier Agricultural Marketplace - Connecting Farmers, Buyers, "
-#~ "and Cooperatives"
-#~ msgstr ""
-#~ "Isoko Rikuru ry'Ubuhinzi mu Rwanda - Guhuza Abahinzi, Abaguzi, "
-#~ "n'amakoperative"
-
-#~ msgid "Join Now"
-#~ msgstr "Iyandikishe Nonaha"
-
-#~ msgid "Easy to Use"
-#~ msgstr "Biroroshye Kuyikoresha"
-
-#~ msgid "User-friendly platform with support in Kinyarwanda and English"
-#~ msgstr "Urubuga rukoreshwa mu buryo bworoshye mu Kinyarwanda n'Icyongereza"
-
-#~ msgid "Explore Products"
-#~ msgstr "Reba Ibicuruzwa"
-
-#~ msgid "Apply Filter"
-#~ msgstr "Yungurura"
-
-#~ msgid "Clear Filter"
-#~ msgstr "Siba"
-
-#~ msgid ""
-#~ "Ngibi ibicuruzwa bikeneye abaguzi byashyizweho n'abahinzi bo mu Rwanda "
-#~ "bagera kuri"
-#~ msgstr "????"
-
-#~ msgid "View Market Insights"
-#~ msgstr "Reba ibigezweho k'isoko"
-
-#~ msgid "Price"
-#~ msgstr "Igiciro"
-
-# For chart labels in JS (optional, if you want to translate them)
-#~ msgid "Average Product Rating"
-#~ msgstr "Amanota Y'Ibicuruzwa"
