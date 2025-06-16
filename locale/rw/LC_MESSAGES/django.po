@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-16 15:16+0200\n"
+"POT-Creation-Date: 2025-06-16 16:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: rw <rw@li.org>\n"
@@ -297,12 +297,8 @@ msgid "Product updated successfully!"
 msgstr "Igicuruzwa cyahinduwe neza!"
 
 #: core/views.py:410
-#, fuzzy
-#| msgid "An error occurred while saving the product. Please try again."
 msgid "An error occurred while updating the product. Please try again."
-msgstr ""
-"Habayeho ikibazo tekinike mukubika igicuruzwa. Nyamuneka ongera ugerageze "
-"mukanya."
+msgstr "Habayeho ikibazo tekinike mukubika igicuruzwa. Mwongere mukanya."
 
 #: core/views.py:421
 msgid "You are not authorized to delete this product."
@@ -651,136 +647,131 @@ msgid "Welcome to AgriConnect"
 msgstr "Murakaza neza kuri AgriConnect"
 
 #: templates/core/home.html:14
-#, fuzzy
-#| msgid "AgriConnect: Your Gateway to Rwanda's Agricultural Market"
 msgid "Rwanda's Agricultural Marketplace"
-msgstr "AgriConnect: Inzira igana k'isoko ry'abahinzi bo mu Rwanda"
+msgstr "Iguriro ry'ibihingwa ry'Urwanda"
 
 #: templates/core/home.html:17
 msgid ""
 "Connect directly with farmers and buyers. Buy fresh produce or sell your "
 "harvest with zero commission."
 msgstr ""
+"Guhuza abahinzi ndetse n'ama koperative Nyirizina. Gura, Gurisha ndetse "
+"unamenye umusaruro ugifite umwimerere ntakiguzi."
 
 #: templates/core/home.html:21
 msgid "Get Started Free"
 msgstr "Tangira kubuntu"
 
 #: templates/core/home.html:29
-#, fuzzy
-#| msgid "View Product"
 msgid "View All Products"
-msgstr "Reba Igicuruzwa"
+msgstr "Reba Igicuruzwa Byose"
 
 #: templates/core/home.html:33
 msgid "No hidden fees"
-msgstr ""
+msgstr "Ntakiguzi"
 
 #: templates/core/home.html:34
 msgid "Secure payments"
-msgstr ""
+msgstr "Kwishyurana byizewe"
 
 #: templates/core/home.html:35
 msgid "24/7 support"
-msgstr ""
+msgstr "Ukubufasha amasaha 24/7"
 
 #: templates/core/home.html:45 templates/core/home.html:296
 msgid "Fresh Mangoes"
-msgstr ""
+msgstr "Imyembe ifite itoto"
 
 #: templates/core/home.html:46 templates/core/home.html:297
-#, fuzzy
-#| msgid "Direct from Farmer"
 msgid "Direct from Rwandan farms"
-msgstr "Kuva kumuhinzi bwite"
+msgstr "Kuva kumuhinzi bwite bo mu Rwanda"
 
 #: templates/core/home.html:53 templates/core/home.html:304
 msgid "Premium Coffee"
-msgstr ""
+msgstr "Kawa yambere"
 
 #: templates/core/home.html:54 templates/core/home.html:305
 msgid "Finest Rwandan coffee beans"
-msgstr ""
+msgstr "Ikawa yambere mu Rwanda"
 
 #: templates/core/home.html:61 templates/core/home.html:312
 msgid "Organic Beans"
-msgstr ""
+msgstr "Ibishyimbo bikungahaye kubutare"
 
 #: templates/core/home.html:62 templates/core/home.html:313
 msgid "Nutritious and fresh"
-msgstr ""
+msgstr "Byuzuye intungamubiri"
 
 #: templates/core/home.html:69 templates/core/home.html:320
-msgid "Sweet Pineapples"
+msgid "Jack fruit"
 msgstr ""
 
 #: templates/core/home.html:70 templates/core/home.html:321
 msgid "Juicy and delicious"
-msgstr ""
+msgstr "Zuzuye umutobe kandi ziraryoshye"
 
-#: templates/core/home.html:77 templates/core/home.html:328
+#: templates/core/home.html:77 templates/core/home.html:93
+#: templates/core/home.html:328 templates/core/home.html:344
 msgid "Irish Potatoes"
-msgstr ""
+msgstr "Ibirayi"
 
 #: templates/core/home.html:78 templates/core/home.html:329
 msgid "Fresh from the highlands"
-msgstr ""
+msgstr "Ibihingwanyarwanda"
 
-#: templates/core/home.html:85 templates/core/home.html:336
+#: templates/core/home.html:85
 msgid "Passion Fruits"
-msgstr ""
+msgstr "Imputo ziryoshye"
 
 #: templates/core/home.html:86 templates/core/home.html:337
 msgid "Tropical and flavorful"
-msgstr ""
-
-#: templates/core/home.html:93 templates/core/home.html:344
-msgid "Tea Leaves"
-msgstr ""
+msgstr "Uburyohe kuva mumisozi"
 
 #: templates/core/home.html:94 templates/core/home.html:345
 msgid "Premium quality"
-msgstr ""
+msgstr "Kalite yambere"
 
-#: templates/core/home.html:101 templates/core/home.html:352
-msgid "Fresh Tomatoes"
-msgstr ""
+#: templates/core/home.html:101
+#, fuzzy
+#| msgid "Passion Fruits"
+msgid "Passio fruit"
+msgstr "Imputo ziryoshye"
 
 #: templates/core/home.html:102 templates/core/home.html:353
 msgid "Organic and delicious"
-msgstr ""
+msgstr "Byuzuye intungamubiri kandi biraryoshye"
 
 #: templates/core/home.html:109 templates/core/home.html:360
 msgid "Maize"
-msgstr ""
+msgstr "Ibigori"
 
 #: templates/core/home.html:110 templates/core/home.html:361
 msgid "High quality grains"
-msgstr ""
+msgstr "Imbuto yambere"
 
 #: templates/core/home.html:117 templates/core/home.html:368
-msgid "Bananas"
+msgid "Taro"
 msgstr ""
 
 #: templates/core/home.html:118 templates/core/home.html:369
 msgid "Sweet and fresh"
-msgstr ""
+msgstr "Ni bishya kandi biraryoshye"
 
 #: templates/core/home.html:122
 msgid "Fresh From Our Farms"
-msgstr ""
+msgstr "Ni bishya kuva kubahinzi bwite"
 
 #: templates/core/home.html:123
 msgid "Discover the best of Rwandan agriculture"
-msgstr ""
+msgstr "Reba ibicuruzwa byanyabyo kuva mu Rwanda"
 
 #: templates/core/home.html:128 templates/core/home.html:375
 msgid "Previous"
-msgstr ""
+msgstr "Ahabanje"
 
 #: templates/core/home.html:132 templates/core/home.html:379
 msgid "Next"
-msgstr ""
+msgstr "Ahakurikira"
 
 #: templates/core/home.html:151 templates/core/home.html:496
 msgid "Direct Connections"
@@ -790,16 +781,13 @@ msgstr "Guhuza ku Buryo Butaziguye"
 msgid ""
 "Connect directly with farmers and buyers. No middlemen means better prices "
 "for everyone."
-msgstr ""
+msgstr "Huza n'abahinzi, ama koperative ndetse n'abaguzi hadakenewe abamamyi."
 
 #: templates/core/home.html:154
 msgid "Join Now"
-msgstr ""
+msgstr "Injira akakanya"
 
 #: templates/core/home.html:167
-#, fuzzy
-#| msgid ""
-#| "See real-time prices, trends, and top products to make smart decisions."
 msgid ""
 "Get real-time market prices, trends, and insights to make informed buying "
 "and selling decisions."
@@ -808,8 +796,6 @@ msgstr ""
 "umwanzuro uboneye."
 
 #: templates/core/home.html:169 templates/core/home.html:416
-#, fuzzy
-#| msgid "Market Insights"
 msgid "View Insights"
 msgstr "Amakuru k'Isoko"
 
@@ -818,8 +804,6 @@ msgid "Easy & Secure"
 msgstr "Biroroshye kandi Birizewe"
 
 #: templates/core/home.html:182
-#, fuzzy
-#| msgid "Simple to use, mobile-friendly, and safe for everyone."
 msgid ""
 "Simple to use, mobile-friendly platform with secure payments and 24/7 "
 "support."
@@ -828,10 +812,8 @@ msgstr ""
 "kuri buri umwe."
 
 #: templates/core/home.html:184
-#, fuzzy
-#| msgid "Get Started Free"
 msgid "Get Started"
-msgstr "Tangira kubuntu"
+msgstr "Tangira"
 
 #: templates/core/home.html:196 templates/core/home.html:521
 msgid "Who Can Join?"
@@ -916,6 +898,12 @@ msgstr "Konti Yanjye"
 msgid "No fees. No hassle. 100%% local."
 msgstr "Ntakiguzi. Ntakuvunika. Umwimerere 100%%"
 
+#: templates/core/home.html:336 templates/core/home.html:352
+#, fuzzy
+#| msgid "Passion Fruits"
+msgid "Passion fruit"
+msgstr "Imputo ziryoshye"
+
 #: templates/core/home.html:398
 msgid "Discover Fresh Produce"
 msgstr ""
@@ -931,15 +919,10 @@ msgid "Browse Marketplace"
 msgstr ""
 
 #: templates/core/home.html:413
-#, fuzzy
-#| msgid "Market Insights"
 msgid "Market Trends"
 msgstr "Amakuru k'Isoko"
 
 #: templates/core/home.html:414
-#, fuzzy
-#| msgid ""
-#| "See real-time prices, trends, and top products to make smart decisions."
 msgid ""
 "Stay ahead with real-time market insights, price trends, and demand analysis "
 "to make informed decisions."
@@ -948,40 +931,36 @@ msgstr ""
 "umwanzuro uboneye."
 
 #: templates/core/home.html:428
-#, fuzzy
-#| msgid "Your Rating:"
 msgid "Your Farming Hub"
-msgstr "Amanota yawe"
+msgstr "Urubuga rw'abahinzi rwawe"
 
 #: templates/core/home.html:429
 msgid ""
 "Manage your products, track orders, and connect with buyers in Rwanda's "
 "largest agricultural network."
 msgstr ""
+"Cunga umusaruro wawe, kurikirana ibyo watumyeho ndetse unahuze n'abaguzi "
+"kumuyoboro wambere murwanda."
 
 #: templates/core/home.html:431
 msgid "My Dashboard"
-msgstr ""
+msgstr "Urukuta rwange"
 
 #: templates/core/home.html:447 templates/core/market_insights.html:44
 msgid "Active Farmers"
 msgstr "Abahinzi Bari Kurubuga"
 
 #: templates/core/home.html:458
-#, fuzzy
-#| msgid "Product Listings"
 msgid "Products Listed"
 msgstr "Ibicuruzwa"
 
 #: templates/core/home.html:469
 msgid "Satisfaction Rate"
-msgstr ""
+msgstr "Amanota y'ukwo wishimye"
 
 #: templates/core/home.html:480
-#, fuzzy
-#| msgid "District"
 msgid "Districts Covered"
-msgstr "Akarere"
+msgstr "Uturere bigeramo"
 
 #: templates/core/home.html:491
 msgid "Why AgriConnect?"
@@ -1064,10 +1043,9 @@ msgid "%(farmer.total_products)s products"
 msgstr "Ibicuruzwa %(farmer.total_products)s"
 
 #: templates/core/market_insights.html:102
-#, fuzzy, python-format
-#| msgid "%(farmer.total_ratings)s ratings"
+#, python-format
 msgid "%(farmer.total_ratings)s ratings"
-msgstr "Amanota %(farmer.num_ratings)s"
+msgstr "Amanota %(farmer.total_ratings)s"
 
 #: templates/core/market_insights.html:106
 msgid "No farmer ratings yet."
@@ -1103,8 +1081,6 @@ msgid "No description provided."
 msgstr "Ntabusobanuro bwatanzwe."
 
 #: templates/core/product_detail.html:138
-#, fuzzy
-#| msgid "Product Listings"
 msgid "Product Details"
 msgstr "Ubusobanuro kugicuruzwa"
 
@@ -1286,7 +1262,7 @@ msgstr "Umudugudu mwahisemo siwo. Mwongere mugerageze."
 
 #: templates/core/user_profile.html:54
 msgid "Products You've Rated"
-msgstr ""
+msgstr "Ibicuruzwa wahaye amanota"
 
 #: templates/core/user_profile.html:78 templates/core/user_profile.html:192
 msgid "RWF"
@@ -1347,6 +1323,18 @@ msgstr "Nta kode mwakiriye?"
 #: templates/core/verify_email.html:47
 msgid "Resend Code"
 msgstr "Ongera wohereze"
+
+#~ msgid "Sweet Pineapples"
+#~ msgstr "Fene nziza"
+
+#~ msgid "Tea Leaves"
+#~ msgstr "Icyayi"
+
+#~ msgid "Fresh Tomatoes"
+#~ msgstr "Inyanya"
+
+#~ msgid "Bananas"
+#~ msgstr "Imineke"
 
 #~ msgid "Welcome back,"
 #~ msgstr "Murakaza neza,"

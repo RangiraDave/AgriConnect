@@ -7,3 +7,8 @@
 *.db
 database_creation.sh
 data.txt
+# Ignore all other migration files except the initial and __init__
+!migrations/0001_initial.py
+!migrations/__init__.py
+# Ignore all other migration files except the ones explicitly included above
+migrations/*.py
