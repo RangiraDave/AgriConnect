@@ -93,7 +93,7 @@ def generate_verification_code():
 
 
 def signup(request):
-    """Handle user signup."""
+    """Handle user signup with improved error handling and race condition prevention."""
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
@@ -102,31 +102,42 @@ def signup(request):
             password = form.cleaned_data['password']
             phone = form.cleaned_data['phone']
             role = form.cleaned_data['role']
+            
             # Get location data
             province_id = request.POST.get('province')
             district_id = request.POST.get('district')
             sector_id = request.POST.get('sector')
             cell_id = request.POST.get('cell')
             village_id = request.POST.get('village')
-            specific_location = request.POST.get('specific_location')
+            specific_location = request.POST.get('specific_location', '')
+            
+            # Double-check user doesn't exist (race condition prevention)
+            if (User.objects.filter(username=username).exists() or
+                User.objects.filter(email=email).exists() or
+                User.objects.filter(profile__phone=phone).exists()):
+                logger.warning(f"Signup attempt with existing credentials - Username: {username}, Email: {email}, Phone: {phone}")
+                messages.error(request, _("A user with these details already exists. Please try again or log in."))
+                return redirect('signup')
+                
             try:
                 with transaction.atomic():
-                    user = User.objects.create_user(username=username, email=email, password=password)
-                    user.is_active = False
-                    user.save()
-                    # Generate verification code
-                    verification_code = generate_verification_code()
-                    logger.info(f"Generated verification code for {email}: {verification_code}")
-                    VerificationCode.objects.filter(user=user).delete()
-                    VerificationCode.objects.create(user=user, code=verification_code)
-                    send_mail(
-                        _('AgriConnect Email Verification'),
-                        _('Your verification code is: %(code)s') % {'code': verification_code},
-                        settings.EMAIL_HOST_USER,
-                        [email],
-                        fail_silently=False,
+                    # Create user
+                    user = User.objects.create_user(
+                        username=username,
+                        email=email,
+                        password=password,
+                        is_active=False  # User needs to verify email
                     )
-                    profile = Profile.objects.create(user=user, phone=phone, role=role)
+                    logger.info(f"Created new user: {username} ({email})")
+                    
+                    # Create profile
+                    profile = Profile.objects.create(
+                        user=user,
+                        phone=phone,
+                        role=role
+                    )
+                    
+                    # Create role-specific profile
                     if role == 'umuhinzi':
                         Farmer.objects.create(
                             profile=profile,
@@ -137,6 +148,7 @@ def signup(request):
                             village_id=village_id,
                             specific_location=specific_location
                         )
+                        logger.info(f"Created Farmer profile for user: {username}")
                     elif role == 'cooperative':
                         Cooperative.objects.create(
                             profile=profile,
@@ -147,16 +159,41 @@ def signup(request):
                             village_id=village_id,
                             specific_location=specific_location
                         )
+                        logger.info(f"Created Cooperative profile for user: {username}")
                     elif role == 'umuguzi':
                         Buyer.objects.create(profile=profile)
+                        logger.info(f"Created Buyer profile for user: {username}")
+                    
+                    # Generate and send verification code
+                    verification_code = generate_verification_code()
+                    VerificationCode.objects.filter(user=user).delete()  # Clear any existing codes
+                    VerificationCode.objects.create(user=user, code=verification_code)
+                    
+                    # Send verification email
+                    try:
+                        send_mail(
+                            _('AgriConnect Email Verification'),
+                            _('Your verification code is: %(code)s') % {'code': verification_code},
+                            settings.EMAIL_HOST_USER,
+                            [email],
+                            fail_silently=False,
+                        )
+                        logger.info(f"Verification email sent to {email}")
+                    except Exception as e:
+                        logger.error(f"Failed to send verification email to {email}: {str(e)}")
+                        # Continue even if email fails - user can request a new code
+                    
                     request.session['verification_email'] = email
                     return redirect('verify_email')
+                    
             except Exception as e:
-                logger.error(f"Error during signup: {e}")
-                form.add_error(None, str(e))
-        # If not valid or error, fall through to render with errors
+                logger.error(f"Error during signup for {email}: {str(e)}", exc_info=True)
+                messages.error(request, _("An error occurred during signup. Please try again."))
+                # The transaction will be rolled back automatically
+                return redirect('signup')
     else:
         form = SignupForm()
+    
     return render(request, 'core/signup.html', {'form': form})
 
 

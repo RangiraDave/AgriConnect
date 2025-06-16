@@ -5,14 +5,38 @@ from rest_framework_simplejwt.views import (
 )
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from core.views import debug_db_config
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import set_language
+from django.views.static import serve
+import os
 
 # Non-translatable URLs
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),  # Language switching URL
+    path('i18n/setlang/', set_language, name='set_language'),
 ]
+
+# Serve media files in development
+if settings.DEBUG:
+    # Serve media files through Django in development
+    urlpatterns = [
+        # Add media URL pattern before i18n_patterns
+        path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
+    ] + urlpatterns
+    
+    # Serve static files
+    urlpatterns += staticfiles_urlpatterns()
+else:
+    # In production, serve media files through the web server (Nginx/Apache)
+    # This is a fallback and should be handled by the web server in production
+    urlpatterns = [
+        path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
+    ] + urlpatterns
+    
+    # Serve static files in production
+    urlpatterns += staticfiles_urlpatterns()
 
 # Translatable URLs
 urlpatterns += i18n_patterns(
@@ -27,10 +51,3 @@ urlpatterns += i18n_patterns(
     path('chatbot/', include('chatbot.urls')),  # Include chatbot URLs
     prefix_default_language=True,  # Always prefix URLs with language code
 )
-
-urlpatterns += [
-    path('i18n/setlang/', set_language, name='set_language'),
-]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

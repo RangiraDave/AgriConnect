@@ -11,4 +11,4 @@ data.txt
 !core/migrations/0001_initial.py
 !core/migrations/__init__.py
 # Ignore all other migration files except the ones explicitly included above
-core/migrations/*.py
+# core/migrations/*.py
